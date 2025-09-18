@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogOverlay } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -99,7 +99,7 @@ export default function AdminLoginModal({ isOpen, onOpenChange }: AdminLoginModa
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md bg-background border border-border shadow-2xl" data-testid="modal-admin-login">
+      <DialogContent className="sm:max-w-md" data-testid="modal-admin-login">
         <DialogHeader className="text-center">
           <div className="mx-auto p-3 bg-primary/10 rounded-full w-fit mb-4">
             <img 
@@ -116,8 +116,8 @@ export default function AdminLoginModal({ isOpen, onOpenChange }: AdminLoginModa
           </p>
         </DialogHeader>
 
-        <Card className="bg-card border border-border shadow-md">
-          <CardContent className="p-6 bg-card">
+        <Card>
+          <CardContent className="p-6">
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>

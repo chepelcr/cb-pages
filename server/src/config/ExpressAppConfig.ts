@@ -111,6 +111,9 @@ export class ExpressAppConfig {
             'http://localhost:3000',
             'http://localhost:5000',
             'https://biller.jcampos.dev',
+            // Replit development hosts
+            'https://' + process.env.REPL_SLUG + '.' + process.env.REPL_OWNER + '.repl.co',
+            'https://' + process.env.REPL_ID + '.id.replit.app',
             // Android app origins
             'https://com.jcampos.biller',
             'capacitor://com.jcampos.biller',
@@ -120,6 +123,15 @@ export class ExpressAppConfig {
         const cloudfrontUrl = process.env.VITE_CLOUDFRONT_URL;
         if (cloudfrontUrl) {
             defaultOrigins.push(cloudfrontUrl);
+        }
+
+        // In development, be more permissive for Vite
+        if (process.env.NODE_ENV === 'development') {
+            return defaultOrigins.concat([
+                'http://localhost:5173', // Vite default
+                'http://127.0.0.1:5173',
+                'null' // For file:// and data: URLs
+            ]);
         }
 
         return defaultOrigins;

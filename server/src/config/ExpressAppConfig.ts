@@ -1,4 +1,5 @@
 import express, {Express, Request, Response, NextFunction} from 'express';
+import session from 'express-session';
 import cors from 'cors';
 import {setupRoutes} from '../routes';
 import {setupSwagger} from './swagger';
@@ -57,6 +58,18 @@ export class ExpressAppConfig {
             allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
             exposedHeaders: ['X-Page-Number', 'X-Page-Size', 'X-Total-Elements', 'X-Total-Pages'],
             maxAge: 600
+        }));
+
+        // Session management
+        this.app.use(session({
+            secret: process.env.SESSION_SECRET || 'cuerpo-de-banderas-secret-key',
+            resave: false,
+            saveUninitialized: false,
+            cookie: {
+                secure: process.env.NODE_ENV === 'production',
+                httpOnly: true,
+                maxAge: 24 * 60 * 60 * 1000 // 24 hours
+            }
         }));
 
         // Request logging middleware

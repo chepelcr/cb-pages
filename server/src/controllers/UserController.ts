@@ -16,7 +16,7 @@ export class UserController {
 
     /**
      * @swagger
-     * /users/{id}/profile:
+     * /api/users/{id}/profile:
      *   get:
      *     summary: Get user profile
      *     tags:
@@ -76,7 +76,7 @@ export class UserController {
 
     /**
      * @swagger
-     * /users/{id}/profile:
+     * /api/users/{id}/profile:
      *   put:
      *     summary: Update user profile
      *     tags:
@@ -127,7 +127,7 @@ export class UserController {
 
     /**
      * @swagger
-     * /users/{userId}/verify-email-complete:
+     * /api/users/{userId}/verify-email-complete:
      *   post:
      *     summary: Complete email verification process
      *     tags:

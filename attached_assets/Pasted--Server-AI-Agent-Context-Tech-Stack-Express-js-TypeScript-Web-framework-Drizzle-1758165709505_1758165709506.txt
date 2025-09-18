@@ -1,0 +1,96 @@
+# Server - AI Agent Context
+
+## Tech Stack
+- **Express.js + TypeScript** - Web framework
+- **Drizzle ORM + PostgreSQL** - Database layer
+- **AWS Cognito** - Authentication
+- **AWS Lambda** - Serverless deployment
+- **Swagger** - API documentation
+
+## Clean Architecture
+```
+server/src/
+├── controllers/    # HTTP handlers (UserController, ConfigurationController)
+├── services/       # Business logic (UserService, CognitoService, IvoisApiService)
+├── repositories/   # Data access (UserRepository, ConfigurationRepository)
+├── entities/       # Drizzle schemas (User, Configuration, ApiKey)
+├── models/         # DTOs and domain models
+├── mappers/        # Data transformation
+└── config/         # App configuration
+```
+
+## Database Entities
+- **users** - User accounts (id, email, userName, firstName, company, configStep)
+- **configurations** - Billing config (taxpayerId, apiKey, organizationName)
+- **api_keys** - Encrypted API keys for external services
+
+## API Endpoints
+```typescript
+// User Management
+GET    /users/:id/profile
+POST   /auth/register
+PUT    /users/:id
+GET    /users/email/:email
+
+// Configuration
+GET    /configurations
+POST   /configurations
+PUT    /configurations/:id
+```
+
+## Services Architecture
+- **UserService** - User CRUD, profile management
+- **CognitoService** - AWS authentication, user creation
+- **ConfigurationService** - Billing setup management
+- **IvoisApiService** - Tax compliance integration
+- **EmailService** - Notifications
+- **AWSSecretsService** - Secure config storage
+
+## Authentication Flow
+1. User registers via Cognito
+2. JWT tokens validated by API Gateway
+3. User data stored in PostgreSQL
+4. Protected endpoints check token
+
+## External Integrations
+- **Ivois API** - Costa Rican tax compliance
+- **AWS Cognito** - User authentication
+- **AWS Secrets Manager** - API key storage
+
+## Development Commands
+```bash
+npm run dev          # Local development
+npm run build        # Production build
+npm run build:lambda # Lambda package
+npm run db:push      # Database migrations
+```
+
+## Deployment
+- **Lambda** - Serverless Express app
+- **CloudFormation** - Infrastructure as code
+- **API Gateway** - HTTP routing and auth
+- **RDS/Neon** - PostgreSQL database
+
+## Error Handling
+- Centralized error middleware
+- HTTP status code mapping
+- Zod schema validation
+- Detailed logging
+
+## Security
+- JWT token validation
+- API key encryption at rest
+- CORS configuration
+- Input sanitization with Zod
+
+## Database Patterns
+```typescript
+// Repository pattern
+const user = await userRepository.findById(id);
+
+// Service layer
+const result = await userService.createUser(userData);
+
+// Drizzle queries
+const users = await db.select().from(usersTable);
+```

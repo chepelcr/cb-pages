@@ -5,13 +5,13 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
+import HistoryPage from "@/pages/HistoryPage";
 import LeadershipPage from "@/pages/LeadershipPage";
 import GalleryPage from "@/pages/GalleryPage";
 import ShieldsPage from "@/pages/ShieldsPage";
 import { ThemeProvider, useTheme } from "@/components/ThemeProvider";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
-import History from "@/components/History";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import AdminLoginModal from "@/components/AdminLoginModal";
@@ -20,7 +20,6 @@ function HomePage() {
   return (
     <div className="min-h-screen bg-background">
       <Hero />
-      <History />
       <Contact />
     </div>
   );
@@ -30,6 +29,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={HomePage} />
+      <Route path="/historia" component={HistoryPage} />
       <Route path="/liderazgo" component={LeadershipPage} />
       <Route path="/escudos" component={ShieldsPage} />
       <Route path="/galeria" component={GalleryPage} />

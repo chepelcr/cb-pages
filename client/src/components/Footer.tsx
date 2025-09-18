@@ -84,7 +84,7 @@ export default function Footer() {
             <nav className="space-y-2">
               {[
                 { label: 'Inicio', path: '/', sectionId: 'home' },
-                { label: 'Historia', path: '/', sectionId: 'history' },
+                { label: 'Historia', path: '/historia' },
                 { label: 'Liderazgo', path: '/liderazgo' },
                 { label: 'Escudos', path: '/escudos' },
                 { label: 'Galería', path: '/galeria' },

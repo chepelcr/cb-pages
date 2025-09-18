@@ -5,11 +5,8 @@ import { ArrowDown } from 'lucide-react';
 import heroImage from '@assets/image_1758163215007.png';
 
 export default function Hero() {
-  const scrollToHistory = () => {
-    const historySection = document.getElementById('history');
-    if (historySection) {
-      historySection.scrollIntoView({ behavior: 'smooth' });
-    }
+  const navigateToHistory = () => {
+    window.location.href = '/historia';
   };
 
   return (
@@ -53,7 +50,7 @@ export default function Hero() {
           <Button 
             size="lg" 
             className="bg-primary hover:bg-primary/90 text-primary-foreground border-primary hover-elevate px-8 py-3"
-            onClick={scrollToHistory}
+            onClick={navigateToHistory}
             data-testid="button-learn-history"
           >
             Conoce Nuestra Historia
@@ -92,7 +89,7 @@ export default function Hero() {
         <Button
           variant="ghost"
           size="sm"
-          onClick={scrollToHistory}
+          onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
           className="text-white hover:bg-white/10 animate-bounce"
           data-testid="button-scroll-down"
         >

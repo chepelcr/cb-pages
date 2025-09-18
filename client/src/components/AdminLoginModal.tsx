@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { User, Lock, Eye, EyeOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { signIn } from 'aws-amplify/auth';
 import cbLogo from '@assets/cb logo_1758164197769.png';
 
 interface AdminLoginModalProps {
@@ -25,44 +26,66 @@ export default function AdminLoginModal({ isOpen, onOpenChange }: AdminLoginModa
     e.preventDefault();
     setIsLoading(true);
     
-    console.log('Admin login attempt:', { email, password: '***' });
+    console.log('Admin login attempt via AWS Amplify:', { email, password: '***' });
     
     try {
-      // Create a test user ID from email for demo purposes
-      // In production, this would use proper AWS Cognito authentication
-      const testUserId = `admin-${email.split('@')[0]}`;
-      
-      // Call the backend user verification endpoint
-      const response = await fetch(`/api/users/${testUserId}/verify-email-complete?language=es`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      // Authenticate with AWS Amplify
+      const authResult = await signIn({
+        username: email,
+        password: password,
       });
 
-      if (response.ok) {
-        const result = await response.json();
-        toast({
-          title: "¡Acceso autorizado!",
-          description: "Bienvenido al panel administrativo del Cuerpo de Banderas",
+      console.log('Amplify authentication result:', authResult);
+
+      // After successful Amplify login, call profile endpoint
+      if (authResult.isSignedIn) {
+        // For now, use email prefix as user ID until Amplify is properly configured
+        const userId = email.split('@')[0];
+        
+        // Call backend profile endpoint
+        const response = await fetch(`/api/users/${userId}/profile`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
         });
-        console.log('Admin login successful:', result);
-        onOpenChange(false);
-        setEmail('');
-        setPassword('');
-      } else {
-        const error = await response.json();
-        toast({
-          title: "Error de autenticación",
-          description: error.error || "Credenciales inválidas",
-          variant: "destructive",
-        });
+
+        if (response.ok) {
+          const userProfile = await response.json();
+          toast({
+            title: "¡Acceso autorizado!",
+            description: `Bienvenido ${userProfile.firstName || userProfile.userName}`,
+          });
+          console.log('User profile loaded:', userProfile);
+          onOpenChange(false);
+          setEmail('');
+          setPassword('');
+        } else {
+          // If profile doesn't exist, that's OK for now
+          toast({
+            title: "¡Acceso autorizado!",
+            description: "Bienvenido al panel administrativo del Cuerpo de Banderas",
+          });
+          onOpenChange(false);
+          setEmail('');
+          setPassword('');
+        }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Login error:', error);
+      
+      let errorMessage = "Error de autenticación";
+      if (error.name === 'NotAuthorizedException') {
+        errorMessage = "Credenciales inválidas";
+      } else if (error.name === 'UserNotConfirmedException') {
+        errorMessage = "Usuario no confirmado. Verifique su email.";
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
       toast({
-        title: "Error de conexión",
-        description: "No se pudo conectar con el servidor de autenticación",
+        title: "Error de autenticación",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
@@ -149,16 +172,16 @@ export default function AdminLoginModal({ isOpen, onOpenChange }: AdminLoginModa
             
             <div className="mt-6 p-4 bg-green-50 dark:bg-green-950 rounded-lg border border-green-200 dark:border-green-800">
               <Badge variant="outline" className="mb-2 border-green-500 text-green-700 dark:text-green-300">
-                ✅ Sistema Activo
+                ✅ AWS Amplify + Cognito
               </Badge>
               <p className="text-sm text-green-700 dark:text-green-300 mb-2">
-                <strong>AWS Cognito</strong> integrado y funcionando:
+                <strong>Sistema de autenticación integrado:</strong>
               </p>
               <ul className="text-xs text-green-600 dark:text-green-400 space-y-1">
-                <li>• ✅ Autenticación segura de administradores</li>
-                <li>• ✅ Sistema de gestión de usuarios completo</li>
-                <li>• ✅ Emails de bienvenida automatizados</li>
-                <li>• ✅ API documentada con Swagger</li>
+                <li>• ✅ AWS Amplify autenticación frontend</li>
+                <li>• ✅ Perfil de usuario vía API backend</li>
+                <li>• ✅ Gestión segura de sesiones</li>
+                <li>• ✅ Email verification disponible</li>
               </ul>
             </div>
           </CardContent>

@@ -146,15 +146,12 @@ export default function Leadership() {
           {paginatedData.map((entry, index) => (
             <Card key={`${entry.year}-${index}`} className="hover-elevate transition-all duration-300" data-testid={`card-leadership-${entry.year}`}>
               <CardHeader className="pb-4">
-                <div className="flex items-center gap-2 mb-2">
+                <div className="flex items-center gap-2">
                   <Users className="h-5 w-5 text-primary" />
                   <Badge variant="secondary" data-testid={`badge-year-${entry.year}`}>
                     {entry.year}
                   </Badge>
                 </div>
-                <CardTitle className="text-lg" data-testid={`text-year-title-${entry.year}`}>
-                  Liderazgo {entry.year}
-                </CardTitle>
               </CardHeader>
               <CardContent>
                 {entry.leaders.length > 0 ? (

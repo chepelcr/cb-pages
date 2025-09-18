@@ -107,7 +107,7 @@ export default function History() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-muted-foreground" data-testid={`text-milestone-description-${index}`}>
+                    <p className="text-sm text-muted-foreground text-justify" data-testid={`text-milestone-description-${index}`}>
                       {milestone.description}
                     </p>
                   </CardContent>

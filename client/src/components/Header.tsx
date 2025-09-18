@@ -69,7 +69,7 @@ export default function Header({ darkMode, onToggleDarkMode, onAdminClick }: Hea
                 Cuerpo de Banderas
               </h1>
               <p className="text-sm text-muted-foreground" data-testid="text-subtitle">
-                Liceo de Costa Rica - Desde 1951
+                Liceo de Costa Rica
               </p>
             </div>
           </div>

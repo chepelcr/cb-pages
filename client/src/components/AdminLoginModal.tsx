@@ -99,7 +99,7 @@ export default function AdminLoginModal({ isOpen, onOpenChange }: AdminLoginModa
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md" data-testid="modal-admin-login">
+      <DialogContent className="sm:max-w-md bg-background" data-testid="modal-admin-login">
         <DialogHeader className="text-center">
           <div className="mx-auto p-3 bg-primary/10 rounded-full w-fit mb-4">
             <img 

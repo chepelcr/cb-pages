@@ -19,7 +19,7 @@ export default function Hero() {
         <img 
           src={heroImage} 
           alt="Cuerpo de Banderas ceremony" 
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover object-top"
           data-testid="img-hero-background"
         />
         <div className="absolute inset-0 bg-black/40" />

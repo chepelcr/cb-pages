@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Crown, Users, Search, ChevronLeft, ChevronRight } from 'lucide-react';
-import leaderImage from '@assets/generated_images/Honor_guard_leader_portrait_c2aeb102.png';
+import leaderImage from '@assets/image_1758163080578.png';
 
 // todo: remove mock functionality - Historical leadership data from 1951-2022
 const historicalLeadership = [

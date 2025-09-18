@@ -92,8 +92,8 @@ export default function History() {
             {milestones.map((milestone, index) => {
               const IconComponent = milestone.icon;
               return (
-                <Card key={index} className="h-full hover-elevate transition-all duration-300" data-testid={`card-milestone-${milestone.year}`}>
-                  <CardHeader className="pb-4">
+                <Card key={index} className="h-full hover-elevate transition-all duration-300 flex flex-col" data-testid={`card-milestone-${milestone.year}`}>
+                  <CardHeader className="pb-4 flex-shrink-0">
                     <div className="flex items-center gap-3 mb-2">
                       <div className="p-2 bg-primary/10 rounded-lg">
                         <IconComponent className="h-5 w-5 text-primary" />
@@ -102,11 +102,11 @@ export default function History() {
                         {milestone.year}
                       </Badge>
                     </div>
-                    <CardTitle className="text-lg" data-testid={`text-milestone-title-${index}`}>
+                    <CardTitle className="text-lg min-h-[3.5rem] flex items-center" data-testid={`text-milestone-title-${index}`}>
                       {milestone.title}
                     </CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="flex-1 flex items-start">
                     <p className="text-sm text-muted-foreground text-justify" data-testid={`text-milestone-description-${index}`}>
                       {milestone.description}
                     </p>

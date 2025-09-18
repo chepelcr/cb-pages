@@ -1,0 +1,150 @@
+"jefaturas": [
+        {
+            "year": "1951",
+            "leaders": ["Acidos Castrio", "Mario Parra"]
+        },
+        {
+            "year": "1961",
+            "leaders": ["Franklin Perez", "Francisco I. Pastor"]
+        },
+        {
+            "year": "1970 - 1971",
+            "leaders": []
+        },
+        {
+            "year": "1972",
+            "leaders": ["Orlando Gonzalez", "Alberto Lome Mateis"]
+        },
+        {
+            "year": "1973 - 1974",
+            "leaders": ["Gaspar Miranda Ortega", "Galgan I. Miranda O."]
+        },
+        {
+            "year": "1975 - 1976",
+            "leaders": ["Oscar Carvajal", "Gerardo Parez"]
+        },
+        {
+            "year": "1976 - 1978",
+            "leaders": ["Cristian Leon", "Frany Josef Korte"]
+        },
+        {
+            "year": "1978 - 1979",
+            "leaders": ["Cristian Leon", "Frany Josef Korte"]
+        },
+        {
+            "year": "1979 - 1981",
+            "leaders": ["Cristian Leon", "Frany Josef Korte"]
+        },
+        {
+            "year": "1982",
+            "leaders": ["Mauricio Hernandez", "Cristian Leon"]
+        },
+        {
+            "year": "1983 - 1985",
+            "leaders": ["Erica Mata", "Mauricio Hernandez"]
+        },
+        {
+            "year": "1986",
+            "leaders": ["Jose J. Garzon", "Gustavo Segrda"]
+        },
+        {
+            "year": "1986",
+            "leaders": ["Gustavo Segrda", "Erica Mata"]
+        },
+        {
+            "year": "1985 - 1986",
+            "leaders": ["Carlos Maas", "Erick Ortiz"]
+        },
+        {
+            "year": "1986 - 1987",
+            "leaders": ["Carlos Maas", "Jimmy Meza"]
+        },
+        {
+            "year": "1987",
+            "leaders": ["Carlos Maas", "Jimmy Meza"]
+        },
+        {
+            "year": "1987 - 1989",
+            "leaders": ["Raul Cuadra", "Carlos Maas"]
+        },
+        {
+            "year": "1990",
+            "leaders": ["Javier Cedeno", "Ronny Lopez"]
+        },
+        {
+            "year": "1990",
+            "leaders": ["Guillermo Silva", "Ronny Lopez"]
+        },
+        {
+            "year": "1991",
+            "leaders": ["Ramirez Castillo", "Manrique Fungula"]
+        },
+        {
+            "year": "1992 - 1993",
+            "leaders": ["Manrique Fungula", "Oscar Murillo"]
+        },
+        {
+            "year": "1993 - 1994 - 1995",
+            "leaders": ["Manrique Fungula", "Juan R. Bonilla"]
+        },
+        {
+            "year": "1996 - 1997",
+            "leaders": ["Ricardo Alotera", "Jose Pablo Calderon"]
+        },
+        {
+            "year": "1998",
+            "leaders": ["Ifrain Sait", "Warren Aragon"]
+        },
+        {
+            "year": "1999 - 2000 - 2001",
+            "leaders": ["Henry Salajar", "Esteban Cordoba"]
+        },
+        {
+            "year": "2002 - 2003 - 2004",
+            "leaders": ["Guillermo Mejia", "Carlos Andres Sanchez"]
+        },
+        {
+            "year": "2005 - 2006 - 2007",
+            "leaders": ["Edgar Talajar", "Isaac Pena"]
+        },
+        {
+            "year": "2008",
+            "leaders": ["Edgar Salazar", "Adrian Alvarez"]
+        },
+        {
+            "year": "2009",
+            "leaders": ["Ronald Mauricio Izaba", "Jorge Sosa"]
+        },
+        {
+            "year": "2010",
+            "leaders": ["Willy Meza", "Roger Altamirano"]
+        },
+        {
+            "year": "2011 - 2012",
+            "leaders": ["Jesus Cruz", "Eddie Sursing"]
+        },
+        {
+            "year": "2013 - 2014",
+            "leaders": ["Eddie Sursing"]
+        },
+        {
+            "year": "2015",
+            "leaders": ["Sebastian Sedo (No desfiló)"]
+        },
+        {
+            "year": "2015",
+            "leaders": ["Andrey Araya"]
+        },
+        {
+            "year": "2016 - 2017",
+            "leaders": ["Andres Quiros", "Luis Zelaya"]
+        },
+        {
+            "year": "2018 - 2019",
+            "leaders": ["Diego Zelaya"]
+        },
+        {
+            "year": "2020 - 2021 - 2022",
+            "leaders": ["Jouzel"]
+        }
+    ]

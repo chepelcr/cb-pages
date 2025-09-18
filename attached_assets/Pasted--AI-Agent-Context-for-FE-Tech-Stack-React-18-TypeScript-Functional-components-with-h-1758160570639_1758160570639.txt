@@ -1,0 +1,373 @@
+#  AI Agent Context for FE
+
+## Tech Stack
+- **React 18 + TypeScript** - Functional components with hooks
+- **Vite** - Build tool (aliases: @, @shared, @assets)
+- **Wouter** - Client routing
+- **TailwindCSS + shadcn/ui** - Styling and components
+- **React Query** - Server state management
+- **React Hook Form + Zod** - Forms and validation
+- **AWS Amplify** - Cognito authentication
+
+## Project Structure
+```
+client/src/
+├── components/
+│   ├── layout/     # AppLayout, Header, Sidebar
+│   ├── ui/         # shadcn/ui components
+│   ├── auth/       # AuthGuard, login forms
+│   ├── invoices/   # Document management
+│   ├── customers/  # Customer CRUD
+│   ├── products/   # Product catalog
+│   └── common/     # Shared components
+├── contexts/       # Theme, Language providers
+├── hooks/          # Custom React hooks
+├── pages/          # Route components
+├── schemas/        # Zod validation schemas
+└── types/          # TypeScript definitions
+```
+
+## Key Routes
+- `/login`, `/register`, `/verify-email` - Auth flow
+- `/dashboard` - Main dashboard (protected)
+- `/invoices` - Electronic documents (protected)
+- `/customers` - Customer management (protected)
+- `/products` - Product catalog (protected)
+- `/settings` - App configuration (protected)
+
+## Authentication Pattern
+- AWS Cognito via Amplify
+- AuthGuard component wraps protected routes
+- JWT tokens managed by Amplify
+- Multi-step registration with email verification
+
+## State Management
+- **React Query** - Server state, caching, mutations
+- **Zustand** - Client state (if needed)
+- **Context** - Theme (light/dark), Language (EN/ES)
+
+## Form Pattern
+```typescript
+// Standard form setup
+const form = useForm<FormData>({
+  resolver: zodResolver(schema),
+  defaultValues: {...}
+});
+```
+
+## API Integration
+- Axios for HTTP requests
+- React Query for data fetching
+- Base URL: `/api` (proxied to server)
+
+## Styling Guidelines
+- Use TailwindCSS utility classes
+- shadcn/ui components for consistency
+- Responsive design (mobile-first)
+- Dark/light theme support
+
+## Development Commands
+```bash
+npm run dev      # Start dev server
+npm run build    # Production build
+npm run check    # TypeScript check
+```
+
+## Component Patterns
+- Functional components with hooks
+- Props interfaces with TypeScript
+- Error boundaries for fault tolerance
+- Loading states and error handling
+- Accessibility (ARIA attributes)
+
+## Key Features
+- Electronic invoice management
+- Customer/product CRUD operations
+- Multi-language support (EN/ES)
+- Real-time document validation
+- PDF generation and viewing
+- Responsive design
+
+## Form Design Patterns
+
+### Progressive Disclosure Pattern
+Forms use a progressive disclosure pattern where sections are conditionally shown/expanded based on user input:
+
+**Customer Forms:**
+- Personal data section always visible and expanded
+- Location and contact sections only expand when business name is validated (Costa Rica) or nationality is non-Costa Rican
+- Uses `disabled` prop to control section visibility and expansion
+
+**Product Forms:**
+- Fiscal information section always visible for CABYS selection
+- All other sections only expand when CABYS is selected (`shouldShowSections = !!cabys && cabys.length > 0`)
+- Uses consistent `disabled={!shouldShowSections}` pattern
+
+### Section Component Structure
+Each form section follows this pattern:
+```typescript
+interface SectionProps {
+  form: any;
+  disabled?: boolean;
+  // other specific props
+}
+
+export function Section({ form, disabled = false, ...props }) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  
+  // Auto-expand when enabled
+  useEffect(() => {
+    if (!disabled) {
+      setIsExpanded(true);
+    } else {
+      setIsExpanded(false);
+    }
+  }, [disabled]);
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Icon className="h-5 w-5" />
+            Title
+          </div>
+          <Button onClick={() => setIsExpanded(!isExpanded)} disabled={disabled}>
+            <Eye className="h-4 w-4" />
+          </Button>
+        </CardTitle>
+      </CardHeader>
+      <div className={`transition-all duration-300 ease-in-out overflow-hidden ${
+        isExpanded ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
+      }`}>
+        <CardContent>
+          {/* Section content */}
+        </CardContent>
+      </div>
+    </Card>
+  );
+}
+```
+
+### Dynamic List Components Pattern
+For components that manage lists (taxes, discounts, codes):
+
+**Header with Add Controls:**
+```typescript
+<CardHeader>
+  <div className="space-y-3">
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+      <CardTitle className="flex items-center gap-2">
+        <Icon className="h-4 w-4"/>
+        Title
+      </CardTitle>
+      <div className="flex items-center gap-2">
+        <span className="text-sm">Total: ₡{total.toFixed(2)}</span>
+        <Select value={selectedItem} onValueChange={setSelectedItem} disabled={disabled}>
+          <SelectTrigger className="w-48">
+            <SelectValue placeholder="Add item" />
+          </SelectTrigger>
+          <SelectContent>
+            {availableItems.map((item) => (
+              <SelectItem key={item.id} value={item.id.toString()}>
+                {item.description}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Button size="sm" onClick={addItem} disabled={!selectedItem || disabled}>
+          <Plus className="h-4 w-4"/>
+        </Button>
+        <Button size="sm" variant="outline" onClick={() => setIsExpanded(!isExpanded)}>
+          <Eye className="h-4 w-4" />
+        </Button>
+      </div>
+    </div>
+  </div>
+</CardHeader>
+```
+
+**Individual Item Cards:**
+```typescript
+{items.map((item, index) => (
+  <Card key={index}>
+    <CardHeader>
+      <div className="flex items-center justify-between">
+        <CardTitle className="text-base">{item.name}</CardTitle>
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2">
+            <Label>Amount</Label>
+            <Input value={`₡${calculateAmount(item).toFixed(2)}`} disabled className="w-32"/>
+          </div>
+          <Button type="button" variant="destructive" size="sm" onClick={() => removeItem(index)}>
+            <Trash2 className="h-4 w-4"/>
+          </Button>
+        </div>
+      </div>
+    </CardHeader>
+    <CardContent>
+      {/* Item-specific fields */}
+    </CardContent>
+  </Card>
+))}
+```
+
+### Validation and Auto-Population
+- **Customer forms:** Auto-populate business name from Hacienda API when valid Costa Rican ID is entered
+- **Product forms:** Auto-create IVA tax when CABYS is selected, with suggested tax rate
+- **Conditional validation:** Sections only validate when visible/enabled
+- **Progressive validation:** Earlier sections must be valid before later sections become available
+
+### Responsive Design
+- Mobile-first approach with `sm:` breakpoints
+- Flexible layouts that stack on mobile
+- Consistent spacing and typography
+- Touch-friendly button sizes and spacing
+
+## Implementation Guidelines for New Modules
+
+### Form Module Structure
+When creating new form modules, follow this structure:
+
+```
+module/
+├── ModuleForm.tsx          # Main form component
+├── ModuleList.tsx          # List/table component
+├── ModuleModal.tsx         # Modal wrapper
+├── ModuleDeleteModal.tsx   # Delete confirmation
+└── sections/
+    ├── BasicInfoSection.tsx    # Always visible section
+    ├── DetailSection.tsx      # Conditional section
+    └── DynamicListSection.tsx # List management section
+```
+
+### Progressive Disclosure Implementation
+1. **Identify trigger field** - What field enables other sections (like CABYS for products, businessName for customers)
+2. **Set shouldShowSections** - `const shouldShowSections = !!triggerField && triggerField.length > 0`
+3. **Pass disabled prop** - `disabled={!shouldShowSections}` to conditional sections
+4. **Auto-expand logic** - Sections expand when enabled, collapse when disabled
+
+### Dynamic List Section Checklist
+- [ ] Dropdown selection before adding items
+- [ ] Individual cards for each item
+- [ ] Amount/total display in header
+- [ ] Remove button in each card header
+- [ ] Grid layout for item fields
+- [ ] Expansion/collapse functionality
+- [ ] Empty state message
+
+### API Integration Pattern
+```typescript
+// In main form component
+const { data: referenceData } = useQuery({
+  queryKey: ['referenceData', user?.id],
+  queryFn: async () => await api.getReferenceData(),
+  enabled: !!user?.id,
+});
+
+// Auto-population on trigger field change
+useEffect(() => {
+  if (triggerValue && referenceData.length > 0) {
+    // Auto-create default entries
+    // Set suggested values
+  }
+}, [triggerValue, referenceData]);
+```
+
+### Validation Strategy
+- Use Zod schemas for form validation
+- Implement progressive validation (sections validate only when visible)
+- Auto-populate from external APIs when possible
+- Show validation errors inline
+- Disable form submission until required sections are complete
+
+### Internationalization Requirements
+**MANDATORY for all new modules and components:**
+
+1. **No Hardcoded Text**: Never use hardcoded Spanish or English text in components
+2. **Translation Keys**: All user-facing text must use translation keys via `useLanguage()` hook
+3. **Translation Pattern**: 
+   ```typescript
+   import { useLanguage } from '@/contexts/LanguageContext';
+   
+   export function MyComponent() {
+     const { t } = useLanguage();
+     return <div>{t('module.key')}</div>;
+   }
+   ```
+
+4. **Key Naming Convention**:
+   - Format: `module.category.element` (e.g., `customers.form.fullName`)
+   - Use descriptive, hierarchical keys
+   - Group related translations under same prefix
+
+5. **Required Translations**: Add both English and Spanish translations to `LanguageContext.tsx`
+6. **Error Messages**: Use translation keys for all error messages and API responses
+7. **Placeholders**: Translate all input placeholders and form hints
+8. **Dynamic Content**: Use translation functions for computed text (e.g., status messages)
+9. **Accessibility**: Ensure ARIA labels and screen reader text are translated
+10. **Testing**: Verify functionality in both languages before deployment
+
+**Translation Categories to Always Include:**
+- Form labels and placeholders
+- Button text and actions
+- Status messages and notifications
+- Error messages and validation text
+- Modal titles and descriptions
+- Table headers and empty states
+- Loading and success messages
+
+### Exception Messages Management
+**Pattern for handling API error messages with translations:**
+
+1. **Create Exception Constants File**:
+```typescript
+// types/moduleExceptions.ts
+export const ModuleExceptionCodes = {
+  "001": "errors.moduleError1",
+  "002": "errors.moduleError2",
+  // ... more error codes
+} as const;
+
+export const getModuleErrorMessage = (code: string, t: (key: string) => string): string => {
+  const translationKey = ModuleExceptionCodes[code as keyof typeof ModuleExceptionCodes];
+  return translationKey ? t(translationKey) : t("errors.unknownError");
+};
+```
+
+2. **Add Translations to LanguageContext**:
+```typescript
+// English
+'errors.moduleError1': 'Specific error message',
+'errors.unknownError': 'An unknown error occurred',
+
+// Spanish  
+'errors.moduleError1': 'Mensaje de error específico',
+'errors.unknownError': 'Ha ocurrido un error desconocido',
+```
+
+3. **Usage in Components**:
+```typescript
+import { getModuleErrorMessage } from '@/types/moduleExceptions';
+import { useLanguage } from '@/contexts/LanguageContext';
+
+const { t } = useLanguage();
+
+// In error handling
+const errorMessage = error?.message 
+  ? getModuleErrorMessage(error.message, t) 
+  : t('module.defaultError');
+
+toast({
+  title: t('common.error'),
+  description: errorMessage,
+  variant: "destructive",
+});
+```
+
+### Consistent Styling Classes
+- Cards: `<Card>` with `<CardHeader>` and `<CardContent>`
+- Buttons: `size="sm"` for actions, `variant="outline"` for secondary
+- Icons: `h-4 w-4` for buttons, `h-5 w-5` for section headers
+- Spacing: `space-y-4` for sections, `gap-2` for button groups
+- Grid: `grid-cols-1 sm:grid-cols-2` for responsive layouts

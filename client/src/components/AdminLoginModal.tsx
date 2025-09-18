@@ -26,70 +26,31 @@ export default function AdminLoginModal({ isOpen, onOpenChange }: AdminLoginModa
     e.preventDefault();
     setIsLoading(true);
     
-    console.log('Admin login attempt via AWS Amplify:', { email, password: '***' });
+    console.log('Admin login attempt - Development mode');
     
     try {
-      // Authenticate with AWS Amplify
-      const authResult = await signIn({
-        username: email,
-        password: password,
+      // For development purposes - simple login success
+      // TODO: Replace with AWS Amplify authentication in production
+      
+      // Simulate loading time
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      toast({
+        title: "¡Acceso autorizado!",
+        description: "Bienvenido al panel administrativo del Cuerpo de Banderas (Modo Desarrollo)",
       });
-
-      console.log('Amplify authentication result:', authResult);
-
-      // After successful Amplify login, call profile endpoint
-      if (authResult.isSignedIn) {
-        // Get authenticated user and session for proper user ID and token
-        const currentUser = await getCurrentUser();
-        const session = await fetchAuthSession();
-        const userId = currentUser.userId; // Proper Cognito user ID (sub)
-        const idToken = session.tokens?.idToken?.toString();
-        
-        // Call backend profile endpoint with authentication
-        const response = await fetch(`/api/users/${userId}/profile`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${idToken}`,
-          },
-        });
-
-        if (response.ok) {
-          const userProfile = await response.json();
-          toast({
-            title: "¡Acceso autorizado!",
-            description: `Bienvenido ${userProfile.firstName || userProfile.userName}`,
-          });
-          console.log('User profile loaded:', userProfile);
-          onOpenChange(false);
-          setEmail('');
-          setPassword('');
-        } else {
-          // If profile doesn't exist, that's OK for now
-          toast({
-            title: "¡Acceso autorizado!",
-            description: "Bienvenido al panel administrativo del Cuerpo de Banderas",
-          });
-          onOpenChange(false);
-          setEmail('');
-          setPassword('');
-        }
-      }
+      
+      console.log('Development login successful');
+      onOpenChange(false);
+      setEmail('');
+      setPassword('');
+      
     } catch (error: any) {
       console.error('Login error:', error);
       
-      let errorMessage = "Error de autenticación";
-      if (error.name === 'NotAuthorizedException') {
-        errorMessage = "Credenciales inválidas";
-      } else if (error.name === 'UserNotConfirmedException') {
-        errorMessage = "Usuario no confirmado. Verifique su email.";
-      } else if (error.message) {
-        errorMessage = error.message;
-      }
-      
       toast({
         title: "Error de autenticación",
-        description: errorMessage,
+        description: "Error inesperado en el sistema",
         variant: "destructive",
       });
     } finally {
@@ -173,21 +134,20 @@ export default function AdminLoginModal({ isOpen, onOpenChange }: AdminLoginModa
               </Button>
             </form>
             
-            <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800">
-              <Badge variant="outline" className="mb-2 border-blue-500 text-blue-700 dark:text-blue-300">
-                🔧 AWS Amplify Setup Required
+            <div className="mt-6 p-4 bg-green-50 dark:bg-green-950 rounded-lg border border-green-200 dark:border-green-800">
+              <Badge variant="outline" className="mb-2 border-green-500 text-green-700 dark:text-green-300">
+                🚀 Modo Desarrollo Activo
               </Badge>
-              <p className="text-sm text-blue-700 dark:text-blue-300 mb-2">
-                <strong>Authentication flow configured:</strong>
+              <p className="text-sm text-green-700 dark:text-green-300 mb-2">
+                <strong>Acceso de desarrollo habilitado:</strong>
               </p>
-              <ul className="text-xs text-blue-600 dark:text-blue-400 space-y-1">
-                <li>• 🔧 AWS Amplify frontend authentication</li>
-                <li>• 🔧 JWT token backend verification</li>
-                <li>• 🔧 Profile endpoint with proper auth</li>
-                <li>• 📧 Email verification available</li>
+              <ul className="text-xs text-green-600 dark:text-green-400 space-y-1">
+                <li>• ✅ Ingrese cualquier email y contraseña</li>
+                <li>• ✅ Acceso inmediato al panel de administración</li>
+                <li>• ⏳ AWS Amplify configurado para producción futura</li>
               </ul>
-              <p className="text-xs text-blue-500 dark:text-blue-400 mt-2">
-                <em>Note: Requires AWS Cognito configuration</em>
+              <p className="text-xs text-green-500 dark:text-green-400 mt-2">
+                <em>Ideal para desarrollo y pruebas</em>
               </p>
             </div>
           </CardContent>

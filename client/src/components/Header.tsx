@@ -77,11 +77,11 @@ export default function Header({ darkMode, onToggleDarkMode, onAdminClick }: Hea
                 data-testid="logo-cb" 
               />
             </div>
-            <div className="hidden sm:block">
-              <h1 className="text-xl font-bold text-foreground" data-testid="text-title">
+            <div>
+              <h1 className="text-lg sm:text-xl font-bold text-foreground" data-testid="text-title">
                 Cuerpo de Banderas
               </h1>
-              <p className="text-sm text-muted-foreground" data-testid="text-subtitle">
+              <p className="text-xs sm:text-sm text-muted-foreground" data-testid="text-subtitle">
                 Liceo de Costa Rica
               </p>
             </div>
@@ -106,7 +106,7 @@ export default function Header({ darkMode, onToggleDarkMode, onAdminClick }: Hea
                   <ChevronDown className="ml-1 h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent>
+              <DropdownMenuContent className="bg-background border border-border shadow-lg">
                 {historyItems.map((item) => (
                   <DropdownMenuItem
                     key={item.label}
@@ -127,7 +127,7 @@ export default function Header({ darkMode, onToggleDarkMode, onAdminClick }: Hea
                   <ChevronDown className="ml-1 h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent>
+              <DropdownMenuContent className="bg-background border border-border shadow-lg">
                 {multimediaItems.map((item) => (
                   <DropdownMenuItem
                     key={item.label}

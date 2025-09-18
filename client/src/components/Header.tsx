@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Menu, X, Shield, Sun, Moon } from 'lucide-react';
 import { Card } from '@/components/ui/card';
+import { useLocation } from 'wouter';
 
 interface HeaderProps {
   darkMode: boolean;
@@ -11,6 +12,7 @@ interface HeaderProps {
 
 export default function Header({ darkMode, onToggleDarkMode, onAdminClick }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [location, navigate] = useLocation();
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -20,12 +22,31 @@ export default function Header({ darkMode, onToggleDarkMode, onAdminClick }: Hea
     setMobileMenuOpen(false);
   };
 
+  const handleNavigation = (path: string, sectionId?: string) => {
+    if (path === '/' && location === '/') {
+      // If we're already on home page, scroll to section
+      if (sectionId) {
+        scrollToSection(sectionId);
+      }
+    } else if (path === '/' && sectionId) {
+      // Navigate to home page then scroll to section
+      navigate('/');
+      setTimeout(() => {
+        scrollToSection(sectionId);
+      }, 100);
+    } else {
+      // Navigate to different page
+      navigate(path);
+    }
+    setMobileMenuOpen(false);
+  };
+
   const menuItems = [
-    { label: 'Inicio', action: () => scrollToSection('home') },
-    { label: 'Historia', action: () => scrollToSection('history') },
-    { label: 'Liderazgo', action: () => scrollToSection('leadership') },
-    { label: 'Galería', action: () => scrollToSection('gallery') },
-    { label: 'Contacto', action: () => scrollToSection('contact') }
+    { label: 'Inicio', action: () => handleNavigation('/', 'home') },
+    { label: 'Historia', action: () => handleNavigation('/', 'history') },
+    { label: 'Liderazgo', action: () => handleNavigation('/liderazgo') },
+    { label: 'Galería', action: () => handleNavigation('/', 'gallery') },
+    { label: 'Contacto', action: () => handleNavigation('/', 'contact') }
   ];
 
   return (

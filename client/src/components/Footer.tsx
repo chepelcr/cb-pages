@@ -2,8 +2,11 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Shield, Facebook, Instagram, Youtube, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useLocation } from 'wouter';
 
 export default function Footer() {
+  const [location, navigate] = useLocation();
+
   const handleSocialClick = (platform: string) => {
     console.log(`Social media clicked: ${platform}`);
     // todo: remove mock functionality - Add real social media links
@@ -13,6 +16,31 @@ export default function Footer() {
     console.log(`Footer contact clicked: ${type}`);
     if (type === 'email') {
       window.open('mailto:cuerpo.banderas@liceocostarica.ed.cr');
+    }
+  };
+
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleNavigation = (path: string, sectionId?: string) => {
+    if (path === '/' && location === '/') {
+      // If we're already on home page, scroll to section
+      if (sectionId) {
+        scrollToSection(sectionId);
+      }
+    } else if (path === '/' && sectionId) {
+      // Navigate to home page then scroll to section
+      navigate('/');
+      setTimeout(() => {
+        scrollToSection(sectionId);
+      }, 100);
+    } else {
+      // Navigate to different page
+      navigate(path);
     }
   };
 
@@ -49,20 +77,20 @@ export default function Footer() {
             </h4>
             <nav className="space-y-2">
               {[
-                { label: 'Inicio', id: 'home' },
-                { label: 'Historia', id: 'history' },
-                { label: 'Liderazgo', id: 'leadership' },
-                { label: 'Galería', id: 'gallery' },
-                { label: 'Contacto', id: 'contact' }
+                { label: 'Inicio', path: '/', sectionId: 'home' },
+                { label: 'Historia', path: '/', sectionId: 'history' },
+                { label: 'Liderazgo', path: '/liderazgo' },
+                { label: 'Galería', path: '/', sectionId: 'gallery' },
+                { label: 'Contacto', path: '/', sectionId: 'contact' }
               ].map((link) => (
                 <button
-                  key={link.id}
+                  key={link.path + (link.sectionId || '')}
                   onClick={() => {
-                    document.getElementById(link.id)?.scrollIntoView({ behavior: 'smooth' });
+                    handleNavigation(link.path, link.sectionId);
                     console.log(`Footer link clicked: ${link.label}`);
                   }}
                   className="block text-muted-foreground hover:text-primary transition-colors text-sm"
-                  data-testid={`link-footer-${link.id}`}
+                  data-testid={`link-footer-${link.sectionId || link.path.replace('/', '')}`}
                 >
                   {link.label}
                 </button>

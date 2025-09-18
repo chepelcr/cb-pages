@@ -135,23 +135,25 @@ export default function AdminLoginModal({ isOpen, onOpenChange }: AdminLoginModa
               
               <div className="space-y-2">
                 <Label htmlFor="password">Contraseña</Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Ingrese su contraseña"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="pl-10 pr-12"
-                    data-testid="input-admin-password"
-                    disabled={isLoading}
-                  />
+                <div className="flex">
+                  <div className="relative flex-1">
+                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="password"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Ingrese su contraseña"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="pl-10 rounded-r-none border-r-0"
+                      data-testid="input-admin-password"
+                      disabled={isLoading}
+                    />
+                  </div>
                   <Button
                     type="button"
-                    variant="ghost"
+                    variant="outline"
                     size="icon"
-                    className="absolute right-1 top-1/2 transform -translate-y-1/2 h-9 w-9 p-0"
+                    className="rounded-l-none border-l-0"
                     onClick={() => setShowPassword(!showPassword)}
                     data-testid="button-toggle-password"
                     disabled={isLoading}

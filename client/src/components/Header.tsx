@@ -66,29 +66,29 @@ export default function Header({ darkMode, onToggleDarkMode, onAdminClick }: Hea
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-14 landscape:h-12">
           {/* Logo and Title */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 md:gap-3 min-w-0 flex-1">
             <div className="flex-shrink-0">
               <img 
                 src={cbLogo} 
                 alt="Cuerpo de Banderas Logo" 
-                className="h-10 w-10 object-contain"
+                className="h-8 w-8 md:h-10 md:w-10 object-contain landscape:h-7 landscape:w-7"
                 data-testid="logo-cb" 
               />
             </div>
-            <div>
-              <h1 className="text-lg sm:text-xl font-bold text-foreground" data-testid="text-title">
+            <div className="min-w-0 flex-1">
+              <h1 className="text-sm md:text-lg lg:text-xl font-bold text-foreground truncate landscape:text-xs" data-testid="text-title">
                 Cuerpo de Banderas
               </h1>
-              <p className="text-xs sm:text-sm text-muted-foreground" data-testid="text-subtitle">
+              <p className="text-xs md:text-sm text-muted-foreground truncate landscape:text-[10px] landscape:leading-3" data-testid="text-subtitle">
                 Liceo de Costa Rica
               </p>
             </div>
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="hidden md:flex items-center space-x-4 lg:space-x-8 flex-shrink-0">
             <Button
               variant="ghost"
               className="hover-elevate"
@@ -151,22 +151,22 @@ export default function Header({ darkMode, onToggleDarkMode, onAdminClick }: Hea
           </nav>
 
           {/* Right side buttons */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 md:gap-2 flex-shrink-0">
             <Button
               variant="ghost"
               size="icon"
               onClick={onToggleDarkMode}
-              className="hover-elevate"
+              className="hover-elevate h-8 w-8 md:h-9 md:w-9"
               data-testid="button-theme-toggle"
             >
-              {darkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+              {darkMode ? <Sun className="h-3 w-3 md:h-4 md:w-4" /> : <Moon className="h-3 w-3 md:h-4 md:w-4" />}
             </Button>
             
             <Button
               variant="outline"
               size="sm"
               onClick={onAdminClick}
-              className="hidden sm:inline-flex hover-elevate"
+              className="hidden sm:inline-flex hover-elevate text-xs md:text-sm px-2 md:px-3 h-8 md:h-9"
               data-testid="button-admin"
             >
               Admin
@@ -176,11 +176,11 @@ export default function Header({ darkMode, onToggleDarkMode, onAdminClick }: Hea
             <Button
               variant="ghost"
               size="icon"
-              className="md:hidden hover-elevate"
+              className="md:hidden hover-elevate h-8 w-8"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               data-testid="button-mobile-menu"
             >
-              {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+              {mobileMenuOpen ? <X className="h-3 w-3" /> : <Menu className="h-3 w-3" />}
             </Button>
           </div>
         </div>

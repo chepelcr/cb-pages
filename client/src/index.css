@@ -14,13 +14,13 @@
   --elevate-1: rgba(0,0,0, .03);
   --elevate-2: rgba(0,0,0, .08);
 
-  --background: #f0f0f0;
+  --background: 0 0% 94%;
 
-  --foreground: #1a1a1a;
+  --foreground: 0 0% 10%;
 
-  --border: #e8e8e8;
+  --border: 0 0% 91%;
 
-  --card: #fcfcfc;
+  --card: 0 0% 99%;
 
   --card-foreground: 0 0% 0%;
 
@@ -48,27 +48,27 @@
 
   --popover-border: 0 0% 85%;
 
-  --primary: #eb1a4e;
+  --primary: 9 75% 61%;
 
-  --primary-foreground: #ffffff;
+  --primary-foreground: 0 0% 100%;
 
-  --secondary: #c4c4c4;
+  --secondary: 0 0% 77%;
 
-  --secondary-foreground: #1a1a1a;
+  --secondary-foreground: 0 0% 10%;
 
-  --muted: #e3e3e3;
+  --muted: 0 0% 89%;
 
-  --muted-foreground: #212121;
+  --muted-foreground: 0 0% 13%;
 
   --accent: 0 0% 100%;
 
   --accent-foreground: 0 0% 10.2%;
 
-  --destructive: 0 0% 0%;
+  --destructive: 0 85% 60%;
 
-  --destructive-foreground: #ffffff;
+  --destructive-foreground: 0 0% 100%;
 
-  --input: #b5b5b5;
+  --input: 0 0% 71%;
   --ring: 0 0% 41.96%;
   --chart-1: 203.8863 88.2845% 53.1373%;
   --chart-2: 159.7826 100% 36.0784%;

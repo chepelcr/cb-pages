@@ -64,7 +64,7 @@ export default function Header({ darkMode, onToggleDarkMode, onAdminClick }: Hea
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
+    <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo and Title */}
@@ -106,7 +106,7 @@ export default function Header({ darkMode, onToggleDarkMode, onAdminClick }: Hea
                   <ChevronDown className="ml-1 h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="bg-background border border-border shadow-lg">
+              <DropdownMenuContent className="bg-popover border-popover-border shadow-lg">
                 {historyItems.map((item) => (
                   <DropdownMenuItem
                     key={item.label}
@@ -127,7 +127,7 @@ export default function Header({ darkMode, onToggleDarkMode, onAdminClick }: Hea
                   <ChevronDown className="ml-1 h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="bg-background border border-border shadow-lg">
+              <DropdownMenuContent className="bg-popover border-popover-border shadow-lg">
                 {multimediaItems.map((item) => (
                   <DropdownMenuItem
                     key={item.label}

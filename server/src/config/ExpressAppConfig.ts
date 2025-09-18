@@ -30,6 +30,11 @@ export class ExpressAppConfig {
         // CORS configuration
         this.app.use(cors({
             origin: (origin, callback) => {
+                // In development, be permissive for Vite and local development
+                if (process.env.NODE_ENV === 'development') {
+                    return callback(null, true);
+                }
+                
                 const allowedOrigins = this._getAllowedOrigins();
                 
                 // Allow requests with no origin (mobile apps, Postman, etc.)
@@ -41,7 +46,7 @@ export class ExpressAppConfig {
                 }
                 
                 // Allow Capacitor origins (starts with capacitor:// or ionic://)
-                if (origin.startsWith('capacitor://') || origin.startsWith('ionic://')) {
+                if (origin && (origin.startsWith('capacitor://') || origin.startsWith('ionic://'))) {
                     return callback(null, true);
                 }
                 

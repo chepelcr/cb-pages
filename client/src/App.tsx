@@ -56,7 +56,7 @@ function Router() {
       <Switch>
         <Route path="/" component={HomePage} />
         <Route path="/historia" component={HistoryPage} />
-        <Route path="/liderazgo" component={LeadershipPage} />
+        <Route path="/jefaturas" component={LeadershipPage} />
         <Route path="/escudos" component={ShieldsPage} />
         <Route path="/galeria" component={GalleryPage} />
         <Route component={NotFound} />

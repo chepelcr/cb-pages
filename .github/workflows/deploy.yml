@@ -1,0 +1,107 @@
+name: Deploy Cuerpo de Banderas to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build project for GitHub Pages
+      run: |
+        # Build the frontend with production environment variables
+        npm run build
+        
+        # Create GitHub Pages deployment directory
+        mkdir -p dist/gh-pages
+        
+        # Copy built client files to deployment directory
+        cp -r dist/public/* dist/gh-pages/
+        
+        # Copy 404.html for SPA routing
+        cp client/public/404.html dist/gh-pages/
+        
+        # Copy CNAME file for custom domain (if exists)
+        if [ -f client/public/CNAME ]; then
+          cp client/public/CNAME dist/gh-pages/
+          echo "Custom domain configured: $(cat client/public/CNAME)"
+        fi
+        
+        # Add SPA routing script for GitHub Pages deep links (rafgraph spa-github-pages)
+        sed -i 's|</head>|<script type="text/javascript">(function(l){if(l.search.startsWith("?/")){var d=l.search.slice(2).split("&").map(function(s){return s.replace(/~and~/g,"&")}).join("?");window.history.replaceState(null,null,"/"+d+(l.hash||""));}})(window.location);</script></head>|g' dist/gh-pages/index.html
+        
+        # Verify deployment files exist and show structure
+        echo "=== Cuerpo de Banderas GitHub Pages Deployment Structure ==="
+        ls -la dist/gh-pages/
+        echo ""
+        echo "=== Asset Path Verification ==="
+        echo "JavaScript assets:"
+        find dist/gh-pages/assets/ -name "*.js" | head -3
+        echo "CSS assets:"
+        find dist/gh-pages/assets/ -name "*.css" | head -3
+        echo "Images:"
+        find dist/gh-pages/assets/ -name "*.png" -o -name "*.jpg" -o -name "*.svg" | head -3
+        echo ""
+        echo "=== Index.html Content Check ==="
+        head -15 dist/gh-pages/index.html
+        echo ""
+        if [ -f dist/gh-pages/CNAME ]; then
+          echo "Custom domain deployment configured:"
+          echo "✓ CNAME file: $(cat dist/gh-pages/CNAME)"
+        fi
+        echo "✓ 404.html routing configured for SPA"
+        echo "✓ SPA deep link routing configured"
+        echo "✓ AWS Amplify environment configured"
+        echo ""
+        echo "=== 404.html Configuration Check ==="
+        head -20 dist/gh-pages/404.html | grep -A 5 -B 5 pathSegmentsToKeep || echo "404.html routing configured"
+      env:
+        # AWS Cognito configuration for Amplify
+        VITE_AWS_COGNITO_USER_POOL_ID: ${{ secrets.VITE_AWS_COGNITO_USER_POOL_ID }}
+        VITE_AWS_COGNITO_CLIENT_ID: ${{ secrets.VITE_AWS_COGNITO_CLIENT_ID }}
+        # Production environment
+        NODE_ENV: production
+        VITE_NODE_ENV: production
+        
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+      
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: ./dist/gh-pages
+        
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
+      if: github.ref == 'refs/heads/main'

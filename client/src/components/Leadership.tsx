@@ -3,7 +3,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { Crown, Users, Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from '@/components/ui/select';
+import { Crown, Users, Search, ChevronLeft, ChevronRight, ArrowUpDown } from 'lucide-react';
 import leaderImage from '@assets/image_1758163080578.png';
 
 // todo: remove mock functionality - Historical leadership data from 1951-2022
@@ -50,15 +57,28 @@ const historicalLeadership = [
 export default function Leadership() {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const itemsPerPage = 9;
 
-  // Filter leadership data based on search
-  const filteredData = historicalLeadership.filter(entry => 
-    entry.year.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    entry.leaders.some(leader => 
-      leader.toLowerCase().includes(searchTerm.toLowerCase())
+  // Function to extract the first year from year string for sorting
+  const getFirstYear = (yearString: string): number => {
+    const yearMatch = yearString.match(/\d{4}/);
+    return yearMatch ? parseInt(yearMatch[0]) : 0;
+  };
+
+  // Filter and sort leadership data
+  const filteredData = historicalLeadership
+    .filter(entry => 
+      entry.year.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      entry.leaders.some(leader => 
+        leader.toLowerCase().includes(searchTerm.toLowerCase())
+      )
     )
-  );
+    .sort((a, b) => {
+      const yearA = getFirstYear(a.year);
+      const yearB = getFirstYear(b.year);
+      return sortOrder === 'asc' ? yearA - yearB : yearB - yearA;
+    });
 
   // Pagination
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
@@ -69,6 +89,12 @@ export default function Leadership() {
     setSearchTerm(value);
     setCurrentPage(1);
     console.log('Searching for:', value);
+  };
+
+  const handleSortChange = (order: 'asc' | 'desc') => {
+    setSortOrder(order);
+    setCurrentPage(1);
+    console.log('Sorting by year:', order);
   };
 
   return (
@@ -126,18 +152,39 @@ export default function Leadership() {
           </div>
         </Card>
 
-        {/* Search */}
-        <div className="mb-8 max-w-md mx-auto">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="text"
-              placeholder="Buscar por año o nombre..."
-              value={searchTerm}
-              onChange={(e) => handleSearch(e.target.value)}
-              className="pl-10"
-              data-testid="input-leadership-search"
-            />
+        {/* Search and Sort Controls */}
+        <div className="mb-8 max-w-4xl mx-auto">
+          <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
+            {/* Search Input */}
+            <div className="relative flex-1 max-w-md">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="text"
+                placeholder="Buscar por año o nombre..."
+                value={searchTerm}
+                onChange={(e) => handleSearch(e.target.value)}
+                className="pl-10"
+                data-testid="input-leadership-search"
+              />
+            </div>
+            
+            {/* Sort Control */}
+            <div className="flex items-center gap-2">
+              <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
+              <Select value={sortOrder} onValueChange={handleSortChange}>
+                <SelectTrigger className="w-40" data-testid="select-sort-order">
+                  <SelectValue placeholder="Ordenar por año" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="asc" data-testid="option-sort-asc">
+                    Año ascendente
+                  </SelectItem>
+                  <SelectItem value="desc" data-testid="option-sort-desc">
+                    Año descendente
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </div>
 

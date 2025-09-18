@@ -143,15 +143,15 @@ export default function AdminLoginModal({ isOpen, onOpenChange }: AdminLoginModa
                     placeholder="Ingrese su contraseña"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="pl-10 pr-10"
+                    className="pl-10 pr-12"
                     data-testid="input-admin-password"
                     disabled={isLoading}
                   />
                   <Button
                     type="button"
                     variant="ghost"
-                    size="sm"
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 z-10"
+                    size="icon"
+                    className="absolute right-1 top-1/2 transform -translate-y-1/2 h-9 w-9 p-0"
                     onClick={() => setShowPassword(!showPassword)}
                     data-testid="button-toggle-password"
                     disabled={isLoading}

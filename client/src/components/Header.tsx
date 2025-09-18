@@ -1,7 +1,13 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Menu, X, Shield, Sun, Moon } from 'lucide-react';
+import { Menu, X, Shield, Sun, Moon, ChevronDown } from 'lucide-react';
 import { Card } from '@/components/ui/card';
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger 
+} from '@/components/ui/dropdown-menu';
 import { useLocation } from 'wouter';
 import cbLogo from '@assets/cb logo_1758164197769.png';
 
@@ -42,12 +48,18 @@ export default function Header({ darkMode, onToggleDarkMode, onAdminClick }: Hea
     setMobileMenuOpen(false);
   };
 
-  const menuItems = [
-    { label: 'Inicio', action: () => handleNavigation('/', 'home') },
+  const historyItems = [
     { label: 'Historia', action: () => handleNavigation('/', 'history') },
-    { label: 'Liderazgo', action: () => handleNavigation('/liderazgo') },
+    { label: 'Liderazgo', action: () => handleNavigation('/liderazgo') }
+  ];
+
+  const multimediaItems = [
     { label: 'Escudos', action: () => handleNavigation('/escudos') },
-    { label: 'Galería', action: () => handleNavigation('/galeria') },
+    { label: 'Galería', action: () => handleNavigation('/galeria') }
+  ];
+
+  const directMenuItems = [
+    { label: 'Inicio', action: () => handleNavigation('/', 'home') },
     { label: 'Contacto', action: () => handleNavigation('/', 'contact') }
   ];
 
@@ -77,17 +89,65 @@ export default function Header({ darkMode, onToggleDarkMode, onAdminClick }: Hea
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            {menuItems.map((item) => (
-              <Button
-                key={item.label}
-                variant="ghost"
-                className="hover-elevate"
-                onClick={item.action}
-                data-testid={`link-${item.label.toLowerCase()}`}
-              >
-                {item.label}
-              </Button>
-            ))}
+            <Button
+              variant="ghost"
+              className="hover-elevate"
+              onClick={directMenuItems[0].action}
+              data-testid="link-inicio"
+            >
+              {directMenuItems[0].label}
+            </Button>
+
+            {/* Historia Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="hover-elevate" data-testid="dropdown-historia">
+                  Nuestra Historia
+                  <ChevronDown className="ml-1 h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                {historyItems.map((item) => (
+                  <DropdownMenuItem
+                    key={item.label}
+                    onClick={item.action}
+                    data-testid={`dropdown-item-${item.label.toLowerCase()}`}
+                  >
+                    {item.label}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* Multimedia Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="hover-elevate" data-testid="dropdown-multimedia">
+                  Multimedia
+                  <ChevronDown className="ml-1 h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                {multimediaItems.map((item) => (
+                  <DropdownMenuItem
+                    key={item.label}
+                    onClick={item.action}
+                    data-testid={`dropdown-item-${item.label.toLowerCase()}`}
+                  >
+                    {item.label}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <Button
+              variant="ghost"
+              className="hover-elevate"
+              onClick={directMenuItems[1].action}
+              data-testid="link-contacto"
+            >
+              {directMenuItems[1].label}
+            </Button>
           </nav>
 
           {/* Right side buttons */}
@@ -129,17 +189,58 @@ export default function Header({ darkMode, onToggleDarkMode, onAdminClick }: Hea
         {mobileMenuOpen && (
           <Card className="md:hidden absolute top-16 left-4 right-4 p-4 bg-card" data-testid="mobile-menu">
             <nav className="flex flex-col space-y-2">
-              {menuItems.map((item) => (
-                <Button
-                  key={item.label}
-                  variant="ghost"
-                  className="justify-start hover-elevate"
-                  onClick={item.action}
-                  data-testid={`mobile-link-${item.label.toLowerCase()}`}
-                >
-                  {item.label}
-                </Button>
-              ))}
+              <Button
+                variant="ghost"
+                className="justify-start hover-elevate"
+                onClick={directMenuItems[0].action}
+                data-testid="mobile-link-inicio"
+              >
+                {directMenuItems[0].label}
+              </Button>
+              
+              <div className="space-y-1">
+                <div className="text-sm font-semibold text-muted-foreground px-3 py-2">
+                  Nuestra Historia
+                </div>
+                {historyItems.map((item) => (
+                  <Button
+                    key={item.label}
+                    variant="ghost"
+                    className="justify-start pl-6 hover-elevate"
+                    onClick={item.action}
+                    data-testid={`mobile-link-${item.label.toLowerCase()}`}
+                  >
+                    {item.label}
+                  </Button>
+                ))}
+              </div>
+              
+              <div className="space-y-1">
+                <div className="text-sm font-semibold text-muted-foreground px-3 py-2">
+                  Multimedia
+                </div>
+                {multimediaItems.map((item) => (
+                  <Button
+                    key={item.label}
+                    variant="ghost"
+                    className="justify-start pl-6 hover-elevate"
+                    onClick={item.action}
+                    data-testid={`mobile-link-${item.label.toLowerCase()}`}
+                  >
+                    {item.label}
+                  </Button>
+                ))}
+              </div>
+              
+              <Button
+                variant="ghost"
+                className="justify-start hover-elevate"
+                onClick={directMenuItems[1].action}
+                data-testid="mobile-link-contacto"
+              >
+                {directMenuItems[1].label}
+              </Button>
+
               <Button
                 variant="outline"
                 className="justify-start hover-elevate mt-2"

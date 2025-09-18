@@ -40,16 +40,3 @@ export const updateUserSchema = z.object({
 
 export type UpdateUser = z.infer<typeof updateUserSchema>;
 
-// User profile with companies (for extended queries)
-export interface UserWithCompanies extends User {
-  companies: Array<{
-    id: string;
-    businessName: string;
-    status: 'pending' | 'accepted' | 'inactive';
-    availableRoles: Array<{
-      id: string;
-      name: string;
-      description: string;
-    }>;
-  }>;
-}

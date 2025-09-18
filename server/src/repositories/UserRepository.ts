@@ -18,7 +18,7 @@ export class MemoryUserRepository implements IUserRepository {
   }
 
   async getUserByEmail(email: string): Promise<UserEntity | undefined> {
-    for (const user of this.users.values()) {
+    for (const [id, user] of this.users) {
       if (user.email === email) {
         return user;
       }

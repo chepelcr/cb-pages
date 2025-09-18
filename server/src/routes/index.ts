@@ -1,4 +1,5 @@
 import { Express } from 'express';
+import { UserController } from '../controllers/UserController';
 
 export function setupRoutes(app: Express): void {
     // Health check endpoint
@@ -6,9 +7,11 @@ export function setupRoutes(app: Express): void {
         res.json({ status: 'ok', timestamp: new Date().toISOString() });
     });
 
-    // TODO: Add more API routes as needed
-    // app.use('/api/users', userRoutes);
-    // app.use('/api/configurations', configurationRoutes);
+    // Initialize controllers
+    const userController = new UserController();
+
+    // Setup API routes
+    app.use('/api/users', userController.getRouter());
     
     console.log('API routes setup completed');
 }

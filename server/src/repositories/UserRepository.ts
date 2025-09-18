@@ -18,12 +18,8 @@ export class MemoryUserRepository implements IUserRepository {
   }
 
   async getUserByEmail(email: string): Promise<UserEntity | undefined> {
-    for (const [id, user] of this.users) {
-      if (user.email === email) {
-        return user;
-      }
-    }
-    return undefined;
+    const usersArray = Array.from(this.users.values());
+    return usersArray.find(user => user.email === email);
   }
 
   async createUser(userData: Omit<UserEntity, 'createdAt' | 'updatedAt'>): Promise<UserEntity> {

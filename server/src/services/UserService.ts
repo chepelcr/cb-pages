@@ -1,6 +1,6 @@
 import { userRepository, cognitoService, emailService } from '../dependency_injection';
 import { UserMapper } from '../mappers';
-import type { UserEntity } from '../entities';
+import type { UserEntity } from '../entities/UserEntity';
 import type { User, InsertUser, UpdateUser } from '../models';
 
 export class UserService {
@@ -22,6 +22,8 @@ export class UserService {
         firstName: cognitoUser.firstName,
         lastName: cognitoUser.lastName,
         company: cognitoUser.company,
+        configStep: 0,
+        isActive: true,
       });
       return newUser;
     }
@@ -91,6 +93,8 @@ export class UserService {
         firstName: cognitoUserData.firstName,
         lastName: cognitoUserData.lastName,
         company: cognitoUserData.company,
+        configStep: 0,
+        isActive: true,
       });
 
       console.log(`✅ User synced from Cognito: ${user.userName} (${user.email})`);

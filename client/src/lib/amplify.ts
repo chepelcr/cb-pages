@@ -24,9 +24,6 @@ export function configureAmplify() {
       Amplify.configure(amplifyConfig);
       console.log('✅ AWS Amplify configured successfully');
       
-      // Make config available globally for debugging
-      (window as any).AWS_AMPLIFY_CONFIG = amplifyConfig;
-      
       return true;
     } catch (error) {
       console.error('❌ Failed to configure AWS Amplify:', error);

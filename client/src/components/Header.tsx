@@ -46,7 +46,8 @@ export default function Header({ darkMode, onToggleDarkMode, onAdminClick }: Hea
     { label: 'Inicio', action: () => handleNavigation('/', 'home') },
     { label: 'Historia', action: () => handleNavigation('/', 'history') },
     { label: 'Liderazgo', action: () => handleNavigation('/liderazgo') },
-    { label: 'Galería', action: () => handleNavigation('/', 'gallery') },
+    { label: 'Escudos', action: () => handleNavigation('/', 'shields') },
+    { label: 'Galería', action: () => handleNavigation('/galeria') },
     { label: 'Contacto', action: () => handleNavigation('/', 'contact') }
   ];
 

@@ -63,10 +63,10 @@ export default function Hero() {
             size="lg" 
             variant="outline" 
             className="bg-white/10 backdrop-blur border-white/30 text-white hover:bg-white/20 hover-elevate px-8 py-3"
-            onClick={() => document.getElementById('gallery')?.scrollIntoView({ behavior: 'smooth' })}
-            data-testid="button-view-gallery"
+            onClick={() => document.getElementById('shields')?.scrollIntoView({ behavior: 'smooth' })}
+            data-testid="button-view-shields"
           >
-            Ver Galería
+            Ver Escudos
           </Button>
         </div>
 

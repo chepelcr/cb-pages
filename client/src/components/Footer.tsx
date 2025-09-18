@@ -86,7 +86,8 @@ export default function Footer() {
                 { label: 'Inicio', path: '/', sectionId: 'home' },
                 { label: 'Historia', path: '/', sectionId: 'history' },
                 { label: 'Liderazgo', path: '/liderazgo' },
-                { label: 'Galería', path: '/', sectionId: 'gallery' },
+                { label: 'Escudos', path: '/', sectionId: 'shields' },
+                { label: 'Galería', path: '/galeria' },
                 { label: 'Contacto', path: '/', sectionId: 'contact' }
               ].map((link) => (
                 <button

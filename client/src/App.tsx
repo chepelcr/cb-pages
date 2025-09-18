@@ -6,11 +6,12 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import LeadershipPage from "@/pages/LeadershipPage";
+import GalleryPage from "@/pages/GalleryPage";
 import { ThemeProvider, useTheme } from "@/components/ThemeProvider";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import History from "@/components/History";
-import Gallery from "@/components/Gallery";
+import Shields from "@/components/Shields";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import AdminLoginModal from "@/components/AdminLoginModal";
@@ -20,7 +21,7 @@ function HomePage() {
     <div className="min-h-screen bg-background">
       <Hero />
       <History />
-      <Gallery />
+      <Shields />
       <Contact />
     </div>
   );
@@ -31,6 +32,7 @@ function Router() {
     <Switch>
       <Route path="/" component={HomePage} />
       <Route path="/liderazgo" component={LeadershipPage} />
+      <Route path="/galeria" component={GalleryPage} />
       <Route component={NotFound} />
     </Switch>
   );

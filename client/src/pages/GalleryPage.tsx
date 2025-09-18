@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import Gallery from '@/components/Gallery';
+import PageTransition from '@/components/PageTransition';
 
 export default function GalleryPage() {
   useEffect(() => {
@@ -7,8 +8,10 @@ export default function GalleryPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background pt-6">
-      <Gallery />
-    </div>
+    <PageTransition>
+      <div className="min-h-screen bg-background pt-6">
+        <Gallery />
+      </div>
+    </PageTransition>
   );
 }

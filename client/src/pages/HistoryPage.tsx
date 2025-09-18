@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import History from '@/components/History';
+import PageTransition from '@/components/PageTransition';
 
 export default function HistoryPage() {
   useEffect(() => {
@@ -7,8 +8,10 @@ export default function HistoryPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background pt-6">
-      <History />
-    </div>
+    <PageTransition>
+      <div className="min-h-screen bg-background pt-6">
+        <History />
+      </div>
+    </PageTransition>
   );
 }

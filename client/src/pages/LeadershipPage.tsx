@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import Leadership from '@/components/Leadership';
+import PageTransition from '@/components/PageTransition';
 
 export default function LeadershipPage() {
   useEffect(() => {
@@ -7,8 +8,10 @@ export default function LeadershipPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background pt-6">
-      <Leadership />
-    </div>
+    <PageTransition>
+      <div className="min-h-screen bg-background pt-6">
+        <Leadership />
+      </div>
+    </PageTransition>
   );
 }

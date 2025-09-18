@@ -50,7 +50,7 @@ export default function Header({ darkMode, onToggleDarkMode, onAdminClick }: Hea
 
   const historyItems = [
     { label: 'Historia', action: () => handleNavigation('/historia') },
-    { label: 'Liderazgo', action: () => handleNavigation('/liderazgo') }
+    { label: 'Jefaturas', action: () => handleNavigation('/jefaturas') }
   ];
 
   const multimediaItems = [

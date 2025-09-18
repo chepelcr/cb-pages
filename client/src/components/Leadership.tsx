@@ -159,15 +159,20 @@ export default function Leadership() {
               <CardContent>
                 {entry.leaders.length > 0 ? (
                   <div className="space-y-2">
-                    {entry.leaders.map((leader, leaderIndex) => (
+                    <div 
+                      className="text-sm text-muted-foreground p-2 bg-muted/20 rounded"
+                      data-testid={`text-leader-${entry.year}-0`}
+                    >
+                      <span className="font-semibold">Jefatura:</span> {entry.leaders[0]}
+                    </div>
+                    {entry.leaders.length > 1 && (
                       <div 
-                        key={leaderIndex} 
                         className="text-sm text-muted-foreground p-2 bg-muted/20 rounded"
-                        data-testid={`text-leader-${entry.year}-${leaderIndex}`}
+                        data-testid={`text-leader-${entry.year}-1`}
                       >
-                        {leader}
+                        <span className="font-semibold">Segunda voz:</span> {entry.leaders[1]}
                       </div>
-                    ))}
+                    )}
                   </div>
                 ) : (
                   <p className="text-sm text-muted-foreground italic" data-testid={`text-no-leaders-${entry.year}`}>

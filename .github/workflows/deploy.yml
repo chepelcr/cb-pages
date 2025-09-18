@@ -58,7 +58,35 @@ jobs:
         fi
         
         # Add SPA routing script for GitHub Pages deep links (rafgraph spa-github-pages)
-        sed -i 's|</head>|<script type="text/javascript">(function(l){if(l.search.startsWith("?/")){var d=l.search.slice(2).split("&").map(function(s){return s.replace(/~and~/g,"&")}).join("?");window.history.replaceState(null,null,"/"+d+(l.hash||""));}})(window.location);</script></head>|g' dist/gh-pages/index.html
+        # Use Python to safely inject the SPA routing script (avoids sed escaping issues)
+        python3 << 'EOF'
+import re
+
+# Read the index.html file
+with open('dist/gh-pages/index.html', 'r') as f:
+    content = f.read()
+
+# SPA routing script for GitHub Pages
+spa_script = '''<script type="text/javascript">
+(function(l) {
+  if (l.search.startsWith("?/")) {
+    var d = l.search.slice(2).split("&").map(function(s) {
+      return s.replace(/~and~/g, "&")
+    }).join("?");
+    window.history.replaceState(null, null, "/" + d + (l.hash || ""));
+  }
+})(window.location);
+</script>'''
+
+# Insert before </head>
+content = content.replace('</head>', spa_script + '\n</head>')
+
+# Write back to file
+with open('dist/gh-pages/index.html', 'w') as f:
+    f.write(content)
+
+print("✓ SPA routing script injected successfully")
+EOF
         
         # Verify deployment files exist and show structure
         echo "=== Cuerpo de Banderas GitHub Pages Deployment Structure ==="

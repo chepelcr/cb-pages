@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ArrowDown } from 'lucide-react';
-import heroImage from '@assets/generated_images/Honor_guard_ceremony_hero_image_9a2900bc.png';
+import heroImage from '@assets/image_1758163215007.png';
 
 export default function Hero() {
   const scrollToHistory = () => {

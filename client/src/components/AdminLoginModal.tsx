@@ -5,8 +5,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Shield, User, Lock, Eye, EyeOff } from 'lucide-react';
+import { User, Lock, Eye, EyeOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import cbLogo from '@assets/cb logo_1758164197769.png';
 
 interface AdminLoginModalProps {
   isOpen: boolean;
@@ -54,7 +55,11 @@ export default function AdminLoginModal({ isOpen, onOpenChange }: AdminLoginModa
       <DialogContent className="sm:max-w-md" data-testid="modal-admin-login">
         <DialogHeader className="text-center">
           <div className="mx-auto p-3 bg-primary/10 rounded-full w-fit mb-4">
-            <Shield className="h-8 w-8 text-primary" />
+            <img 
+              src={cbLogo} 
+              alt="Cuerpo de Banderas Logo" 
+              className="h-12 w-12 object-contain"
+            />
           </div>
           <DialogTitle className="text-2xl font-bold" data-testid="text-login-title">
             Panel de Administración

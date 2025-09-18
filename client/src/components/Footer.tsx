@@ -1,8 +1,9 @@
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Shield, Facebook, Instagram, Youtube, Mail } from 'lucide-react';
+import { Facebook, Instagram, Youtube, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLocation } from 'wouter';
+import cbLogo from '@assets/cb logo_1758164197769.png';
 
 export default function Footer() {
   const [location, navigate] = useLocation();
@@ -51,7 +52,12 @@ export default function Footer() {
           {/* Logo and Description */}
           <div className="lg:col-span-2">
             <div className="flex items-center gap-3 mb-4">
-              <Shield className="h-8 w-8 text-primary" data-testid="footer-logo" />
+              <img 
+                src={cbLogo} 
+                alt="Cuerpo de Banderas Logo" 
+                className="h-10 w-10 object-contain"
+                data-testid="footer-logo" 
+              />
               <div>
                 <h3 className="text-xl font-bold text-foreground" data-testid="text-footer-title">
                   Cuerpo de Banderas

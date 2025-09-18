@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Menu, X, Shield, Sun, Moon } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { useLocation } from 'wouter';
+import cbLogo from '@assets/cb logo_1758164197769.png';
 
 interface HeaderProps {
   darkMode: boolean;
@@ -56,7 +57,12 @@ export default function Header({ darkMode, onToggleDarkMode, onAdminClick }: Hea
           {/* Logo and Title */}
           <div className="flex items-center gap-3">
             <div className="flex-shrink-0">
-              <Shield className="h-8 w-8 text-primary" data-testid="logo-shield" />
+              <img 
+                src={cbLogo} 
+                alt="Cuerpo de Banderas Logo" 
+                className="h-10 w-10 object-contain"
+                data-testid="logo-cb" 
+              />
             </div>
             <div className="hidden sm:block">
               <h1 className="text-xl font-bold text-foreground" data-testid="text-title">

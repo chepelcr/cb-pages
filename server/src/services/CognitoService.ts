@@ -1,4 +1,12 @@
-import { CognitoIdentityProviderClient, AdminCreateUserCommand, AdminSetUserPasswordCommand, AdminUpdateUserAttributesCommand, ForgotPasswordCommand, ConfirmForgotPasswordCommand, AdminGetUserCommand } from '@aws-sdk/client-cognito-identity-provider';
+import {
+  CognitoIdentityProviderClient,
+  AdminCreateUserCommand,
+  AdminSetUserPasswordCommand,
+  AdminUpdateUserAttributesCommand,
+  ForgotPasswordCommand,
+  ConfirmForgotPasswordCommand,
+  AdminGetUserCommand,
+} from "@aws-sdk/client-cognito-identity-provider";
 
 export interface CognitoConfig {
   region: string;
@@ -20,12 +28,12 @@ export interface CognitoUser {
 
 export class CognitoService {
   private client: CognitoIdentityProviderClient;
-  
+
   constructor(private config: CognitoConfig) {
     this.client = new CognitoIdentityProviderClient({
       region: config.region,
       // In Lambda, use IAM role credentials automatically
-      ...(process.env.AWS_LAMBDA_FUNCTION_NAME ? {} : { profile: "default" })
+      ...(process.env.AWS_LAMBDA_FUNCTION_NAME ? {} : { profile: "default" }),
     });
   }
 
@@ -44,7 +52,7 @@ export class CognitoService {
       userData.email,
       temporaryPassword,
       userData.firstName,
-      userData.lastName
+      userData.lastName,
     );
     return {
       id: fullUser.sub,
@@ -62,26 +70,26 @@ export class CognitoService {
     temporaryPassword: string,
     firstName?: string,
     lastName?: string,
-    company?: string
+    company?: string,
   ): Promise<CognitoUser> {
     try {
       console.log(`🔐 Creating Cognito user: ${username}`);
 
       const userAttributes = [
-        { Name: 'email', Value: email },
-        { Name: 'email_verified', Value: 'true' }, // Pre-verify emails
+        { Name: "email", Value: email },
+        { Name: "email_verified", Value: "true" }, // Pre-verify emails
       ];
 
       if (firstName) {
-        userAttributes.push({ Name: 'given_name', Value: firstName });
+        userAttributes.push({ Name: "given_name", Value: firstName });
       }
 
       if (lastName) {
-        userAttributes.push({ Name: 'family_name', Value: lastName });
+        userAttributes.push({ Name: "family_name", Value: lastName });
       }
 
       if (company) {
-        userAttributes.push({ Name: 'custom:company_name', Value: company });
+        userAttributes.push({ Name: "custom:company_name", Value: company });
       }
 
       // Create user in Cognito
@@ -90,11 +98,11 @@ export class CognitoService {
         Username: username,
         UserAttributes: userAttributes,
         TemporaryPassword: temporaryPassword,
-        MessageAction: 'SUPPRESS', // Don't send welcome email - we handle verification
+        MessageAction: "SUPPRESS", // Don't send welcome email - we handle verification
       });
 
       const createResult = await this.client.send(createUserCommand);
-      
+
       // Set permanent password
       const setPasswordCommand = new AdminSetUserPasswordCommand({
         UserPoolId: this.config.userPoolId,
@@ -113,11 +121,12 @@ export class CognitoService {
         firstName,
         lastName,
         company,
-        sub: createResult.User?.Attributes?.find(attr => attr.Name === 'sub')?.Value || `cognito-${username}`,
+        sub:
+          createResult.User?.Attributes?.find((attr) => attr.Name === "sub")
+            ?.Value || `cognito-${username}`,
       };
-
     } catch (error: any) {
-      console.error('Error creating Cognito user:', error);
+      console.error("Error creating Cognito user:", error);
       throw new Error(`Failed to create Cognito user: ${error.message}`);
     }
   }
@@ -126,8 +135,9 @@ export class CognitoService {
    * Generate a temporary password for new users
    */
   private generateTemporaryPassword(): string {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
-    let password = '';
+    const chars =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+    let password = "";
     for (let i = 0; i < 12; i++) {
       password += chars.charAt(Math.floor(Math.random() * chars.length));
     }
@@ -139,7 +149,7 @@ export class CognitoService {
    */
   async updateUserAttributes(
     username: string,
-    attributes: { [key: string]: string }
+    attributes: { [key: string]: string },
   ): Promise<void> {
     try {
       console.log(`🔐 Updating Cognito user attributes: ${username}`);
@@ -158,9 +168,8 @@ export class CognitoService {
       await this.client.send(updateCommand);
 
       console.log(`✅ Cognito user attributes updated: ${username}`);
-
     } catch (error: any) {
-      console.error('Error updating Cognito user attributes:', error);
+      console.error("Error updating Cognito user attributes:", error);
       throw new Error(`Failed to update Cognito user: ${error.message}`);
     }
   }
@@ -170,7 +179,9 @@ export class CognitoService {
    */
   async getUser(userId: string): Promise<CognitoUser | null> {
     try {
-      console.log(`🔍 Getting Cognito user data for: ${userId.substring(0, 8)}...`);
+      console.log(
+        `🔍 Getting Cognito user data for: ${userId.substring(0, 8)}...`,
+      );
 
       const command = new AdminGetUserCommand({
         UserPoolId: this.config.userPoolId,
@@ -178,26 +189,28 @@ export class CognitoService {
       });
 
       const result = await this.client.send(command);
-      
+
       if (!result.UserAttributes) {
-        console.log(`❌ No user attributes found for: ${userId.substring(0, 8)}...`);
+        console.log(
+          `❌ No user attributes found for: ${userId.substring(0, 8)}...`,
+        );
         return null;
       }
 
       // Extract user attributes
-      const getAttribute = (name: string) => 
-        result.UserAttributes?.find(attr => attr.Name === name)?.Value;
+      const getAttribute = (name: string) =>
+        result.UserAttributes?.find((attr) => attr.Name === name)?.Value;
 
-      const email = getAttribute('email') || '';
-      const firstName = getAttribute('given_name');
-      const lastName = getAttribute('family_name');
-      const company = getAttribute('custom:company_name');
-      const sub = getAttribute('sub') || userId;
-      const emailVerified = getAttribute('email_verified') === 'true';
-      const preferredUsername = getAttribute('preferred_username');
+      const email = getAttribute("email") || "";
+      const firstName = getAttribute("given_name");
+      const lastName = getAttribute("family_name");
+      const company = getAttribute("custom:company_name");
+      const sub = getAttribute("sub") || userId;
+      const emailVerified = getAttribute("email_verified") === "true";
+      const preferredUsername = getAttribute("preferred_username");
 
       const userData = {
-        username: preferredUsername || email.split('@')[0], // Use preferred_username or fallback to email prefix
+        username: preferredUsername || email.split("@")[0], // Use preferred_username or fallback to email prefix
         email,
         firstName,
         lastName,
@@ -208,9 +221,8 @@ export class CognitoService {
 
       console.log(`✅ Retrieved Cognito user: ${userData.username} (${email})`);
       return userData;
-
     } catch (error: any) {
-      console.error('Error getting Cognito user:', error);
+      console.error("Error getting Cognito user:", error);
       // Return null instead of throwing to handle non-existent users gracefully
       return null;
     }
@@ -231,7 +243,7 @@ export class CognitoService {
       await this.client.send(command);
       console.log(`✅ Password reset initiated for: ${email}`);
     } catch (error: any) {
-      console.error('🚨 Error initiating password reset:', error);
+      console.error("🚨 Error initiating password reset:", error);
       throw new Error(`Failed to initiate password reset: ${error.message}`);
     }
   }
@@ -239,7 +251,11 @@ export class CognitoService {
   /**
    * Confirm password reset with verification code
    */
-  async confirmPasswordReset(email: string, code: string, newPassword: string): Promise<void> {
+  async confirmPasswordReset(
+    email: string,
+    code: string,
+    newPassword: string,
+  ): Promise<void> {
     try {
       console.log(`🔐 Confirming password reset for: ${email}`);
 
@@ -253,7 +269,7 @@ export class CognitoService {
       await this.client.send(command);
       console.log(`✅ Password reset confirmed for: ${email}`);
     } catch (error: any) {
-      console.error('🚨 Error confirming password reset:', error);
+      console.error("🚨 Error confirming password reset:", error);
       throw new Error(`Failed to confirm password reset: ${error.message}`);
     }
   }
@@ -263,7 +279,7 @@ export class CognitoService {
    */
   validateTokenFormat(token: string): boolean {
     try {
-      const parts = token.split('.');
+      const parts = token.split(".");
       return parts.length === 3;
     } catch {
       return false;
@@ -273,16 +289,18 @@ export class CognitoService {
   /**
    * Extract user info from Cognito JWT (without verification - API Gateway handles this)
    */
-  extractUserFromToken(token: string): { sub: string; username?: string; email?: string } | null {
+  extractUserFromToken(
+    token: string,
+  ): { sub: string; username?: string; email?: string } | null {
     try {
-      const parts = token.split('.');
+      const parts = token.split(".");
       if (parts.length !== 3) return null;
 
-      const payload = JSON.parse(Buffer.from(parts[1], 'base64').toString());
-      
+      const payload = JSON.parse(Buffer.from(parts[1], "base64").toString());
+
       return {
         sub: payload.sub,
-        username: payload['cognito:username'] || payload.username,
+        username: payload["cognito:username"] || payload.username,
         email: payload.email,
       };
     } catch {
@@ -294,15 +312,17 @@ export class CognitoService {
 // Factory function to create Cognito service
 export function createCognitoService(): CognitoService {
   const config: CognitoConfig = {
-    region: process.env.AWS_REGION || 'us-east-1',
+    region: process.env.AWS_REGION || "us-east-1",
     userPoolId: process.env.AWS_COGNITO_USER_POOL_ID!,
     clientId: process.env.AWS_COGNITO_CLIENT_ID!,
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID || "",
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || "",
   };
 
   if (!config.userPoolId || !config.clientId) {
-    throw new Error('Missing required AWS Cognito configuration. Please set AWS_COGNITO_USER_POOL_ID and AWS_COGNITO_CLIENT_ID');
+    throw new Error(
+      "Missing required AWS Cognito configuration. Please set AWS_COGNITO_USER_POOL_ID and AWS_COGNITO_CLIENT_ID",
+    );
   }
 
   return new CognitoService(config);

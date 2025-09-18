@@ -57,7 +57,7 @@ const historicalLeadership = [
 export default function Leadership() {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const itemsPerPage = 9;
 
   // Function to extract the first year from year string for sorting

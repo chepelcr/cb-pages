@@ -108,12 +108,9 @@ export default function AdminLoginModal({ isOpen, onOpenChange }: AdminLoginModa
               className="h-12 w-12 object-contain"
             />
           </div>
-          <DialogTitle className="text-2xl font-bold" data-testid="text-login-title">
+          <DialogTitle className="text-2xl font-bold text-center" data-testid="text-login-title">
             Panel de Administración
           </DialogTitle>
-          <p className="text-muted-foreground" data-testid="text-login-description">
-            Acceso exclusivo para coordinadores y administradores del Cuerpo de Banderas
-          </p>
         </DialogHeader>
 
         <Card>
@@ -154,7 +151,7 @@ export default function AdminLoginModal({ isOpen, onOpenChange }: AdminLoginModa
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="absolute right-1 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0"
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 z-10"
                     onClick={() => setShowPassword(!showPassword)}
                     data-testid="button-toggle-password"
                     disabled={isLoading}

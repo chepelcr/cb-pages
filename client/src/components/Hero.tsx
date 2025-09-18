@@ -63,7 +63,7 @@ export default function Hero() {
             size="lg" 
             variant="outline" 
             className="bg-white/10 backdrop-blur border-white/30 text-white hover:bg-white/20 hover-elevate px-8 py-3"
-            onClick={() => document.getElementById('shields')?.scrollIntoView({ behavior: 'smooth' })}
+            onClick={() => window.location.href = '/escudos'}
             data-testid="button-view-shields"
           >
             Ver Escudos

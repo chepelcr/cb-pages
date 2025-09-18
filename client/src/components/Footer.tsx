@@ -85,7 +85,7 @@ export default function Footer() {
               {[
                 { label: 'Inicio', path: '/', sectionId: 'home' },
                 { label: 'Historia', path: '/historia' },
-                { label: 'Liderazgo', path: '/liderazgo' },
+                { label: 'Jefaturas', path: '/jefaturas' },
                 { label: 'Escudos', path: '/escudos' },
                 { label: 'Galería', path: '/galeria' },
                 { label: 'Contacto', path: '/', sectionId: 'contact' }

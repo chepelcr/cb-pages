@@ -102,7 +102,7 @@ export default function History() {
                         {milestone.year}
                       </Badge>
                     </div>
-                    <CardTitle className="text-lg min-h-[3.5rem] flex items-center" data-testid={`text-milestone-title-${index}`}>
+                    <CardTitle className="text-lg min-h-[4.5rem] flex items-center" data-testid={`text-milestone-title-${index}`}>
                       {milestone.title}
                     </CardTitle>
                   </CardHeader>

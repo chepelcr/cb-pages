@@ -2,6 +2,12 @@ import { CognitoService, createCognitoService } from './services/CognitoService'
 import { TemplateService } from './services/TemplateService';
 import { EmailService } from './services/EmailService';
 import { UserService } from './services/UserService';
+import { SiteConfigService } from './services/SiteConfigService';
+import { LeadershipService } from './services/LeadershipService';
+import { ShieldService } from './services/ShieldService';
+import { GalleryCategoryService } from './services/GalleryCategoryService';
+import { GalleryService } from './services/GalleryService';
+import { HistoryService } from './services/HistoryService';
 import { MemoryUserRepository } from './repositories/UserRepository';
 
 // Initialize repositories
@@ -37,5 +43,13 @@ export const emailService = new EmailService();
 
 // Initialize user service (depends on other services)
 export const userService = new UserService();
+
+// Initialize content management services
+export const siteConfigService = new SiteConfigService();
+export const leadershipService = new LeadershipService();
+export const shieldService = new ShieldService();
+export const galleryCategoryService = new GalleryCategoryService();
+export const galleryService = new GalleryService();
+export const historyService = new HistoryService();
 
 console.log('Dependency injection container initialized');

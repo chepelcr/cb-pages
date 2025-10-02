@@ -1,1 +1,7 @@
 export * from './UserEntity';
+export * from './SiteConfigEntity';
+export * from './LeadershipPeriodEntity';
+export * from './ShieldEntity';
+export * from './GalleryCategoryEntity';
+export * from './GalleryItemEntity';
+export * from './HistoricalMilestoneEntity';

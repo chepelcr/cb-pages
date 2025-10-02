@@ -50,6 +50,7 @@ export class S3StorageService {
       Bucket: this.bucket,
       Key: fileKey,
       ContentType: fileType,
+      ACL: 'public-read', // Make uploaded objects publicly readable
     });
 
     const uploadUrl = await getSignedUrl(this.s3Client, command, { expiresIn });

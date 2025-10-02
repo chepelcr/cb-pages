@@ -48,12 +48,18 @@ Preferred communication style: Simple, everyday language.
 - Prepared schema structure for content management
 - Connection pooling for optimal performance
 
-**AWS S3 Object Storage**: Image upload system using presigned URLs with two-phase workflow:
-- Phase 1: Client requests presigned URL from `/api/uploads/presigned-url` endpoint
-- Phase 2: Client uploads directly to S3, then submits public URL to backend
-- Security: Centralized URL validation enforces HTTPS, bucket verification, and path traversal protection
-- Upload expiration: 5 minutes for uploads, 1 hour for download URLs
-- Folder structure: `gallery/`, `shields/`, `leadership/`, `site-config/`
+**AWS S3 Object Storage**: Image upload system using presigned URLs with complete lifecycle management:
+- **Two-phase workflow**:
+  - Phase 1: Client requests presigned URL from `/api/uploads/presigned-url` endpoint
+  - Phase 2: Client uploads directly to S3, then submits public URL to backend
+- **Security**: Centralized URL validation enforces HTTPS, bucket verification, and path traversal protection
+- **Upload expiration**: 5 minutes for uploads, 1 hour for download URLs
+- **Folder structure**: `gallery/`, `shields/`, `leadership/`, `site-config/`
+- **S3 Key Storage**: All image tables store S3 keys (imageS3Key, logoS3Key, faviconS3Key) for lifecycle management
+- **Automatic Cleanup**: Controllers delete old S3 objects when images are replaced or records deleted
+- **Safe Update Pattern**: Controllers update database first, verify success, then delete old S3 objects to prevent broken references
+- **Orphaned Upload Detection**: `cleanupOrphanedS3Files.ts` script identifies and removes abandoned uploads
+- **Migration Support**: `migrateLocalImagesToS3.ts` script available for migrating existing local images to S3
 
 **Static Asset Management**: Build-time assets served through Vite's asset pipeline with proper optimization and caching strategies.
 

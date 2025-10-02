@@ -16,9 +16,14 @@ export class ImageUploadService {
     // Get the public directory from environment or use default
     const publicPaths = process.env.PUBLIC_OBJECT_SEARCH_PATHS;
     if (publicPaths) {
-      // Parse the JSON array and get the first path
-      const paths = JSON.parse(publicPaths);
-      this.publicDir = paths[0] || '/tmp/public';
+      try {
+        // Try to parse as JSON array first
+        const paths = JSON.parse(publicPaths);
+        this.publicDir = Array.isArray(paths) ? paths[0] : publicPaths;
+      } catch {
+        // If not JSON, treat as plain string path
+        this.publicDir = publicPaths;
+      }
     } else {
       this.publicDir = '/tmp/public';
     }

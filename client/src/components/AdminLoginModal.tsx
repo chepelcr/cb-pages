@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useLocation } from 'wouter';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { User, Lock, Eye, EyeOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { signIn, getCurrentUser, fetchAuthSession } from 'aws-amplify/auth';
+import { useAuth } from '@/contexts/AuthContext';
 import cbLogo from '@assets/cb logo_1758164197769.png';
 
 interface AdminLoginModalProps {
@@ -21,6 +22,8 @@ export default function AdminLoginModal({ isOpen, onOpenChange }: AdminLoginModa
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const { login } = useAuth();
+  const [, navigate] = useLocation();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,21 +32,19 @@ export default function AdminLoginModal({ isOpen, onOpenChange }: AdminLoginModa
     console.log('Admin login attempt - Development mode');
     
     try {
-      // For development purposes - simple login success
-      // TODO: Replace with AWS Amplify authentication in production
-      
-      // Simulate loading time
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await login(email, password);
       
       toast({
         title: "¡Acceso autorizado!",
-        description: "Bienvenido al panel administrativo del Cuerpo de Banderas (Modo Desarrollo)",
+        description: "Bienvenido al panel administrativo del Cuerpo de Banderas",
       });
       
       console.log('Development login successful');
       onOpenChange(false);
       setEmail('');
       setPassword('');
+      
+      navigate('/admin');
       
     } catch (error: any) {
       console.error('Login error:', error);

@@ -10,6 +10,7 @@ import LeadershipPage from "@/pages/LeadershipPage";
 import GalleryPage from "@/pages/GalleryPage";
 import ShieldsPage from "@/pages/ShieldsPage";
 import { ThemeProvider, useTheme } from "@/components/ThemeProvider";
+import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Contact from "@/components/Contact";
@@ -56,7 +57,36 @@ function GitHubPagesRouter() {
 }
 
 function AdminRouter() {
-  const [location] = useLocation();
+  const [location, navigate] = useLocation();
+  const { isAuthenticated } = useAuth();
+  const [showLoginModal, setShowLoginModal] = useState(false);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setShowLoginModal(true);
+    }
+  }, [isAuthenticated]);
+
+  const handleLoginModalClose = (open: boolean) => {
+    setShowLoginModal(open);
+    if (!open && !isAuthenticated) {
+      navigate('/');
+    }
+  };
+
+  if (!isAuthenticated) {
+    return (
+      <>
+        <AdminLoginModal 
+          isOpen={showLoginModal} 
+          onOpenChange={handleLoginModalClose} 
+        />
+        <div className="flex h-screen items-center justify-center">
+          <p className="text-muted-foreground">Verificando autenticación...</p>
+        </div>
+      </>
+    );
+  }
 
   return (
     <AdminLayout>
@@ -99,13 +129,18 @@ function Router() {
 
 function AppContent() {
   const { theme, toggleTheme } = useTheme();
+  const { isAuthenticated } = useAuth();
   const [adminModalOpen, setAdminModalOpen] = useState(false);
-  const [location] = useLocation();
+  const [location, navigate] = useLocation();
   const isAdminRoute = location.startsWith('/admin');
 
   const handleAdminClick = () => {
-    setAdminModalOpen(true);
-    console.log('Admin panel opened');
+    if (isAuthenticated) {
+      navigate('/admin');
+    } else {
+      setAdminModalOpen(true);
+    }
+    console.log('Admin button clicked');
   };
 
   return (
@@ -131,10 +166,12 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="light">
-        <TooltipProvider>
-          <Toaster />
-          <AppContent />
-        </TooltipProvider>
+        <AuthProvider>
+          <TooltipProvider>
+            <Toaster />
+            <AppContent />
+          </TooltipProvider>
+        </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );

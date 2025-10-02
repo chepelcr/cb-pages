@@ -1,4 +1,4 @@
-import { Link, useRoute } from "wouter";
+import { Link, useRoute, useLocation } from "wouter";
 import {
   Sidebar,
   SidebarContent,
@@ -11,10 +11,12 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { Settings, Users, Shield, Image, Calendar } from "lucide-react";
+import { Settings, Users, Shield, Image, Calendar, Home, LogOut } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
+import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Sun, Moon } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const menuItems = [
   {
@@ -93,14 +95,55 @@ interface AdminLayoutProps {
 }
 
 export function AdminLayout({ children }: AdminLayoutProps) {
+  const [, navigate] = useLocation();
+  const { logout } = useAuth();
+  const { toast } = useToast();
+
+  const handleGoToMainPage = () => {
+    navigate('/');
+  };
+
+  const handleLogout = () => {
+    logout();
+    toast({
+      title: "Sesión cerrada",
+      description: "Has cerrado sesión correctamente",
+    });
+    navigate('/');
+  };
+
   return (
     <SidebarProvider>
       <div className="flex h-screen w-full">
         <AdminSidebar />
         <div className="flex flex-col flex-1 min-w-0">
           <header className="flex items-center justify-between gap-2 p-4 border-b">
-            <SidebarTrigger data-testid="button-sidebar-toggle" />
-            <ThemeToggle />
+            <div className="flex items-center gap-2">
+              <SidebarTrigger data-testid="button-sidebar-toggle" />
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleGoToMainPage}
+                data-testid="button-go-to-main"
+                className="hover-elevate"
+              >
+                <Home className="h-4 w-4 mr-2" />
+                Ir a la página
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleLogout}
+                data-testid="button-logout"
+                className="hover-elevate"
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                Cerrar sesión
+              </Button>
+              <ThemeToggle />
+            </div>
           </header>
           <main className="flex-1 overflow-auto p-6">
             {children}

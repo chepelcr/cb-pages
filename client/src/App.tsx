@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Switch, Route, useLocation } from "wouter";
+import { Switch, Route, useLocation, Redirect } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -16,6 +16,12 @@ import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import AdminLoginModal from "@/components/AdminLoginModal";
 import PageTransition from "@/components/PageTransition";
+import { AdminLayout } from "@/components/admin/AdminLayout";
+import AdminGeneralSettings from "@/pages/admin/AdminGeneralSettings";
+import AdminJefaturas from "@/pages/admin/AdminJefaturas";
+import AdminEscudos from "@/pages/admin/AdminEscudos";
+import AdminGaleria from "@/pages/admin/AdminGaleria";
+import AdminHistoria from "@/pages/admin/AdminHistoria";
 
 function HomePage() {
   return (
@@ -49,18 +55,44 @@ function GitHubPagesRouter() {
   return null;
 }
 
+function AdminRouter() {
+  const [location] = useLocation();
+
+  return (
+    <AdminLayout>
+      <Switch location={location}>
+        <Route path="/admin/general" component={AdminGeneralSettings} />
+        <Route path="/admin/jefaturas" component={AdminJefaturas} />
+        <Route path="/admin/escudos" component={AdminEscudos} />
+        <Route path="/admin/galeria" component={AdminGaleria} />
+        <Route path="/admin/historia" component={AdminHistoria} />
+        <Route path="/admin">
+          <Redirect to="/admin/general" />
+        </Route>
+      </Switch>
+    </AdminLayout>
+  );
+}
+
 function Router() {
+  const [location] = useLocation();
+  const isAdminRoute = location.startsWith('/admin');
+
   return (
     <>
       <GitHubPagesRouter />
-      <Switch>
-        <Route path="/" component={HomePage} />
-        <Route path="/historia" component={HistoryPage} />
-        <Route path="/jefaturas" component={LeadershipPage} />
-        <Route path="/escudos" component={ShieldsPage} />
-        <Route path="/galeria" component={GalleryPage} />
-        <Route component={NotFound} />
-      </Switch>
+      {isAdminRoute ? (
+        <AdminRouter />
+      ) : (
+        <Switch>
+          <Route path="/" component={HomePage} />
+          <Route path="/historia" component={HistoryPage} />
+          <Route path="/jefaturas" component={LeadershipPage} />
+          <Route path="/escudos" component={ShieldsPage} />
+          <Route path="/galeria" component={GalleryPage} />
+          <Route component={NotFound} />
+        </Switch>
+      )}
     </>
   );
 }
@@ -68,6 +100,8 @@ function Router() {
 function AppContent() {
   const { theme, toggleTheme } = useTheme();
   const [adminModalOpen, setAdminModalOpen] = useState(false);
+  const [location] = useLocation();
+  const isAdminRoute = location.startsWith('/admin');
 
   const handleAdminClick = () => {
     setAdminModalOpen(true);
@@ -76,13 +110,15 @@ function AppContent() {
 
   return (
     <>
-      <Header 
-        darkMode={theme === 'dark'} 
-        onToggleDarkMode={toggleTheme}
-        onAdminClick={handleAdminClick}
-      />
+      {!isAdminRoute && (
+        <Header 
+          darkMode={theme === 'dark'} 
+          onToggleDarkMode={toggleTheme}
+          onAdminClick={handleAdminClick}
+        />
+      )}
       <Router />
-      <Footer />
+      {!isAdminRoute && <Footer />}
       <AdminLoginModal 
         isOpen={adminModalOpen} 
         onOpenChange={setAdminModalOpen} 

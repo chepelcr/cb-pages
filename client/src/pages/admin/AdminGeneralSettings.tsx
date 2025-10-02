@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -296,16 +297,25 @@ export default function AdminGeneralSettings() {
         </form>
       </Form>
 
-      <Button
-        type="submit"
-        onClick={form.handleSubmit(onSubmit)}
-        disabled={updateMutation.isPending}
-        data-testid="button-save-settings"
-        className="fixed bottom-6 right-6 z-50 shadow-lg"
-        size="lg"
-      >
-        {updateMutation.isPending ? "Guardando..." : "Guardar Cambios"}
-      </Button>
+      {createPortal(
+        <Button
+          type="submit"
+          onClick={form.handleSubmit(onSubmit)}
+          disabled={updateMutation.isPending}
+          data-testid="button-save-settings"
+          className="shadow-lg"
+          size="lg"
+          style={{
+            position: 'fixed',
+            bottom: '24px',
+            right: '24px',
+            zIndex: 50,
+          }}
+        >
+          {updateMutation.isPending ? "Guardando..." : "Guardar Cambios"}
+        </Button>,
+        document.body
+      )}
     </div>
   );
 }

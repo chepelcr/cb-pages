@@ -16,10 +16,9 @@ import cbLogo from '@assets/cb logo_1758164197769.png';
 interface HeaderProps {
   darkMode: boolean;
   onToggleDarkMode: () => void;
-  onAdminClick?: () => void;
 }
 
-export default function Header({ darkMode, onToggleDarkMode, onAdminClick }: HeaderProps) {
+export default function Header({ darkMode, onToggleDarkMode }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [location, navigate] = useLocation();
 
@@ -168,16 +167,6 @@ export default function Header({ darkMode, onToggleDarkMode, onAdminClick }: Hea
             >
               {darkMode ? <Sun className="h-3 w-3 md:h-4 md:w-4" /> : <Moon className="h-3 w-3 md:h-4 md:w-4" />}
             </Button>
-            
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={onAdminClick}
-              className="hidden sm:inline-flex hover-elevate text-xs md:text-sm px-2 md:px-3 h-8 md:h-9"
-              data-testid="button-admin"
-            >
-              Admin
-            </Button>
 
             {/* Mobile menu button */}
             <Button
@@ -246,15 +235,6 @@ export default function Header({ darkMode, onToggleDarkMode, onAdminClick }: Hea
                 data-testid="mobile-link-contacto"
               >
                 {directMenuItems[1].label}
-              </Button>
-
-              <Button
-                variant="outline"
-                className="justify-start hover-elevate mt-2"
-                onClick={onAdminClick}
-                data-testid="mobile-button-admin"
-              >
-                Admin
               </Button>
             </nav>
           </Card>

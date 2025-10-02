@@ -161,6 +161,16 @@ export default function Footer() {
             <p className="text-sm text-muted-foreground" data-testid="text-footer-copyright">
               © {new Date().getFullYear()} {siteName} - {siteSubtitle}
             </p>
+            <span className="text-muted-foreground hidden sm:inline">|</span>
+            <a
+              href={import.meta.env.DEV ? "http://localhost:5001/login" : "https://admin-banderas.example.com/login"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-muted-foreground hover:text-primary transition-colors"
+              data-testid="link-admin-login"
+            >
+              Admin
+            </a>
           </div>
           
           <div className="flex items-center gap-2">

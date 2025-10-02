@@ -1,5 +1,6 @@
 /**
  * Centralized S3 URL validation utilities
+ * Supports both direct S3 URLs and CloudFront URLs
  */
 
 export interface S3UrlParts {
@@ -7,17 +8,19 @@ export interface S3UrlParts {
   region: string;
   key: string;
   isValid: boolean;
+  source: 'cloudfront' | 's3';
 }
 
 /**
- * Validates and parses an S3 URL to ensure it's from the configured bucket
- * @param url The S3 URL to validate
+ * Validates and parses an S3 or CloudFront URL to ensure it's from the configured bucket
+ * @param url The S3 or CloudFront URL to validate
  * @returns Parsed S3 URL parts or null if invalid
  * @throws Error if AWS S3 configuration is missing
  */
 export function validateAndParseS3Url(url: string): S3UrlParts | null {
   const bucket = process.env.AWS_S3_BUCKET;
   const region = process.env.AWS_REGION;
+  const cloudFrontDomain = process.env.CLOUDFRONT_DOMAIN || 'banderas-data.jcampos.dev';
 
   if (!bucket || !region) {
     throw new Error('AWS S3 configuration is missing (AWS_S3_BUCKET or AWS_REGION)');
@@ -40,38 +43,46 @@ export function validateAndParseS3Url(url: string): S3UrlParts | null {
     return null;
   }
 
-  // Support both path-style and virtual-hosted-style S3 URLs
-  // Path-style: https://s3.region.amazonaws.com/bucket/key
-  // Virtual-hosted-style: https://bucket.s3.region.amazonaws.com/key
-  
-  let extractedBucket: string | null = null;
-  let extractedRegion: string | null = null;
   let key: string | null = null;
+  let source: 'cloudfront' | 's3' = 's3';
 
-  // Check for virtual-hosted-style
-  const virtualHostedPattern = new RegExp(`^([^.]+)\\.s3\\.([^.]+)\\.amazonaws\\.com$`);
-  const virtualMatch = parsedUrl.hostname.match(virtualHostedPattern);
-  
-  if (virtualMatch) {
-    extractedBucket = virtualMatch[1];
-    extractedRegion = virtualMatch[2];
+  // Check for CloudFront URL first
+  if (parsedUrl.hostname === cloudFrontDomain) {
     key = parsedUrl.pathname.substring(1); // Remove leading /
+    source = 'cloudfront';
   } else {
-    // Check for path-style
-    const pathStylePattern = new RegExp(`^s3\\.([^.]+)\\.amazonaws\\.com$`);
-    const pathMatch = parsedUrl.hostname.match(pathStylePattern);
+    // Support both path-style and virtual-hosted-style S3 URLs
+    // Path-style: https://s3.region.amazonaws.com/bucket/key
+    // Virtual-hosted-style: https://bucket.s3.region.amazonaws.com/key
     
-    if (pathMatch) {
-      extractedRegion = pathMatch[1];
-      const pathParts = parsedUrl.pathname.substring(1).split('/');
-      extractedBucket = pathParts[0];
-      key = pathParts.slice(1).join('/');
-    }
-  }
+    let extractedBucket: string | null = null;
+    let extractedRegion: string | null = null;
 
-  // Validate bucket and region match configuration
-  if (extractedBucket !== bucket || extractedRegion !== region) {
-    return null;
+    // Check for virtual-hosted-style
+    const virtualHostedPattern = new RegExp(`^([^.]+)\\.s3\\.([^.]+)\\.amazonaws\\.com$`);
+    const virtualMatch = parsedUrl.hostname.match(virtualHostedPattern);
+    
+    if (virtualMatch) {
+      extractedBucket = virtualMatch[1];
+      extractedRegion = virtualMatch[2];
+      key = parsedUrl.pathname.substring(1); // Remove leading /
+    } else {
+      // Check for path-style
+      const pathStylePattern = new RegExp(`^s3\\.([^.]+)\\.amazonaws\\.com$`);
+      const pathMatch = parsedUrl.hostname.match(pathStylePattern);
+      
+      if (pathMatch) {
+        extractedRegion = pathMatch[1];
+        const pathParts = parsedUrl.pathname.substring(1).split('/');
+        extractedBucket = pathParts[0];
+        key = pathParts.slice(1).join('/');
+      }
+    }
+
+    // Validate bucket and region match configuration (only for S3 URLs)
+    if (extractedBucket !== bucket || extractedRegion !== region) {
+      return null;
+    }
   }
 
   // Validate key doesn't contain path traversal
@@ -80,10 +91,11 @@ export function validateAndParseS3Url(url: string): S3UrlParts | null {
   }
 
   return {
-    bucket: extractedBucket,
-    region: extractedRegion,
+    bucket,
+    region,
     key,
     isValid: true,
+    source,
   };
 }
 

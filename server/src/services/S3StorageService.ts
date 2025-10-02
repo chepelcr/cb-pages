@@ -100,13 +100,13 @@ export class S3StorageService {
   }
 
   /**
-   * Get the public URL for an S3 object
+   * Get the public URL for an S3 object via CloudFront
    * @param fileKey - S3 object key
-   * @returns Public URL
+   * @returns Public CloudFront URL
    */
   getPublicUrl(fileKey: string): string {
-    const region = process.env.AWS_REGION || 'us-east-1';
-    return `https://${this.bucket}.s3.${region}.amazonaws.com/${fileKey}`;
+    const cloudFrontDomain = process.env.CLOUDFRONT_DOMAIN || 'banderas-data.jcampos.dev';
+    return `https://${cloudFrontDomain}/${fileKey}`;
   }
 
   /**

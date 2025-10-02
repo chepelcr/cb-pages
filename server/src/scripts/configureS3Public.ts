@@ -44,6 +44,7 @@ async function configureS3Public() {
   try {
     console.log(`🔧 Configuring S3 bucket for public access: ${bucket}`);
     console.log(`📍 Region: ${region}`);
+    console.log(`📍 CloudFront: ${process.env.CLOUDFRONT_DOMAIN || 'banderas-data.jcampos.dev'}`);
     console.log();
 
     // Step 1: Disable block public access settings

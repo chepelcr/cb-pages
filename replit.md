@@ -48,11 +48,14 @@ Preferred communication style: Simple, everyday language.
 - Prepared schema structure for content management
 - Connection pooling for optimal performance
 
-**AWS S3 Object Storage**: Image upload system using presigned URLs with complete lifecycle management:
+**AWS S3 + CloudFront Object Storage**: Image upload system using presigned URLs with CloudFront CDN distribution:
+- **Bucket**: `banderas-data-jcampos-dev` (us-east-1)
+- **CloudFront Domain**: `banderas-data.jcampos.dev`
 - **Two-phase workflow**:
   - Phase 1: Client requests presigned URL from `/api/uploads/presigned-url` endpoint
-  - Phase 2: Client uploads directly to S3, then submits public URL to backend
-- **Security**: Centralized URL validation enforces HTTPS, bucket verification, and path traversal protection
+  - Phase 2: Client uploads directly to S3 with ACL=public-read, then submits CloudFront URL to backend
+- **URL Strategy**: All stored image URLs use CloudFront domain for CDN performance and caching
+- **Security**: Centralized URL validation supports both CloudFront and direct S3 URLs with HTTPS enforcement
 - **Upload expiration**: 5 minutes for uploads, 1 hour for download URLs
 - **Folder structure**: `gallery/`, `shields/`, `leadership/`, `site-config/`
 - **S3 Key Storage**: All image tables store S3 keys (imageS3Key, logoS3Key, faviconS3Key) for lifecycle management

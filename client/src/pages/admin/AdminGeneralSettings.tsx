@@ -25,9 +25,16 @@ import type { SiteConfig } from "@shared/schema";
 const formSchema = z.object({
   siteName: z.string().min(1, "Site name is required"),
   siteSubtitle: z.string().min(1, "Site subtitle is required"),
+  heroDescription: z.string().optional().nullable(),
   contactEmail: z.string().email("Invalid email").optional().nullable(),
   contactPhone: z.string().optional().nullable(),
   address: z.string().optional().nullable(),
+  trainingSchedule: z.string().optional().nullable(),
+  trainingLocation: z.string().optional().nullable(),
+  ceremoniesSchedule: z.string().optional().nullable(),
+  ceremoniesNotes: z.string().optional().nullable(),
+  meetingsSchedule: z.string().optional().nullable(),
+  meetingsLocation: z.string().optional().nullable(),
   logoUrl: z.string().optional().nullable(),
   faviconUrl: z.string().optional().nullable(),
 });
@@ -48,9 +55,16 @@ export default function AdminGeneralSettings() {
     defaultValues: {
       siteName: "",
       siteSubtitle: "",
+      heroDescription: "",
       contactEmail: "",
       contactPhone: "",
       address: "",
+      trainingSchedule: "",
+      trainingLocation: "",
+      ceremoniesSchedule: "",
+      ceremoniesNotes: "",
+      meetingsSchedule: "",
+      meetingsLocation: "",
     },
   });
 
@@ -59,9 +73,16 @@ export default function AdminGeneralSettings() {
       form.reset({
         siteName: config.siteName || "",
         siteSubtitle: config.siteSubtitle || "",
+        heroDescription: config.heroDescription || "",
         contactEmail: config.contactEmail || "",
         contactPhone: config.contactPhone || "",
         address: config.address || "",
+        trainingSchedule: config.trainingSchedule || "",
+        trainingLocation: config.trainingLocation || "",
+        ceremoniesSchedule: config.ceremoniesSchedule || "",
+        ceremoniesNotes: config.ceremoniesNotes || "",
+        meetingsSchedule: config.meetingsSchedule || "",
+        meetingsLocation: config.meetingsLocation || "",
       });
       // Reset removal flags when config loads
       setRemoveLogo(false);
@@ -74,9 +95,16 @@ export default function AdminGeneralSettings() {
       return apiRequest("PUT", "/api/admin/site-config/with-url", {
         siteName: data.siteName,
         siteSubtitle: data.siteSubtitle,
+        heroDescription: data.heroDescription || null,
         contactEmail: data.contactEmail || null,
         contactPhone: data.contactPhone || null,
         address: data.address || null,
+        trainingSchedule: data.trainingSchedule || null,
+        trainingLocation: data.trainingLocation || null,
+        ceremoniesSchedule: data.ceremoniesSchedule || null,
+        ceremoniesNotes: data.ceremoniesNotes || null,
+        meetingsSchedule: data.meetingsSchedule || null,
+        meetingsLocation: data.meetingsLocation || null,
         logoUrl: data.logoUrl || null,
         faviconUrl: data.faviconUrl || null,
         removeLogo,
@@ -172,6 +200,26 @@ export default function AdminGeneralSettings() {
                   </FormItem>
                 )}
               />
+
+              <FormField
+                control={form.control}
+                name="heroDescription"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Descripción Principal</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        {...field}
+                        value={field.value || ""}
+                        rows={3}
+                        data-testid="input-hero-description"
+                        placeholder="Honor, disciplina y patriotismo..."
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </CardContent>
           </Card>
 
@@ -234,6 +282,136 @@ export default function AdminGeneralSettings() {
                   </FormItem>
                 )}
               />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Horarios y Actividades</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-4">
+                <h3 className="font-semibold text-sm">Entrenamientos Regulares</h3>
+                <FormField
+                  control={form.control}
+                  name="trainingSchedule"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Horario de Entrenamiento</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          value={field.value || ""}
+                          data-testid="input-training-schedule"
+                          placeholder="Martes y Jueves, 2:00 PM - 4:00 PM"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="trainingLocation"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Lugar de Entrenamiento</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          value={field.value || ""}
+                          data-testid="input-training-location"
+                          placeholder="Patio principal del Liceo"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="space-y-4 pt-4 border-t">
+                <h3 className="font-semibold text-sm">Ceremonias Especiales</h3>
+                <FormField
+                  control={form.control}
+                  name="ceremoniesSchedule"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Horario de Ceremonias</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          value={field.value || ""}
+                          data-testid="input-ceremonies-schedule"
+                          placeholder="Fechas patrias y eventos institucionales"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="ceremoniesNotes"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Notas sobre Ceremonias</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          value={field.value || ""}
+                          data-testid="input-ceremonies-notes"
+                          placeholder="Se coordinan con anticipación"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="space-y-4 pt-4 border-t">
+                <h3 className="font-semibold text-sm">Reuniones de Coordinación</h3>
+                <FormField
+                  control={form.control}
+                  name="meetingsSchedule"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Horario de Reuniones</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          value={field.value || ""}
+                          data-testid="input-meetings-schedule"
+                          placeholder="Viernes, 3:00 PM - 4:00 PM"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="meetingsLocation"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Lugar de Reuniones</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          value={field.value || ""}
+                          data-testid="input-meetings-location"
+                          placeholder="Aula de coordinación"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </CardContent>
           </Card>
 

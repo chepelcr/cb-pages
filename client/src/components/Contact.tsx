@@ -1,9 +1,16 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
 import { MapPin, Phone, Mail, Clock, ExternalLink } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import type { SiteConfig } from '@shared/schema';
 
 export default function Contact() {
+  const { data: config, isLoading } = useQuery<SiteConfig>({
+    queryKey: ['/api/admin/site-config'],
+  });
+
   const handleContactClick = (type: string, value: string) => {
     console.log(`Contact clicked: ${type} - ${value}`);
     
@@ -20,15 +27,15 @@ export default function Contact() {
     {
       icon: MapPin,
       label: 'Ubicación',
-      value: 'Liceo de Costa Rica, San José',
-      description: 'Avenida 6, Calle 7-9, San José, Costa Rica',
+      value: config?.siteName || 'Liceo de Costa Rica, San José',
+      description: config?.address || 'Avenida 6, Calle 7-9, San José, Costa Rica',
       type: 'location',
       actionText: 'Ver en Maps'
     },
     {
       icon: Phone,
       label: 'Teléfono',
-      value: '+506 2221-9358',
+      value: config?.contactPhone || '+506 2221-9358',
       description: 'Secretaría del Liceo de Costa Rica',
       type: 'phone',
       actionText: 'Llamar'
@@ -36,7 +43,7 @@ export default function Contact() {
     {
       icon: Mail,
       label: 'Email',
-      value: 'cuerpo.banderas@liceocostarica.ed.cr',
+      value: config?.contactEmail || 'cuerpo.banderas@liceocostarica.ed.cr',
       description: 'Coordinación Cuerpo de Banderas',
       type: 'email',
       actionText: 'Enviar Email'
@@ -44,8 +51,8 @@ export default function Contact() {
     {
       icon: Clock,
       label: 'Horario de Entrenamientos',
-      value: 'Martes y Jueves 2:00 PM',
-      description: 'Patio principal del Liceo',
+      value: config?.trainingSchedule || 'Martes y Jueves 2:00 PM',
+      description: config?.trainingLocation || 'Patio principal del Liceo',
       type: 'schedule',
       actionText: 'Más Info'
     }
@@ -140,7 +147,7 @@ export default function Contact() {
               
               <Button 
                 className="w-full mt-4 hover-elevate" 
-                onClick={() => handleContactClick('email', 'cuerpo.banderas@liceocostarica.ed.cr')}
+                onClick={() => handleContactClick('email', config?.contactEmail || 'cuerpo.banderas@liceocostarica.ed.cr')}
                 data-testid="button-apply"
               >
                 Solicitar Información
@@ -156,30 +163,38 @@ export default function Contact() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="space-y-4">
-                <div className="border-l-4 border-primary pl-4">
-                  <h4 className="font-semibold text-foreground">Entrenamientos Regulares</h4>
-                  <p className="text-sm text-muted-foreground">Martes y Jueves, 2:00 PM - 4:00 PM</p>
-                  <p className="text-xs text-muted-foreground">Patio principal del Liceo</p>
+              {isLoading ? (
+                <div className="space-y-4">
+                  <Skeleton className="h-20 w-full" />
+                  <Skeleton className="h-20 w-full" />
+                  <Skeleton className="h-20 w-full" />
                 </div>
-                
-                <div className="border-l-4 border-secondary pl-4">
-                  <h4 className="font-semibold text-foreground">Ceremonias Especiales</h4>
-                  <p className="text-sm text-muted-foreground">Fechas patrias y eventos institucionales</p>
-                  <p className="text-xs text-muted-foreground">Se coordinan con anticipación</p>
+              ) : (
+                <div className="space-y-4">
+                  <div className="border-l-4 border-primary pl-4">
+                    <h4 className="font-semibold text-foreground">Entrenamientos Regulares</h4>
+                    <p className="text-sm text-muted-foreground">{config?.trainingSchedule || 'Martes y Jueves, 2:00 PM - 4:00 PM'}</p>
+                    <p className="text-xs text-muted-foreground">{config?.trainingLocation || 'Patio principal del Liceo'}</p>
+                  </div>
+                  
+                  <div className="border-l-4 border-secondary pl-4">
+                    <h4 className="font-semibold text-foreground">Ceremonias Especiales</h4>
+                    <p className="text-sm text-muted-foreground">{config?.ceremoniesSchedule || 'Fechas patrias y eventos institucionales'}</p>
+                    <p className="text-xs text-muted-foreground">{config?.ceremoniesNotes || 'Se coordinan con anticipación'}</p>
+                  </div>
+                  
+                  <div className="border-l-4 border-accent pl-4">
+                    <h4 className="font-semibold text-foreground">Reuniones de Coordinación</h4>
+                    <p className="text-sm text-muted-foreground">{config?.meetingsSchedule || 'Viernes, 3:00 PM - 4:00 PM'}</p>
+                    <p className="text-xs text-muted-foreground">{config?.meetingsLocation || 'Aula de coordinación'}</p>
+                  </div>
                 </div>
-                
-                <div className="border-l-4 border-accent pl-4">
-                  <h4 className="font-semibold text-foreground">Reuniones de Coordinación</h4>
-                  <p className="text-sm text-muted-foreground">Viernes, 3:00 PM - 4:00 PM</p>
-                  <p className="text-xs text-muted-foreground">Aula de coordinación</p>
-                </div>
-              </div>
+              )}
               
               <Button 
                 variant="outline" 
                 className="w-full mt-4 hover-elevate"
-                onClick={() => handleContactClick('phone', '+506 2221-9358')}
+                onClick={() => handleContactClick('phone', config?.contactPhone || '+506 2221-9358')}
                 data-testid="button-schedule-info"
               >
                 Consultar Horarios

@@ -293,15 +293,19 @@ export default function AdminGeneralSettings() {
             </CardContent>
           </Card>
 
-          <Button
-            type="submit"
-            disabled={updateMutation.isPending}
-            data-testid="button-save-settings"
-          >
-            {updateMutation.isPending ? "Guardando..." : "Guardar Cambios"}
-          </Button>
         </form>
       </Form>
+
+      <Button
+        type="submit"
+        onClick={form.handleSubmit(onSubmit)}
+        disabled={updateMutation.isPending}
+        data-testid="button-save-settings"
+        className="fixed bottom-6 right-6 z-50 shadow-lg"
+        size="lg"
+      >
+        {updateMutation.isPending ? "Guardando..." : "Guardar Cambios"}
+      </Button>
     </div>
   );
 }

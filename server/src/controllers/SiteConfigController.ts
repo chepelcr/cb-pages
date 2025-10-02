@@ -27,6 +27,7 @@ export class SiteConfigController {
       { name: 'logo', maxCount: 1 },
       { name: 'favicon', maxCount: 1 }
     ]), this.updateConfig.bind(this));
+    router.put('/with-url', this.updateConfigWithUrl.bind(this));
     return router;
   }
 
@@ -150,6 +151,90 @@ export class SiteConfigController {
       // Remove the removal flags from data before sending to service
       delete data.removeLogo;
       delete data.removeFavicon;
+
+      const updated = await siteConfigService.updateConfig(data);
+      res.json(updated);
+    } catch (error) {
+      console.error('Site config update error:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      res.status(500).json({ 
+        error: "Failed to update configuration",
+        details: errorMessage
+      });
+    }
+  }
+
+  /**
+   * @swagger
+   * /api/admin/site-config/with-url:
+   *   put:
+   *     summary: Update site configuration with S3 URLs
+   *     tags: [Admin - Site Config]
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               siteName:
+   *                 type: string
+   *               siteSubtitle:
+   *                 type: string
+   *               logoUrl:
+   *                 type: string
+   *               faviconUrl:
+   *                 type: string
+   *               contactEmail:
+   *                 type: string
+   *               contactPhone:
+   *                 type: string
+   *               address:
+   *                 type: string
+   *               removeLogo:
+   *                 type: boolean
+   *               removeFavicon:
+   *                 type: boolean
+   *     responses:
+   *       200:
+   *         description: Updated configuration
+   *       400:
+   *         description: Invalid image URL
+   *       500:
+   *         description: Failed to update configuration
+   */
+  async updateConfigWithUrl(req: Request, res: Response) {
+    try {
+      const { logoUrl, faviconUrl, removeLogo, removeFavicon, ...restData } = req.body;
+      const data: any = { ...restData };
+
+      const { validateAndParseS3Url } = await import('../utils/s3ValidationHelper');
+
+      // Validate and handle logo
+      if (removeLogo) {
+        data.logoUrl = null;
+      } else if (logoUrl) {
+        const parsedLogoUrl = validateAndParseS3Url(logoUrl);
+        if (!parsedLogoUrl) {
+          return res.status(400).json({ 
+            error: "Invalid logo URL - must be a valid HTTPS URL from the configured S3 bucket" 
+          });
+        }
+        data.logoUrl = logoUrl;
+      }
+
+      // Validate and handle favicon
+      if (removeFavicon) {
+        data.faviconUrl = null;
+      } else if (faviconUrl) {
+        const parsedFaviconUrl = validateAndParseS3Url(faviconUrl);
+        if (!parsedFaviconUrl) {
+          return res.status(400).json({ 
+            error: "Invalid favicon URL - must be a valid HTTPS URL from the configured S3 bucket" 
+          });
+        }
+        data.faviconUrl = faviconUrl;
+      }
 
       const updated = await siteConfigService.updateConfig(data);
       res.json(updated);

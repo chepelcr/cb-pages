@@ -15,7 +15,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { ImageUploader } from "@/components/admin/ImageUploader";
+import { S3ImageUploader } from "@/components/admin/S3ImageUploader";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -27,8 +27,8 @@ const formSchema = z.object({
   contactEmail: z.string().email("Invalid email").optional().nullable(),
   contactPhone: z.string().optional().nullable(),
   address: z.string().optional().nullable(),
-  logoFile: z.instanceof(File).optional().nullable(),
-  faviconFile: z.instanceof(File).optional().nullable(),
+  logoUrl: z.string().optional().nullable(),
+  faviconUrl: z.string().optional().nullable(),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -70,30 +70,17 @@ export default function AdminGeneralSettings() {
 
   const updateMutation = useMutation({
     mutationFn: async (data: FormData) => {
-      const formData = new FormData();
-      formData.append("siteName", data.siteName);
-      formData.append("siteSubtitle", data.siteSubtitle);
-      if (data.contactEmail) formData.append("contactEmail", data.contactEmail);
-      if (data.contactPhone) formData.append("contactPhone", data.contactPhone);
-      if (data.address) formData.append("address", data.address);
-      if (data.logoFile) formData.append("logo", data.logoFile);
-      if (data.faviconFile) formData.append("favicon", data.faviconFile);
-      
-      // Add removal flags
-      if (removeLogo) formData.append("removeLogo", "true");
-      if (removeFavicon) formData.append("removeFavicon", "true");
-
-      const res = await fetch("/api/admin/site-config", {
-        method: "PUT",
-        body: formData,
-        credentials: "include",
+      return apiRequest("PUT", "/api/admin/site-config/with-url", {
+        siteName: data.siteName,
+        siteSubtitle: data.siteSubtitle,
+        contactEmail: data.contactEmail || null,
+        contactPhone: data.contactPhone || null,
+        address: data.address || null,
+        logoUrl: data.logoUrl || null,
+        faviconUrl: data.faviconUrl || null,
+        removeLogo,
+        removeFavicon,
       });
-
-      if (!res.ok) {
-        throw new Error(`${res.status}: ${await res.text()}`);
-      }
-
-      return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/site-config"] });
@@ -256,14 +243,14 @@ export default function AdminGeneralSettings() {
             <CardContent className="space-y-6">
               <FormField
                 control={form.control}
-                name="logoFile"
+                name="logoUrl"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Logo</FormLabel>
                     <FormControl>
-                      <ImageUploader
-                        onImageSelect={(file) => {
-                          field.onChange(file);
+                      <S3ImageUploader
+                        onUploadComplete={(url) => {
+                          field.onChange(url);
                           setRemoveLogo(false);
                         }}
                         currentImageUrl={config?.logoUrl || undefined}
@@ -271,7 +258,7 @@ export default function AdminGeneralSettings() {
                           field.onChange(null);
                           setRemoveLogo(true);
                         }}
-                        maxSizeMB={5}
+                        folder="site-config"
                       />
                     </FormControl>
                     <FormMessage />
@@ -281,14 +268,14 @@ export default function AdminGeneralSettings() {
 
               <FormField
                 control={form.control}
-                name="faviconFile"
+                name="faviconUrl"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Favicon</FormLabel>
                     <FormControl>
-                      <ImageUploader
-                        onImageSelect={(file) => {
-                          field.onChange(file);
+                      <S3ImageUploader
+                        onUploadComplete={(url) => {
+                          field.onChange(url);
                           setRemoveFavicon(false);
                         }}
                         currentImageUrl={config?.faviconUrl || undefined}
@@ -296,7 +283,7 @@ export default function AdminGeneralSettings() {
                           field.onChange(null);
                           setRemoveFavicon(true);
                         }}
-                        maxSizeMB={1}
+                        folder="site-config"
                       />
                     </FormControl>
                     <FormMessage />

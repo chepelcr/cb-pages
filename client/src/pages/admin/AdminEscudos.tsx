@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { ImageUploader } from "@/components/admin/ImageUploader";
+import { S3ImageUploader } from "@/components/admin/S3ImageUploader";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -21,7 +21,7 @@ const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().min(1, "Description is required"),
   symbolism: z.string().optional().nullable(),
-  imageFile: z.instanceof(File).optional().nullable(),
+  imageUrl: z.string().optional().nullable(),
   isMainShield: z.boolean().default(false),
 });
 
@@ -48,24 +48,13 @@ export default function AdminEscudos() {
 
   const createMutation = useMutation({
     mutationFn: async (data: FormData) => {
-      const formData = new FormData();
-      formData.append("title", data.title);
-      formData.append("description", data.description);
-      if (data.symbolism) formData.append("symbolism", data.symbolism);
-      formData.append("isMainShield", String(data.isMainShield));
-      if (data.imageFile) formData.append("image", data.imageFile);
-
-      const res = await fetch("/api/admin/shields", {
-        method: "POST",
-        body: formData,
-        credentials: "include",
+      return apiRequest("POST", "/api/admin/shields", {
+        title: data.title,
+        description: data.description,
+        symbolism: data.symbolism || null,
+        imageUrl: data.imageUrl || null,
+        isMainShield: data.isMainShield,
       });
-
-      if (!res.ok) {
-        throw new Error(`${res.status}: ${await res.text()}`);
-      }
-
-      return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/shields"] });
@@ -87,24 +76,13 @@ export default function AdminEscudos() {
 
   const updateMutation = useMutation({
     mutationFn: async ({ id, data }: { id: string; data: FormData }) => {
-      const formData = new FormData();
-      formData.append("title", data.title);
-      formData.append("description", data.description);
-      if (data.symbolism) formData.append("symbolism", data.symbolism);
-      formData.append("isMainShield", String(data.isMainShield));
-      if (data.imageFile) formData.append("image", data.imageFile);
-
-      const res = await fetch(`/api/admin/shields/${id}`, {
-        method: "PUT",
-        body: formData,
-        credentials: "include",
+      return apiRequest("PUT", `/api/admin/shields/${id}`, {
+        title: data.title,
+        description: data.description,
+        symbolism: data.symbolism || null,
+        imageUrl: data.imageUrl || null,
+        isMainShield: data.isMainShield,
       });
-
-      if (!res.ok) {
-        throw new Error(`${res.status}: ${await res.text()}`);
-      }
-
-      return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/shields"] });
@@ -312,15 +290,16 @@ export default function AdminEscudos() {
 
                 <FormField
                   control={form.control}
-                  name="imageFile"
+                  name="imageUrl"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Imagen</FormLabel>
                       <FormControl>
-                        <ImageUploader
-                          onImageSelect={(file) => field.onChange(file)}
+                        <S3ImageUploader
+                          onUploadComplete={(url) => field.onChange(url)}
                           currentImageUrl={editingShield?.imageUrl || undefined}
                           onRemove={() => field.onChange(null)}
+                          folder="shields"
                         />
                       </FormControl>
                       <FormMessage />

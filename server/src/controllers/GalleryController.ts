@@ -415,14 +415,13 @@ export class GalleryController {
         return res.status(400).json({ error: "Image URL is required" });
       }
 
-      // Validate that the imageUrl is from our S3 bucket
-      const bucket = process.env.AWS_S3_BUCKET;
-      const region = process.env.AWS_REGION || 'us-east-1';
-      const validS3Pattern = new RegExp(`^https://${bucket}\\.s3\\.${region}\\.amazonaws\\.com/`);
-
-      if (!validS3Pattern.test(imageUrl)) {
+      // Validate S3 URL using centralized helper
+      const { validateAndParseS3Url } = await import('../utils/s3ValidationHelper');
+      const parsedUrl = validateAndParseS3Url(imageUrl);
+      
+      if (!parsedUrl) {
         return res.status(400).json({ 
-          error: "Invalid image URL - must be from the configured S3 bucket" 
+          error: "Invalid image URL - must be a valid HTTPS URL from the configured S3 bucket" 
         });
       }
 
@@ -439,7 +438,8 @@ export class GalleryController {
       res.status(201).json(item);
     } catch (error) {
       console.error('Failed to create gallery item with URL:', error);
-      res.status(500).json({ error: "Failed to create gallery item" });
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      res.status(500).json({ error: "Failed to create gallery item", details: errorMessage });
     }
   }
 
@@ -496,13 +496,12 @@ export class GalleryController {
       
       // Validate imageUrl if provided
       if (imageUrl) {
-        const bucket = process.env.AWS_S3_BUCKET;
-        const region = process.env.AWS_REGION || 'us-east-1';
-        const validS3Pattern = new RegExp(`^https://${bucket}\\.s3\\.${region}\\.amazonaws\\.com/`);
-
-        if (!validS3Pattern.test(imageUrl)) {
+        const { validateAndParseS3Url } = await import('../utils/s3ValidationHelper');
+        const parsedUrl = validateAndParseS3Url(imageUrl);
+        
+        if (!parsedUrl) {
           return res.status(400).json({ 
-            error: "Invalid image URL - must be from the configured S3 bucket" 
+            error: "Invalid image URL - must be a valid HTTPS URL from the configured S3 bucket" 
           });
         }
         
@@ -518,7 +517,8 @@ export class GalleryController {
       res.json(item);
     } catch (error) {
       console.error('Failed to update gallery item with URL:', error);
-      res.status(500).json({ error: "Failed to update gallery item" });
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      res.status(500).json({ error: "Failed to update gallery item", details: errorMessage });
     }
   }
 }

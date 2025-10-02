@@ -128,10 +128,26 @@ export class LeadershipController {
    */
   async create(req: Request, res: Response) {
     try {
+      const { imageUrl } = req.body;
+      
+      // Validate S3 URL if provided
+      if (imageUrl) {
+        const { validateAndParseS3Url } = await import('../utils/s3ValidationHelper');
+        const parsedUrl = validateAndParseS3Url(imageUrl);
+        
+        if (!parsedUrl) {
+          return res.status(400).json({ 
+            error: "Invalid image URL - must be a valid HTTPS URL from the configured S3 bucket" 
+          });
+        }
+      }
+      
       const period = await leadershipService.create(req.body);
       res.status(201).json(period);
     } catch (error) {
-      res.status(500).json({ error: "Failed to create leadership period" });
+      console.error('Failed to create leadership period:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      res.status(500).json({ error: "Failed to create leadership period", details: errorMessage });
     }
   }
 
@@ -174,13 +190,29 @@ export class LeadershipController {
    */
   async update(req: Request, res: Response) {
     try {
+      const { imageUrl } = req.body;
+      
+      // Validate S3 URL if provided
+      if (imageUrl) {
+        const { validateAndParseS3Url } = await import('../utils/s3ValidationHelper');
+        const parsedUrl = validateAndParseS3Url(imageUrl);
+        
+        if (!parsedUrl) {
+          return res.status(400).json({ 
+            error: "Invalid image URL - must be a valid HTTPS URL from the configured S3 bucket" 
+          });
+        }
+      }
+      
       const period = await leadershipService.update(req.params.id, req.body);
       if (!period) {
         return res.status(404).json({ error: "Leadership period not found" });
       }
       res.json(period);
     } catch (error) {
-      res.status(500).json({ error: "Failed to update leadership period" });
+      console.error('Failed to update leadership period:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      res.status(500).json({ error: "Failed to update leadership period", details: errorMessage });
     }
   }
 

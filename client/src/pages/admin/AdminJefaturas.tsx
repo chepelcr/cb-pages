@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { ImageUploader } from "@/components/admin/ImageUploader";
+import { S3ImageUploader } from "@/components/admin/S3ImageUploader";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -19,7 +19,7 @@ const formSchema = z.object({
   year: z.string().min(1, "Year is required"),
   jefatura: z.string().min(1, "Jefatura is required"),
   segundaVoz: z.string().optional().nullable(),
-  imageFile: z.instanceof(File).optional().nullable(),
+  imageUrl: z.string().optional().nullable(),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -44,23 +44,12 @@ export default function AdminJefaturas() {
 
   const createMutation = useMutation({
     mutationFn: async (data: FormData) => {
-      const formData = new FormData();
-      formData.append("year", data.year);
-      formData.append("jefatura", data.jefatura);
-      if (data.segundaVoz) formData.append("segundaVoz", data.segundaVoz);
-      if (data.imageFile) formData.append("image", data.imageFile);
-
-      const res = await fetch("/api/admin/leadership", {
-        method: "POST",
-        body: formData,
-        credentials: "include",
+      return apiRequest("POST", "/api/admin/leadership", {
+        year: data.year,
+        jefatura: data.jefatura,
+        segundaVoz: data.segundaVoz || null,
+        imageUrl: data.imageUrl || null,
       });
-
-      if (!res.ok) {
-        throw new Error(`${res.status}: ${await res.text()}`);
-      }
-
-      return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/leadership"] });
@@ -82,23 +71,12 @@ export default function AdminJefaturas() {
 
   const updateMutation = useMutation({
     mutationFn: async ({ id, data }: { id: string; data: FormData }) => {
-      const formData = new FormData();
-      formData.append("year", data.year);
-      formData.append("jefatura", data.jefatura);
-      if (data.segundaVoz) formData.append("segundaVoz", data.segundaVoz);
-      if (data.imageFile) formData.append("image", data.imageFile);
-
-      const res = await fetch(`/api/admin/leadership/${id}`, {
-        method: "PUT",
-        body: formData,
-        credentials: "include",
+      return apiRequest("PUT", `/api/admin/leadership/${id}`, {
+        year: data.year,
+        jefatura: data.jefatura,
+        segundaVoz: data.segundaVoz || null,
+        imageUrl: data.imageUrl || null,
       });
-
-      if (!res.ok) {
-        throw new Error(`${res.status}: ${await res.text()}`);
-      }
-
-      return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/leadership"] });
@@ -263,15 +241,16 @@ export default function AdminJefaturas() {
 
                 <FormField
                   control={form.control}
-                  name="imageFile"
+                  name="imageUrl"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Fotografía (opcional)</FormLabel>
                       <FormControl>
-                        <ImageUploader
-                          onImageSelect={(file) => field.onChange(file)}
+                        <S3ImageUploader
+                          onUploadComplete={(url) => field.onChange(url)}
                           currentImageUrl={editingPeriod?.imageUrl || undefined}
                           onRemove={() => field.onChange(null)}
+                          folder="leadership"
                         />
                       </FormControl>
                       <FormMessage />

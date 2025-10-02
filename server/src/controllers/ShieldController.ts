@@ -160,10 +160,26 @@ export class ShieldController {
    */
   async create(req: Request, res: Response) {
     try {
+      const { imageUrl } = req.body;
+      
+      // Validate S3 URL if provided
+      if (imageUrl) {
+        const { validateAndParseS3Url } = await import('../utils/s3ValidationHelper');
+        const parsedUrl = validateAndParseS3Url(imageUrl);
+        
+        if (!parsedUrl) {
+          return res.status(400).json({ 
+            error: "Invalid image URL - must be a valid HTTPS URL from the configured S3 bucket" 
+          });
+        }
+      }
+      
       const shield = await shieldService.create(req.body);
       res.status(201).json(shield);
     } catch (error) {
-      res.status(500).json({ error: "Failed to create shield" });
+      console.error('Failed to create shield:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      res.status(500).json({ error: "Failed to create shield", details: errorMessage });
     }
   }
 
@@ -208,13 +224,29 @@ export class ShieldController {
    */
   async update(req: Request, res: Response) {
     try {
+      const { imageUrl } = req.body;
+      
+      // Validate S3 URL if provided
+      if (imageUrl) {
+        const { validateAndParseS3Url } = await import('../utils/s3ValidationHelper');
+        const parsedUrl = validateAndParseS3Url(imageUrl);
+        
+        if (!parsedUrl) {
+          return res.status(400).json({ 
+            error: "Invalid image URL - must be a valid HTTPS URL from the configured S3 bucket" 
+          });
+        }
+      }
+      
       const shield = await shieldService.update(req.params.id, req.body);
       if (!shield) {
         return res.status(404).json({ error: "Shield not found" });
       }
       res.json(shield);
     } catch (error) {
-      res.status(500).json({ error: "Failed to update shield" });
+      console.error('Failed to update shield:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      res.status(500).json({ error: "Failed to update shield", details: errorMessage });
     }
   }
 

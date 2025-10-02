@@ -134,7 +134,7 @@ export default function AdminGaleria() {
       return apiRequest("POST", "/api/admin/gallery/with-url", {
         title: data.title,
         description: data.description || null,
-        categoryId: data.categoryId || null,
+        categoryId: data.categoryId === "none" ? null : (data.categoryId || null),
         year: data.year || null,
         imageUrl: data.imageUrl,
       });
@@ -162,7 +162,7 @@ export default function AdminGaleria() {
       return apiRequest("PUT", `/api/admin/gallery/${id}/with-url`, {
         title: data.title,
         description: data.description || null,
-        categoryId: data.categoryId || null,
+        categoryId: data.categoryId === "none" ? null : (data.categoryId || null),
         year: data.year || null,
         imageUrl: data.imageUrl,
       });
@@ -369,7 +369,7 @@ export default function AdminGaleria() {
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="">Sin categoría</SelectItem>
+                              <SelectItem value="none">Sin categoría</SelectItem>
                               {categories?.map((category) => (
                                 <SelectItem key={category.id} value={category.id}>
                                   {category.name}

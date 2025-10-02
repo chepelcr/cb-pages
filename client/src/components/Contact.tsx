@@ -122,28 +122,28 @@ export default function Contact() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="space-y-3">
-                <div className="flex items-start gap-3">
-                  <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
-                  <p className="text-sm text-muted-foreground">Ser estudiante activo del Liceo de Costa Rica</p>
+              {isLoading ? (
+                <div className="space-y-3">
+                  <Skeleton className="h-6 w-full" />
+                  <Skeleton className="h-6 w-full" />
+                  <Skeleton className="h-6 w-full" />
                 </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
-                  <p className="text-sm text-muted-foreground">Mantener promedio académico mínimo de 80</p>
+              ) : (
+                <div className="space-y-3">
+                  {(config?.admissionRequirements || [
+                    'Ser estudiante activo del Liceo de Costa Rica',
+                    'Mantener promedio académico mínimo de 80',
+                    'Disponibilidad para entrenamientos regulares',
+                    'Compromiso con los valores institucionales',
+                    'Participación en ceremonias patrias'
+                  ]).map((requirement, index) => (
+                    <div key={index} className="flex items-start gap-3">
+                      <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                      <p className="text-sm text-muted-foreground" data-testid={`text-requirement-${index}`}>{requirement}</p>
+                    </div>
+                  ))}
                 </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
-                  <p className="text-sm text-muted-foreground">Disponibilidad para entrenamientos regulares</p>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
-                  <p className="text-sm text-muted-foreground">Compromiso con los valores institucionales</p>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
-                  <p className="text-sm text-muted-foreground">Participación en ceremonias patrias</p>
-                </div>
-              </div>
+              )}
               
               <Button 
                 className="w-full mt-4 hover-elevate" 

@@ -35,6 +35,7 @@ const formSchema = z.object({
   ceremoniesNotes: z.string().optional().nullable(),
   meetingsSchedule: z.string().optional().nullable(),
   meetingsLocation: z.string().optional().nullable(),
+  admissionRequirements: z.array(z.string()).optional().nullable(),
   logoUrl: z.string().optional().nullable(),
   faviconUrl: z.string().optional().nullable(),
 });
@@ -65,6 +66,7 @@ export default function AdminGeneralSettings() {
       ceremoniesNotes: "",
       meetingsSchedule: "",
       meetingsLocation: "",
+      admissionRequirements: [],
     },
   });
 
@@ -83,6 +85,7 @@ export default function AdminGeneralSettings() {
         ceremoniesNotes: config.ceremoniesNotes || "",
         meetingsSchedule: config.meetingsSchedule || "",
         meetingsLocation: config.meetingsLocation || "",
+        admissionRequirements: config.admissionRequirements || [],
       });
       // Reset removal flags when config loads
       setRemoveLogo(false);
@@ -105,6 +108,7 @@ export default function AdminGeneralSettings() {
         ceremoniesNotes: data.ceremoniesNotes || null,
         meetingsSchedule: data.meetingsSchedule || null,
         meetingsLocation: data.meetingsLocation || null,
+        admissionRequirements: data.admissionRequirements || [],
         logoUrl: data.logoUrl || null,
         faviconUrl: data.faviconUrl || null,
         removeLogo,
@@ -278,6 +282,39 @@ export default function AdminGeneralSettings() {
                         data-testid="input-address"
                       />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Proceso de Ingreso</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <FormField
+                control={form.control}
+                name="admissionRequirements"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Requisitos de Admisión</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        value={field.value?.join('\n') || ""}
+                        onChange={(e) => {
+                          const lines = e.target.value.split('\n').filter(line => line.trim());
+                          field.onChange(lines);
+                        }}
+                        rows={6}
+                        data-testid="input-admission-requirements"
+                        placeholder="Ingresa un requisito por línea&#10;Ejemplo:&#10;Ser estudiante activo del Liceo&#10;Mantener promedio académico mínimo"
+                      />
+                    </FormControl>
+                    <p className="text-sm text-muted-foreground">
+                      Ingresa cada requisito en una línea separada. Las líneas vacías serán ignoradas.
+                    </p>
                     <FormMessage />
                   </FormItem>
                 )}

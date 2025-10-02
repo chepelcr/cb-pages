@@ -1,9 +1,18 @@
 import { useQuery } from '@tanstack/react-query';
-import type { Shield } from '@shared/schema';
+import type { Shield, ShieldValue } from '@shared/schema';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Shield as ShieldIcon, Award, Star } from 'lucide-react';
+import { Shield as ShieldIcon, Award, Star, Flag, Target, Heart } from 'lucide-react';
+
+const iconMap = {
+  'Award': Award,
+  'ShieldIcon': ShieldIcon,
+  'Star': Star,
+  'Flag': Flag,
+  'Target': Target,
+  'Heart': Heart
+};
 
 export default function Shields() {
   const { data: shields, isLoading: shieldsLoading } = useQuery<Shield[]>({
@@ -14,7 +23,12 @@ export default function Shields() {
     queryKey: ['/api/admin/shields/main'],
   });
 
+  const { data: shieldValues, isLoading: valuesLoading } = useQuery<ShieldValue[]>({
+    queryKey: ['/api/admin/shield-values'],
+  });
+
   const sortedShields = shields?.sort((a, b) => a.displayOrder - b.displayOrder) || [];
+  const sortedValues = shieldValues?.sort((a, b) => a.displayOrder - b.displayOrder) || [];
   const isLoading = shieldsLoading || mainShieldLoading;
 
   return (
@@ -83,89 +97,37 @@ export default function Shields() {
           </div>
         ) : null}
 
-        {/* Shield Elements */}
-        {shieldsLoading ? (
+        {/* Shield Values */}
+        {valuesLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[...Array(3)].map((_, index) => (
               <Skeleton key={index} className="h-64 w-full" />
             ))}
           </div>
-        ) : (
+        ) : sortedValues.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {sortedShields.filter(shield => !shield.isMainShield).length > 0 ? (
-              sortedShields.filter(shield => !shield.isMainShield).map((shield) => (
-                <Card key={shield.id} className="text-center hover-elevate transition-all duration-300" data-testid={`card-shield-${shield.id}`}>
+            {sortedValues.map((value) => {
+              const IconComponent = iconMap[value.iconName as keyof typeof iconMap] || Award;
+              return (
+                <Card key={value.id} className="text-center hover-elevate transition-all duration-300" data-testid={`card-shield-value-${value.id}`}>
                   <CardHeader className="pb-4">
                     <div className="mx-auto p-3 bg-primary/10 rounded-full w-fit mb-4">
-                      <ShieldIcon className="h-8 w-8 text-primary" />
+                      <IconComponent className="h-8 w-8 text-primary" />
                     </div>
-                    <CardTitle className="text-lg" data-testid={`text-shield-title-${shield.id}`}>
-                      {shield.title}
+                    <CardTitle className="text-lg" data-testid={`text-value-title-${value.id}`}>
+                      {value.title}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-muted-foreground text-sm" data-testid={`text-shield-description-${shield.id}`}>
-                      {shield.description}
+                    <p className="text-muted-foreground text-sm" data-testid={`text-value-description-${value.id}`}>
+                      {value.description}
                     </p>
                   </CardContent>
                 </Card>
-              ))
-            ) : (
-              <>
-                <Card className="text-center hover-elevate transition-all duration-300" data-testid="card-shield-honor">
-                  <CardHeader className="pb-4">
-                    <div className="mx-auto p-3 bg-primary/10 rounded-full w-fit mb-4">
-                      <Award className="h-8 w-8 text-primary" />
-                    </div>
-                    <CardTitle className="text-lg" data-testid="text-honor-title">
-                      Honor
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground text-sm" data-testid="text-honor-description">
-                      El compromiso con la excelencia y la integridad en cada acción, 
-                      representando dignamente la institución.
-                    </p>
-                  </CardContent>
-                </Card>
-                
-                <Card className="text-center hover-elevate transition-all duration-300" data-testid="card-shield-discipline">
-                  <CardHeader className="pb-4">
-                    <div className="mx-auto p-3 bg-primary/10 rounded-full w-fit mb-4">
-                      <ShieldIcon className="h-8 w-8 text-primary" />
-                    </div>
-                    <CardTitle className="text-lg" data-testid="text-discipline-title">
-                      Disciplina
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground text-sm" data-testid="text-discipline-description">
-                      La formación del carácter a través del orden, la constancia 
-                      y el cumplimiento del deber.
-                    </p>
-                  </CardContent>
-                </Card>
-                
-                <Card className="text-center hover-elevate transition-all duration-300" data-testid="card-shield-patriotism">
-                  <CardHeader className="pb-4">
-                    <div className="mx-auto p-3 bg-primary/10 rounded-full w-fit mb-4">
-                      <Star className="h-8 w-8 text-primary" />
-                    </div>
-                    <CardTitle className="text-lg" data-testid="text-patriotism-title">
-                      Patriotismo
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground text-sm" data-testid="text-patriotism-description">
-                      El amor profundo por Costa Rica y el compromiso con 
-                      el servicio a la patria y sus valores.
-                    </p>
-                  </CardContent>
-                </Card>
-              </>
-            )}
+              );
+            })}
           </div>
-        )}
+        ) : null}
       </div>
     </section>
   );

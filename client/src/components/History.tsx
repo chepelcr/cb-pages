@@ -1,11 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
-import type { HistoricalMilestone } from '@shared/schema';
+import type { HistoricalMilestone, HistoricalImage } from '@shared/schema';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Calendar, Users, Flag, Award } from 'lucide-react';
-import historicalImage from '@assets/generated_images/Historical_1950s_ceremony_photo_1f17f679.png';
-import paradeImage from '@assets/generated_images/Military_academy_parade_ground_c7bba0ab.png';
+import { Calendar, Users, Flag, Award, Image as ImageIcon } from 'lucide-react';
 
 const iconMap = {
   'Flag': Flag,
@@ -15,11 +13,16 @@ const iconMap = {
 };
 
 export default function History() {
-  const { data: milestones, isLoading } = useQuery<HistoricalMilestone[]>({
+  const { data: milestones, isLoading: milestonesLoading } = useQuery<HistoricalMilestone[]>({
     queryKey: ['/api/admin/history'],
   });
 
+  const { data: historicalImages, isLoading: imagesLoading } = useQuery<HistoricalImage[]>({
+    queryKey: ['/api/admin/historical-images'],
+  });
+
   const sortedMilestones = milestones?.sort((a, b) => a.displayOrder - b.displayOrder) || [];
+  const sortedImages = historicalImages?.sort((a, b) => a.displayOrder - b.displayOrder) || [];
 
   return (
     <section id="history" className="py-20 bg-muted/50">
@@ -39,37 +42,34 @@ export default function History() {
         </div>
 
         {/* Historical Images */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
-          <Card className="overflow-hidden" data-testid="card-historical-image">
-            <img 
-              src={historicalImage} 
-              alt="Ceremonia histórica de 1950s" 
-              className="w-full h-64 object-cover"
-              data-testid="img-historical-ceremony"
-            />
-            <CardContent className="p-4">
-              <h3 className="font-semibold text-foreground">Primeras Ceremonias</h3>
-              <p className="text-sm text-muted-foreground mt-1">
-                Imágenes históricas de las primeras ceremonias del Cuerpo de Banderas en la década de 1950.
-              </p>
-            </CardContent>
-          </Card>
-          
-          <Card className="overflow-hidden" data-testid="card-parade-image">
-            <img 
-              src={paradeImage} 
-              alt="Patio de ceremonias del Liceo" 
-              className="w-full h-64 object-cover"
-              data-testid="img-parade-ground"
-            />
-            <CardContent className="p-4">
-              <h3 className="font-semibold text-foreground">Patio de Ceremonias</h3>
-              <p className="text-sm text-muted-foreground mt-1">
-                El icónico patio del Liceo donde se realizan las ceremonias patrióticas y entrenamientos.
-              </p>
-            </CardContent>
-          </Card>
-        </div>
+        {imagesLoading ? (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+            {[...Array(2)].map((_, index) => (
+              <Skeleton key={index} className="h-80 w-full" />
+            ))}
+          </div>
+        ) : sortedImages.length > 0 ? (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+            {sortedImages.map((image, index) => (
+              <Card key={image.id} className="overflow-hidden" data-testid={`card-historical-image-${index}`}>
+                <img 
+                  src={image.imageUrl} 
+                  alt={image.title} 
+                  className="w-full h-64 object-cover"
+                  data-testid={`img-historical-${index}`}
+                />
+                <CardContent className="p-4">
+                  <h3 className="font-semibold text-foreground" data-testid={`text-image-title-${index}`}>
+                    {image.title}
+                  </h3>
+                  <p className="text-sm text-muted-foreground mt-1" data-testid={`text-image-description-${index}`}>
+                    {image.description}
+                  </p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : null}
 
         {/* Timeline */}
         <div className="space-y-8">
@@ -77,12 +77,18 @@ export default function History() {
             Hitos Importantes
           </h3>
           
-          {isLoading ? (
+          {milestonesLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {[...Array(4)].map((_, index) => (
                 <Skeleton key={index} className="h-64 w-full" />
               ))}
             </div>
+          ) : sortedMilestones.length === 0 ? (
+            <Card className="p-8 text-center" data-testid="card-no-milestones">
+              <Flag className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-foreground mb-2">No hay hitos registrados</h3>
+              <p className="text-muted-foreground">Aún no se han agregado hitos históricos importantes</p>
+            </Card>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {sortedMilestones.map((milestone, index) => {

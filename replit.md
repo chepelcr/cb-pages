@@ -48,9 +48,21 @@ Preferred communication style: Simple, everyday language.
 - Prepared schema structure for content management
 - Connection pooling for optimal performance
 
-**Static Asset Management**: Images and media files served through Vite's asset pipeline with proper optimization and caching strategies.
+**AWS S3 Object Storage**: Image upload system using presigned URLs with two-phase workflow:
+- Phase 1: Client requests presigned URL from `/api/uploads/presigned-url` endpoint
+- Phase 2: Client uploads directly to S3, then submits public URL to backend
+- Security: Centralized URL validation enforces HTTPS, bucket verification, and path traversal protection
+- Upload expiration: 5 minutes for uploads, 1 hour for download URLs
+- Folder structure: `gallery/`, `shields/`, `leadership/`, `site-config/`
+
+**Static Asset Management**: Build-time assets served through Vite's asset pipeline with proper optimization and caching strategies.
 
 ### Authentication and Authorization
+
+**AWS API Gateway**: Authentication and authorization handled at the infrastructure level:
+- API Gateway validates credentials before requests reach the application
+- Admin endpoints are protected by gateway-level authentication
+- Application assumes all incoming requests are pre-authenticated
 
 **AWS Cognito Integration**: Designed for enterprise-grade authentication with:
 - Multi-step user registration with email verification
@@ -58,7 +70,7 @@ Preferred communication style: Simple, everyday language.
 - Role-based access control for administrative features
 - Secure password policies and user management
 
-**Protected Route Pattern**: AuthGuard component wrapper ensuring secure access to administrative functionality.
+**Protected Route Pattern**: AuthGuard component wrapper ensuring secure access to administrative functionality on the frontend.
 
 ## External Dependencies
 

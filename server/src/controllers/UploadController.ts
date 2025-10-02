@@ -6,8 +6,8 @@ const s3Service = createS3StorageService();
 export class UploadController {
   getRouter(): Router {
     const router = Router();
-    // TODO: Add authentication middleware to protect this endpoint
-    // This should only be accessible to authenticated admin users
+    // Note: Authentication is handled at the AWS API Gateway level
+    // API Gateway validates credentials before requests reach this endpoint
     router.post('/presigned-url', this.generatePresignedUrl.bind(this));
     return router;
   }

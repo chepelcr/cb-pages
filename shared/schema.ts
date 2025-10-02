@@ -22,6 +22,7 @@ export const siteConfig = pgTable("site_config", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   siteName: text("site_name").notNull().default("Cuerpo de Banderas"),
   siteSubtitle: text("site_subtitle").notNull().default("Liceo de Costa Rica"),
+  heroDescription: text("hero_description").default("Honor, disciplina y patriotismo. Formando jóvenes costarricenses con pasos chilenos adaptados a nuestra cultura nacional."),
   logoUrl: text("logo_url"),
   logoS3Key: text("logo_s3_key"),
   faviconUrl: text("favicon_url"),
@@ -29,6 +30,12 @@ export const siteConfig = pgTable("site_config", {
   contactEmail: text("contact_email").default("cuerpo.banderas@liceocostarica.ed.cr"),
   contactPhone: text("contact_phone").default("+506 2221-9358"),
   address: text("address").default("Liceo de Costa Rica\nAvenida 6, Calle 7-9\nSan José, Costa Rica"),
+  trainingSchedule: text("training_schedule").default("Martes y Jueves, 2:00 PM - 4:00 PM"),
+  trainingLocation: text("training_location").default("Patio principal del Liceo"),
+  ceremoniesSchedule: text("ceremonies_schedule").default("Fechas patrias y eventos institucionales"),
+  ceremoniesNotes: text("ceremonies_notes").default("Se coordinan con anticipación"),
+  meetingsSchedule: text("meetings_schedule").default("Viernes, 3:00 PM - 4:00 PM"),
+  meetingsLocation: text("meetings_location").default("Aula de coordinación"),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 

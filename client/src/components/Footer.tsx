@@ -20,6 +20,8 @@ export default function Footer() {
   const contactEmail = siteConfig?.contactEmail || 'cuerpo.banderas@liceocostarica.ed.cr';
   const contactPhone = siteConfig?.contactPhone || '+506 2221-9358';
   const address = siteConfig?.address || 'Liceo de Costa Rica\nAvenida 6, Calle 7-9\nSan José, Costa Rica';
+  const footerDescription = siteConfig?.footerDescription || 'Formando jóvenes costarricenses con valores patrióticos, disciplina y honor desde 1951. Una tradición de más de 70 años al servicio de la patria.';
+  const foundingYear = siteConfig?.foundingYear || 1951;
 
   const handleSocialClick = (platform: string) => {
     console.log(`Social media clicked: ${platform}`);
@@ -77,11 +79,10 @@ export default function Footer() {
               </div>
             </div>
             <p className="text-muted-foreground mb-4 max-w-md" data-testid="text-footer-description">
-              Formando jóvenes costarricenses con valores patrióticos, disciplina y honor desde 1951. 
-              Una tradición de más de 70 años al servicio de la patria.
+              {footerDescription}
             </p>
             <Badge variant="outline" className="" data-testid="badge-footer-tradition">
-              Tradición desde 1951
+              Tradición desde {foundingYear}
             </Badge>
           </div>
 

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import type { LeadershipPeriod } from '@shared/schema';
+import type { LeadershipPeriod, SiteConfig } from '@shared/schema';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -25,6 +25,20 @@ export default function Leadership() {
   const { data: leadershipData, isLoading } = useQuery<LeadershipPeriod[]>({
     queryKey: ['/api/admin/leadership'],
   });
+
+  const { data: siteConfig } = useQuery<SiteConfig>({
+    queryKey: ['/api/admin/site-config'],
+  });
+
+  const foundingYear = siteConfig?.foundingYear || 1951;
+  const currentYear = new Date().getFullYear();
+  const yearsOfLeadership = currentYear - foundingYear;
+  const leadershipTitle = siteConfig?.leadershipTitle || 'Tradición de Liderazgo';
+  const leadershipDescription = siteConfig?.leadershipDescription || 'Desde 1951, el Cuerpo de Banderas ha sido dirigido por estudiantes excepcionales que han demostrado los más altos estándares de disciplina, patriotismo y liderazgo.';
+  const leadershipImageUrl = siteConfig?.leadershipImageUrl || leaderImage;
+  
+  const numberOfLeaders = leadershipData?.length || 0;
+  const numberOfPeriods = leadershipData?.length || 0;
 
   const getFirstYear = (yearString: string): number => {
     const yearMatch = yearString.match(/\d{4}/);
@@ -69,7 +83,7 @@ export default function Leadership() {
             Líderes del Cuerpo de Banderas
           </h2>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto" data-testid="text-leadership-description">
-            Un recorrido por la historia de nuestros líderes, desde 1951 hasta la actualidad.
+            Un recorrido por la historia de nuestros líderes, desde {foundingYear} hasta la actualidad.
             Cada generación ha contribuido al legado de honor y tradición.
           </p>
         </div>
@@ -79,7 +93,7 @@ export default function Leadership() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
             <div className="lg:order-2">
               <img 
-                src={leaderImage} 
+                src={leadershipImageUrl} 
                 alt="Líder destacado del Cuerpo de Banderas" 
                 className="w-full h-full object-cover min-h-64"
                 data-testid="img-featured-leader"
@@ -88,23 +102,22 @@ export default function Leadership() {
             <CardContent className="p-8 lg:order-1 flex flex-col justify-center">
               <Crown className="h-12 w-12 text-primary mb-4" />
               <h3 className="text-2xl font-bold text-foreground mb-4" data-testid="text-featured-title">
-                Tradición de Liderazgo
+                {leadershipTitle}
               </h3>
               <p className="text-muted-foreground mb-4" data-testid="text-featured-description">
-                Desde 1951, el Cuerpo de Banderas ha sido dirigido por estudiantes excepcionales 
-                que han demostrado los más altos estándares de disciplina, patriotismo y liderazgo.
+                {leadershipDescription}
               </p>
               <div className="flex items-center gap-4">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">70+</div>
+                  <div className="text-2xl font-bold text-primary">{yearsOfLeadership}+</div>
                   <div className="text-sm text-muted-foreground">Años</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">120+</div>
+                  <div className="text-2xl font-bold text-primary">{numberOfLeaders}+</div>
                   <div className="text-sm text-muted-foreground">Líderes</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">35+</div>
+                  <div className="text-2xl font-bold text-primary">{numberOfPeriods}+</div>
                   <div className="text-sm text-muted-foreground">Períodos</div>
                 </div>
               </div>

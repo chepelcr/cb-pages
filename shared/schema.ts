@@ -37,6 +37,13 @@ export const siteConfig = pgTable("site_config", {
   meetingsSchedule: text("meetings_schedule").default("Viernes, 3:00 PM - 4:00 PM"),
   meetingsLocation: text("meetings_location").default("Aula de coordinación"),
   admissionRequirements: text("admission_requirements").array().default(sql`ARRAY['Ser estudiante activo del Liceo de Costa Rica', 'Mantener promedio académico mínimo de 80', 'Disponibilidad para entrenamientos regulares', 'Compromiso con los valores institucionales', 'Participación en ceremonias patrias']::text[]`),
+  footerDescription: text("footer_description").default("Formando jóvenes costarricenses con valores patrióticos, disciplina y honor desde 1951. Una tradición de más de 70 años al servicio de la patria."),
+  missionStatement: text("mission_statement").default("Formar estudiantes con valores patrióticos, disciplina militar y amor por Costa Rica, manteniendo viva la tradición de honor que nos ha caracterizado por más de siete décadas."),
+  leadershipTitle: text("leadership_title").default("Tradición de Liderazgo"),
+  leadershipDescription: text("leadership_description").default("Desde 1951, el Cuerpo de Banderas ha sido dirigido por estudiantes excepcionales que han demostrado los más altos estándares de disciplina, patriotismo y liderazgo."),
+  leadershipImageUrl: text("leadership_image_url"),
+  leadershipImageS3Key: text("leadership_image_s3_key"),
+  foundingYear: integer("founding_year").notNull().default(1951),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 

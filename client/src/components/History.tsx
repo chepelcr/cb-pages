@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import type { HistoricalMilestone, HistoricalImage } from '@shared/schema';
+import type { HistoricalMilestone, HistoricalImage, SiteConfig } from '@shared/schema';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -21,8 +21,17 @@ export default function History() {
     queryKey: ['/api/admin/historical-images'],
   });
 
+  const { data: siteConfig } = useQuery<SiteConfig>({
+    queryKey: ['/api/admin/site-config'],
+  });
+
   const sortedMilestones = milestones?.sort((a, b) => a.displayOrder - b.displayOrder) || [];
   const sortedImages = historicalImages?.sort((a, b) => a.displayOrder - b.displayOrder) || [];
+  
+  const foundingYear = siteConfig?.foundingYear || 1951;
+  const currentYear = new Date().getFullYear();
+  const yearsOfTradition = currentYear - foundingYear;
+  const missionStatement = siteConfig?.missionStatement || 'Formar estudiantes con valores patrióticos, disciplina militar y amor por Costa Rica, manteniendo viva la tradición de honor que nos ha caracterizado por más de siete décadas.';
 
   return (
     <section id="history" className="py-20 bg-muted/50">
@@ -33,10 +42,10 @@ export default function History() {
             Nuestra Historia
           </Badge>
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-6" data-testid="text-history-title">
-            73 Años de Tradición y Honor
+            {yearsOfTradition}+ Años de Tradición y Honor
           </h2>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto" data-testid="text-history-description">
-            Desde 1951, el Cuerpo de Banderas del Liceo de Costa Rica ha mantenido viva la tradición
+            Desde {foundingYear}, el Cuerpo de Banderas del Liceo de Costa Rica ha mantenido viva la tradición
             de formar jóvenes con valores patrióticos, disciplina y amor por la patria.
           </p>
         </div>
@@ -128,8 +137,7 @@ export default function History() {
               Nuestra Misión
             </h3>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto" data-testid="text-mission-statement">
-              Formar estudiantes con valores patrióticos, disciplina militar y amor por Costa Rica,
-              manteniendo viva la tradición de honor que nos ha caracterizado por más de siete décadas.
+              {missionStatement}
             </p>
           </CardContent>
         </Card>

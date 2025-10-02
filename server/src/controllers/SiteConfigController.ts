@@ -206,7 +206,7 @@ export class SiteConfigController {
    */
   async updateConfigWithUrl(req: Request, res: Response) {
     try {
-      const { logoUrl, faviconUrl, removeLogo, removeFavicon, ...restData } = req.body;
+      const { logoUrl, faviconUrl, leadershipImageUrl, removeLogo, removeFavicon, removeLeadershipImage, ...restData } = req.body;
       const data: any = { ...restData };
 
       const { validateAndParseS3Url } = await import('../utils/s3ValidationHelper');
@@ -260,6 +260,30 @@ export class SiteConfigController {
         // Schedule old favicon deletion if it's different
         if (existingConfig && existingConfig.faviconS3Key && existingConfig.faviconS3Key !== parsedFaviconUrl.key) {
           s3KeysToDelete.push(existingConfig.faviconS3Key);
+        }
+      }
+
+      // Validate and handle leadership image
+      if (removeLeadershipImage) {
+        data.leadershipImageUrl = null;
+        data.leadershipImageS3Key = null;
+        // Schedule deletion after update succeeds
+        if (existingConfig && existingConfig.leadershipImageS3Key) {
+          s3KeysToDelete.push(existingConfig.leadershipImageS3Key);
+        }
+      } else if (leadershipImageUrl) {
+        const parsedLeadershipImageUrl = validateAndParseS3Url(leadershipImageUrl);
+        if (!parsedLeadershipImageUrl) {
+          return res.status(400).json({ 
+            error: "Invalid leadership image URL - must be a valid HTTPS URL from the configured S3 bucket" 
+          });
+        }
+        data.leadershipImageUrl = leadershipImageUrl;
+        data.leadershipImageS3Key = parsedLeadershipImageUrl.key;
+        
+        // Schedule old leadership image deletion if it's different
+        if (existingConfig && existingConfig.leadershipImageS3Key && existingConfig.leadershipImageS3Key !== parsedLeadershipImageUrl.key) {
+          s3KeysToDelete.push(existingConfig.leadershipImageS3Key);
         }
       }
 

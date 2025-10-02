@@ -38,6 +38,13 @@ const formSchema = z.object({
   admissionRequirements: z.array(z.string()).optional().nullable(),
   logoUrl: z.string().optional().nullable(),
   faviconUrl: z.string().optional().nullable(),
+  footerDescription: z.string().optional().nullable(),
+  missionStatement: z.string().optional().nullable(),
+  leadershipTitle: z.string().optional().nullable(),
+  leadershipDescription: z.string().optional().nullable(),
+  leadershipImageUrl: z.string().optional().nullable(),
+  leadershipImageS3Key: z.string().optional().nullable(),
+  foundingYear: z.number().int().min(1900).max(2100),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -46,6 +53,7 @@ export default function AdminGeneralSettings() {
   const { toast } = useToast();
   const [removeLogo, setRemoveLogo] = useState(false);
   const [removeFavicon, setRemoveFavicon] = useState(false);
+  const [removeLeadershipImage, setRemoveLeadershipImage] = useState(false);
   
   const { data: config, isLoading } = useQuery<SiteConfig>({
     queryKey: ["/api/admin/site-config"],
@@ -67,6 +75,13 @@ export default function AdminGeneralSettings() {
       meetingsSchedule: "",
       meetingsLocation: "",
       admissionRequirements: [],
+      footerDescription: "",
+      missionStatement: "",
+      leadershipTitle: "",
+      leadershipDescription: "",
+      leadershipImageUrl: "",
+      leadershipImageS3Key: "",
+      foundingYear: 1951,
     },
   });
 
@@ -86,10 +101,18 @@ export default function AdminGeneralSettings() {
         meetingsSchedule: config.meetingsSchedule || "",
         meetingsLocation: config.meetingsLocation || "",
         admissionRequirements: config.admissionRequirements || [],
+        footerDescription: config.footerDescription || "",
+        missionStatement: config.missionStatement || "",
+        leadershipTitle: config.leadershipTitle || "",
+        leadershipDescription: config.leadershipDescription || "",
+        leadershipImageUrl: config.leadershipImageUrl || "",
+        leadershipImageS3Key: config.leadershipImageS3Key || "",
+        foundingYear: config.foundingYear || 1951,
       });
       // Reset removal flags when config loads
       setRemoveLogo(false);
       setRemoveFavicon(false);
+      setRemoveLeadershipImage(false);
     }
   }, [config, form]);
 
@@ -111,8 +134,16 @@ export default function AdminGeneralSettings() {
         admissionRequirements: data.admissionRequirements || [],
         logoUrl: data.logoUrl || null,
         faviconUrl: data.faviconUrl || null,
+        footerDescription: data.footerDescription || null,
+        missionStatement: data.missionStatement || null,
+        leadershipTitle: data.leadershipTitle || null,
+        leadershipDescription: data.leadershipDescription || null,
+        leadershipImageUrl: data.leadershipImageUrl || null,
+        leadershipImageS3Key: data.leadershipImageS3Key || null,
+        foundingYear: data.foundingYear || 1951,
         removeLogo,
         removeFavicon,
+        removeLeadershipImage,
       });
     },
     onSuccess: () => {
@@ -449,6 +480,158 @@ export default function AdminGeneralSettings() {
                   )}
                 />
               </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Información Institucional</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <FormField
+                control={form.control}
+                name="foundingYear"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Año de Fundación</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        {...field}
+                        onChange={(e) => field.onChange(parseInt(e.target.value))}
+                        value={field.value || 1951}
+                        data-testid="input-founding-year"
+                        placeholder="1951"
+                      />
+                    </FormControl>
+                    <p className="text-sm text-muted-foreground">
+                      Este año se usa para calcular automáticamente los años de tradición en toda la página.
+                    </p>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="footerDescription"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Descripción del Footer</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        {...field}
+                        value={field.value || ""}
+                        rows={3}
+                        data-testid="input-footer-description"
+                        placeholder="Formando jóvenes costarricenses con valores patrióticos..."
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="missionStatement"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Declaración de Misión</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        {...field}
+                        value={field.value || ""}
+                        rows={3}
+                        data-testid="input-mission-statement"
+                        placeholder="Formar estudiantes con valores patrióticos..."
+                      />
+                    </FormControl>
+                    <p className="text-sm text-muted-foreground">
+                      Se muestra en la sección de Historia como "Nuestra Misión".
+                    </p>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Sección de Liderazgo</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <FormField
+                control={form.control}
+                name="leadershipTitle"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Título de Liderazgo</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        value={field.value || ""}
+                        data-testid="input-leadership-title"
+                        placeholder="Tradición de Liderazgo"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="leadershipDescription"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Descripción de Liderazgo</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        {...field}
+                        value={field.value || ""}
+                        rows={3}
+                        data-testid="input-leadership-description"
+                        placeholder="Desde 1951, el Cuerpo de Banderas ha sido dirigido..."
+                      />
+                    </FormControl>
+                    <p className="text-sm text-muted-foreground">
+                      Se muestra en la sección destacada de Jefaturas y en la página principal.
+                    </p>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="leadershipImageUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Imagen de Liderazgo</FormLabel>
+                    <FormControl>
+                      <S3ImageUploader
+                        onUploadComplete={(url, fileKey) => {
+                          field.onChange(url);
+                          if (fileKey) {
+                            form.setValue('leadershipImageS3Key', fileKey);
+                          }
+                          setRemoveLeadershipImage(false);
+                        }}
+                        currentImageUrl={config?.leadershipImageUrl || undefined}
+                        onRemove={() => {
+                          field.onChange(null);
+                          form.setValue('leadershipImageS3Key', "");
+                          setRemoveLeadershipImage(true);
+                        }}
+                        folder="leadership"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </CardContent>
           </Card>
 

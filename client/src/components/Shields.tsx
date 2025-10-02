@@ -104,7 +104,13 @@ export default function Shields() {
               <Skeleton key={index} className="h-64 w-full" />
             ))}
           </div>
-        ) : sortedValues.length > 0 ? (
+        ) : sortedValues.length === 0 ? (
+          <Card className="p-8 text-center" data-testid="card-no-shield-values">
+            <ShieldIcon className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-foreground mb-2">No hay valores registrados</h3>
+            <p className="text-muted-foreground">Aún no se han agregado valores del escudo</p>
+          </Card>
+        ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {sortedValues.map((value) => {
               const IconComponent = iconMap[value.iconName as keyof typeof iconMap] || Award;
@@ -127,7 +133,7 @@ export default function Shields() {
               );
             })}
           </div>
-        ) : null}
+        )}
       </div>
     </section>
   );

@@ -12,6 +12,8 @@ export default function Hero() {
     queryKey: ['/api/admin/site-config'],
   });
 
+  const foundingYear = config?.foundingYear || 1951;
+
   const navigateToHistory = () => {
     window.location.href = '/historia';
   };
@@ -36,7 +38,7 @@ export default function Hero() {
           className="mb-6 bg-white/10 backdrop-blur text-white border-white/20"
           data-testid="badge-tradition"
         >
-          Tradición desde 1951
+          Tradición desde {foundingYear}
         </Badge>
         
         {isLoading ? (

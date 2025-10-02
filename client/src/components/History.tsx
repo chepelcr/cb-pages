@@ -1,36 +1,25 @@
+import { useQuery } from '@tanstack/react-query';
+import type { HistoricalMilestone } from '@shared/schema';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Calendar, Users, Flag, Award } from 'lucide-react';
 import historicalImage from '@assets/generated_images/Historical_1950s_ceremony_photo_1f17f679.png';
 import paradeImage from '@assets/generated_images/Military_academy_parade_ground_c7bba0ab.png';
 
+const iconMap = {
+  'Flag': Flag,
+  'Users': Users,
+  'Award': Award,
+  'Calendar': Calendar
+};
+
 export default function History() {
-  const milestones = [
-    {
-      year: '1951',
-      title: 'Fundación del Cuerpo de Banderas',
-      description: 'Se establece oficialmente el Cuerpo de Banderas en el Liceo de Costa Rica, adoptando ceremoniales chilenos adaptados a la cultura costarricense.',
-      icon: Flag
-    },
-    {
-      year: '1960s',
-      title: 'Consolidación de Tradiciones',
-      description: 'Se establecen los protocolos ceremoniales y se forman las primeras generaciones de líderes estudiantiles.',
-      icon: Users
-    },
-    {
-      year: '1970s-1980s',
-      title: 'Expansión y Reconocimiento',
-      description: 'El Cuerpo de Banderas participa en ceremonias nacionales y obtiene reconocimiento por su disciplina y patriotismo.',
-      icon: Award
-    },
-    {
-      year: '1990s-2000s',
-      title: 'Modernización',
-      description: 'Se actualiza el entrenamiento manteniendo la esencia tradicional, incorporando nuevas generaciones de estudiantes.',
-      icon: Calendar
-    }
-  ];
+  const { data: milestones, isLoading } = useQuery<HistoricalMilestone[]>({
+    queryKey: ['/api/admin/history'],
+  });
+
+  const sortedMilestones = milestones?.sort((a, b) => a.displayOrder - b.displayOrder) || [];
 
   return (
     <section id="history" className="py-20 bg-muted/50">
@@ -88,33 +77,41 @@ export default function History() {
             Hitos Importantes
           </h3>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {milestones.map((milestone, index) => {
-              const IconComponent = milestone.icon;
-              return (
-                <Card key={index} className="h-full hover-elevate transition-all duration-300 flex flex-col" data-testid={`card-milestone-${milestone.year}`}>
-                  <CardHeader className="pb-4 flex-shrink-0">
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="p-2 bg-primary/10 rounded-lg">
-                        <IconComponent className="h-5 w-5 text-primary" />
+          {isLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[...Array(4)].map((_, index) => (
+                <Skeleton key={index} className="h-64 w-full" />
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {sortedMilestones.map((milestone, index) => {
+                const IconComponent = iconMap[milestone.iconName as keyof typeof iconMap] || Flag;
+                return (
+                  <Card key={milestone.id} className="h-full hover-elevate transition-all duration-300 flex flex-col" data-testid={`card-milestone-${milestone.year}`}>
+                    <CardHeader className="pb-4 flex-shrink-0">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="p-2 bg-primary/10 rounded-lg">
+                          <IconComponent className="h-5 w-5 text-primary" />
+                        </div>
+                        <Badge variant="secondary" data-testid={`badge-year-${milestone.year}`}>
+                          {milestone.year}
+                        </Badge>
                       </div>
-                      <Badge variant="secondary" data-testid={`badge-year-${milestone.year}`}>
-                        {milestone.year}
-                      </Badge>
-                    </div>
-                    <CardTitle className="text-lg min-h-[4.5rem] flex items-center" data-testid={`text-milestone-title-${index}`}>
-                      {milestone.title}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="flex-1 flex items-start">
-                    <p className="text-sm text-muted-foreground text-justify" data-testid={`text-milestone-description-${index}`}>
-                      {milestone.description}
-                    </p>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
+                      <CardTitle className="text-lg min-h-[4.5rem] flex items-center" data-testid={`text-milestone-title-${index}`}>
+                        {milestone.title}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="flex-1 flex items-start">
+                      <p className="text-sm text-muted-foreground text-justify" data-testid={`text-milestone-description-${index}`}>
+                        {milestone.description}
+                      </p>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         {/* Mission Statement */}

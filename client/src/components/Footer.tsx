@@ -1,3 +1,5 @@
+import { useQuery } from '@tanstack/react-query';
+import type { SiteConfig } from '@shared/schema';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Facebook, Instagram, Youtube, Mail } from 'lucide-react';
@@ -8,15 +10,25 @@ import cbLogo from '@assets/cb logo_1758164197769.png';
 export default function Footer() {
   const [location, navigate] = useLocation();
 
+  const { data: siteConfig } = useQuery<SiteConfig>({
+    queryKey: ['/api/admin/site-config'],
+  });
+
+  const siteName = siteConfig?.siteName || 'Cuerpo de Banderas';
+  const siteSubtitle = siteConfig?.siteSubtitle || 'Liceo de Costa Rica';
+  const logoUrl = siteConfig?.logoUrl || cbLogo;
+  const contactEmail = siteConfig?.contactEmail || 'cuerpo.banderas@liceocostarica.ed.cr';
+  const contactPhone = siteConfig?.contactPhone || '+506 2221-9358';
+  const address = siteConfig?.address || 'Liceo de Costa Rica\nAvenida 6, Calle 7-9\nSan José, Costa Rica';
+
   const handleSocialClick = (platform: string) => {
     console.log(`Social media clicked: ${platform}`);
-    // todo: remove mock functionality - Add real social media links
   };
 
   const handleContactClick = (type: string) => {
     console.log(`Footer contact clicked: ${type}`);
     if (type === 'email') {
-      window.open('mailto:cuerpo.banderas@liceocostarica.ed.cr');
+      window.open(`mailto:${contactEmail}`);
     }
   };
 
@@ -29,18 +41,15 @@ export default function Footer() {
 
   const handleNavigation = (path: string, sectionId?: string) => {
     if (path === '/' && location === '/') {
-      // If we're already on home page, scroll to section
       if (sectionId) {
         scrollToSection(sectionId);
       }
     } else if (path === '/' && sectionId) {
-      // Navigate to home page then scroll to section
       navigate('/');
       setTimeout(() => {
         scrollToSection(sectionId);
       }, 100);
     } else {
-      // Navigate to different page
       navigate(path);
     }
   };
@@ -53,17 +62,17 @@ export default function Footer() {
           <div className="lg:col-span-2">
             <div className="flex items-center gap-3 mb-4">
               <img 
-                src={cbLogo} 
-                alt="Cuerpo de Banderas Logo" 
+                src={logoUrl} 
+                alt={`${siteName} Logo`}
                 className="h-10 w-10 object-contain"
                 data-testid="footer-logo" 
               />
               <div>
                 <h3 className="text-xl font-bold text-foreground" data-testid="text-footer-title">
-                  Cuerpo de Banderas
+                  {siteName}
                 </h3>
                 <p className="text-sm text-muted-foreground" data-testid="text-footer-subtitle">
-                  Liceo de Costa Rica
+                  {siteSubtitle}
                 </p>
               </div>
             </div>
@@ -113,14 +122,17 @@ export default function Footer() {
             <div className="space-y-3 text-sm">
               <div className="text-muted-foreground" data-testid="text-footer-address">
                 <strong>Dirección:</strong><br />
-                Liceo de Costa Rica<br />
-                Avenida 6, Calle 7-9<br />
-                San José, Costa Rica
+                {address.split('\n').map((line, index) => (
+                  <span key={index}>
+                    {line}
+                    {index < address.split('\n').length - 1 && <br />}
+                  </span>
+                ))}
               </div>
               
               <div className="text-muted-foreground" data-testid="text-footer-phone">
                 <strong>Teléfono:</strong><br />
-                +506 2221-9358
+                {contactPhone}
               </div>
               
               <Button 
@@ -131,7 +143,7 @@ export default function Footer() {
                 data-testid="button-footer-email"
               >
                 <Mail className="h-4 w-4 mr-2" />
-                cuerpo.banderas@liceocostarica.ed.cr
+                {contactEmail}
               </Button>
               
               <div className="text-muted-foreground" data-testid="text-footer-schedule">
@@ -146,7 +158,7 @@ export default function Footer() {
         <div className="border-t mt-8 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-4">
             <p className="text-sm text-muted-foreground" data-testid="text-footer-copyright">
-              © {new Date().getFullYear()} Cuerpo de Banderas - Liceo de Costa Rica
+              © {new Date().getFullYear()} {siteName} - {siteSubtitle}
             </p>
           </div>
           

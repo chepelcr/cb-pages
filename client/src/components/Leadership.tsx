@@ -1,8 +1,11 @@
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import type { LeadershipPeriod } from '@shared/schema';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
+import { Skeleton } from '@/components/ui/skeleton';
 import { 
   Select, 
   SelectContent, 
@@ -13,66 +16,26 @@ import {
 import { Crown, Users, Search, ChevronLeft, ChevronRight, ArrowUpDown } from 'lucide-react';
 import leaderImage from '@assets/image_1758163080578.png';
 
-// todo: remove mock functionality - Historical leadership data from 1951-2022
-const historicalLeadership = [
-  { year: "1951", leaders: ["Acidos Castrio", "Mario Parra"] },
-  { year: "1961", leaders: ["Franklin Perez", "Francisco I. Pastor"] },
-  { year: "1970 - 1971", leaders: [] },
-  { year: "1972", leaders: ["Orlando Gonzalez", "Alberto Lome Mateis"] },
-  { year: "1973 - 1974", leaders: ["Gaspar Miranda Ortega", "Galgan I. Miranda O."] },
-  { year: "1975 - 1976", leaders: ["Oscar Carvajal", "Gerardo Parez"] },
-  { year: "1976 - 1978", leaders: ["Cristian Leon", "Frany Josef Korte"] },
-  { year: "1978 - 1979", leaders: ["Cristian Leon", "Frany Josef Korte"] },
-  { year: "1979 - 1981", leaders: ["Cristian Leon", "Frany Josef Korte"] },
-  { year: "1982", leaders: ["Mauricio Hernandez", "Cristian Leon"] },
-  { year: "1983 - 1985", leaders: ["Erica Mata", "Mauricio Hernandez"] },
-  { year: "1986", leaders: ["Jose J. Garzon", "Gustavo Segrda"] },
-  { year: "1986", leaders: ["Gustavo Segrda", "Erica Mata"] },
-  { year: "1985 - 1986", leaders: ["Carlos Maas", "Erick Ortiz"] },
-  { year: "1986 - 1987", leaders: ["Carlos Maas", "Jimmy Meza"] },
-  { year: "1987", leaders: ["Carlos Maas", "Jimmy Meza"] },
-  { year: "1987 - 1989", leaders: ["Raul Cuadra", "Carlos Maas"] },
-  { year: "1990", leaders: ["Javier Cedeno", "Ronny Lopez"] },
-  { year: "1990", leaders: ["Guillermo Silva", "Ronny Lopez"] },
-  { year: "1991", leaders: ["Ramirez Castillo", "Manrique Fungula"] },
-  { year: "1992 - 1993", leaders: ["Manrique Fungula", "Oscar Murillo"] },
-  { year: "1993 - 1994 - 1995", leaders: ["Manrique Fungula", "Juan R. Bonilla"] },
-  { year: "1996 - 1997", leaders: ["Ricardo Alotera", "Jose Pablo Calderon"] },
-  { year: "1998", leaders: ["Ifrain Sait", "Warren Aragon"] },
-  { year: "1999 - 2000 - 2001", leaders: ["Henry Salajar", "Esteban Cordoba"] },
-  { year: "2002 - 2003 - 2004", leaders: ["Guillermo Mejia", "Carlos Andres Sanchez"] },
-  { year: "2005 - 2006 - 2007", leaders: ["Edgar Talajar", "Isaac Pena"] },
-  { year: "2008", leaders: ["Edgar Salazar", "Adrian Alvarez"] },
-  { year: "2009", leaders: ["Ronald Mauricio Izaba", "Jorge Sosa"] },
-  { year: "2010", leaders: ["Willy Meza", "Roger Altamirano"] },
-  { year: "2011 - 2012", leaders: ["Jesus Cruz", "Eddie Sursing"] },
-  { year: "2013 - 2014", leaders: ["Eddie Sursing"] },
-  { year: "2015", leaders: ["Sebastian Sedo (No desfiló)"] },
-  { year: "2015", leaders: ["Andrey Araya"] },
-  { year: "2016 - 2017", leaders: ["Andres Quiros", "Luis Zelaya"] },
-  { year: "2018 - 2019", leaders: ["Diego Zelaya"] },
-  { year: "2020 - 2021 - 2022", leaders: ["Jouzel"] }
-];
-
 export default function Leadership() {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const itemsPerPage = 9;
 
-  // Function to extract the first year from year string for sorting
+  const { data: leadershipData, isLoading } = useQuery<LeadershipPeriod[]>({
+    queryKey: ['/api/admin/leadership'],
+  });
+
   const getFirstYear = (yearString: string): number => {
     const yearMatch = yearString.match(/\d{4}/);
     return yearMatch ? parseInt(yearMatch[0]) : 0;
   };
 
-  // Filter and sort leadership data
-  const filteredData = historicalLeadership
+  const filteredData = (leadershipData || [])
     .filter(entry => 
       entry.year.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      entry.leaders.some(leader => 
-        leader.toLowerCase().includes(searchTerm.toLowerCase())
-      )
+      entry.jefatura.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (entry.segundaVoz && entry.segundaVoz.toLowerCase().includes(searchTerm.toLowerCase()))
     )
     .sort((a, b) => {
       const yearA = getFirstYear(a.year);
@@ -80,7 +43,6 @@ export default function Leadership() {
       return sortOrder === 'asc' ? yearA - yearB : yearB - yearA;
     });
 
-  // Pagination
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedData = filteredData.slice(startIndex, startIndex + itemsPerPage);
@@ -88,13 +50,11 @@ export default function Leadership() {
   const handleSearch = (value: string) => {
     setSearchTerm(value);
     setCurrentPage(1);
-    console.log('Searching for:', value);
   };
 
   const handleSortChange = (order: 'asc' | 'desc') => {
     setSortOrder(order);
     setCurrentPage(1);
-    console.log('Sorting by year:', order);
   };
 
   return (
@@ -155,7 +115,6 @@ export default function Leadership() {
         {/* Search and Sort Controls */}
         <div className="mb-8 max-w-4xl mx-auto">
           <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
-            {/* Search Input */}
             <div className="relative flex-1 max-w-md">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
@@ -168,7 +127,6 @@ export default function Leadership() {
               />
             </div>
             
-            {/* Sort Control */}
             <div className="flex items-center gap-2">
               <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
               <Select value={sortOrder} onValueChange={handleSortChange}>
@@ -189,44 +147,46 @@ export default function Leadership() {
         </div>
 
         {/* Leadership Timeline */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          {paginatedData.map((entry, index) => (
-            <Card key={`${entry.year}-${index}`} className="hover-elevate transition-all duration-300" data-testid={`card-leadership-${entry.year}`}>
-              <CardHeader className="pb-4">
-                <div className="flex items-center gap-2">
-                  <Users className="h-5 w-5 text-primary" />
-                  <Badge variant="secondary" data-testid={`badge-year-${entry.year}`}>
-                    {entry.year}
-                  </Badge>
-                </div>
-              </CardHeader>
-              <CardContent>
-                {entry.leaders.length > 0 ? (
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            {[...Array(9)].map((_, index) => (
+              <Skeleton key={index} className="h-40 w-full" />
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            {paginatedData.map((entry, index) => (
+              <Card key={entry.id} className="hover-elevate transition-all duration-300" data-testid={`card-leadership-${entry.year}`}>
+                <CardHeader className="pb-4">
+                  <div className="flex items-center gap-2">
+                    <Users className="h-5 w-5 text-primary" />
+                    <Badge variant="secondary" data-testid={`badge-year-${entry.year}`}>
+                      {entry.year}
+                    </Badge>
+                  </div>
+                </CardHeader>
+                <CardContent>
                   <div className="space-y-2">
                     <div 
                       className="text-sm text-muted-foreground p-2 bg-muted/20 rounded"
                       data-testid={`text-leader-${entry.year}-0`}
                     >
-                      <span className="font-semibold">Jefatura:</span> {entry.leaders[0]}
+                      <span className="font-semibold">Jefatura:</span> {entry.jefatura}
                     </div>
-                    {entry.leaders.length > 1 && (
+                    {entry.segundaVoz && (
                       <div 
                         className="text-sm text-muted-foreground p-2 bg-muted/20 rounded"
                         data-testid={`text-leader-${entry.year}-1`}
                       >
-                        <span className="font-semibold">Segunda voz:</span> {entry.leaders[1]}
+                        <span className="font-semibold">Segunda voz:</span> {entry.segundaVoz}
                       </div>
                     )}
                   </div>
-                ) : (
-                  <p className="text-sm text-muted-foreground italic" data-testid={`text-no-leaders-${entry.year}`}>
-                    Sin registros de liderazgo
-                  </p>
-                )}
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
 
         {/* Pagination */}
         {totalPages > 1 && (
@@ -260,7 +220,7 @@ export default function Leadership() {
         )}
         
         {/* No Results */}
-        {filteredData.length === 0 && (
+        {!isLoading && filteredData.length === 0 && (
           <Card className="p-8 text-center" data-testid="card-no-results">
             <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-foreground mb-2">No se encontraron resultados</h3>

@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import type { SiteConfig } from '@shared/schema';
 import { Button } from '@/components/ui/button';
 import { Menu, X, Shield, Sun, Moon, ChevronDown } from 'lucide-react';
 import { Card } from '@/components/ui/card';
@@ -21,6 +23,14 @@ export default function Header({ darkMode, onToggleDarkMode, onAdminClick }: Hea
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [location, navigate] = useLocation();
 
+  const { data: siteConfig } = useQuery<SiteConfig>({
+    queryKey: ['/api/admin/site-config'],
+  });
+
+  const siteName = siteConfig?.siteName || 'Cuerpo de Banderas';
+  const siteSubtitle = siteConfig?.siteSubtitle || 'Liceo de Costa Rica';
+  const logoUrl = siteConfig?.logoUrl || cbLogo;
+
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
@@ -31,18 +41,15 @@ export default function Header({ darkMode, onToggleDarkMode, onAdminClick }: Hea
 
   const handleNavigation = (path: string, sectionId?: string) => {
     if (path === '/' && location === '/') {
-      // If we're already on home page, scroll to section
       if (sectionId) {
         scrollToSection(sectionId);
       }
     } else if (path === '/' && sectionId) {
-      // Navigate to home page then scroll to section
       navigate('/');
       setTimeout(() => {
         scrollToSection(sectionId);
       }, 100);
     } else {
-      // Navigate to different page
       navigate(path);
     }
     setMobileMenuOpen(false);
@@ -71,18 +78,18 @@ export default function Header({ darkMode, onToggleDarkMode, onAdminClick }: Hea
           <div className="flex items-center gap-2 md:gap-3 min-w-0 flex-1">
             <div className="flex-shrink-0">
               <img 
-                src={cbLogo} 
-                alt="Cuerpo de Banderas Logo" 
+                src={logoUrl} 
+                alt={`${siteName} Logo`}
                 className="h-8 w-8 md:h-10 md:w-10 object-contain landscape:h-7 landscape:w-7"
                 data-testid="logo-cb" 
               />
             </div>
             <div className="min-w-0 flex-1">
               <h1 className="text-sm md:text-lg lg:text-xl font-bold text-foreground truncate landscape:text-xs" data-testid="text-title">
-                Cuerpo de Banderas
+                {siteName}
               </h1>
               <p className="text-xs md:text-sm text-muted-foreground truncate landscape:text-[10px] landscape:leading-3" data-testid="text-subtitle">
-                Liceo de Costa Rica
+                {siteSubtitle}
               </p>
             </div>
           </div>

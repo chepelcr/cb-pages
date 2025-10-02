@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { shieldService } from '../dependency_injection';
+import { createS3StorageService } from '../services/S3StorageService';
 
 export class ShieldController {
   getRouter(): Router {
@@ -161,8 +162,9 @@ export class ShieldController {
   async create(req: Request, res: Response) {
     try {
       const { imageUrl } = req.body;
+      let imageS3Key = null;
       
-      // Validate S3 URL if provided
+      // Validate S3 URL and extract key if provided
       if (imageUrl) {
         const { validateAndParseS3Url } = await import('../utils/s3ValidationHelper');
         const parsedUrl = validateAndParseS3Url(imageUrl);
@@ -172,9 +174,10 @@ export class ShieldController {
             error: "Invalid image URL - must be a valid HTTPS URL from the configured S3 bucket" 
           });
         }
+        imageS3Key = parsedUrl.key;
       }
       
-      const shield = await shieldService.create(req.body);
+      const shield = await shieldService.create({ ...req.body, imageS3Key });
       res.status(201).json(shield);
     } catch (error) {
       console.error('Failed to create shield:', error);
@@ -225,8 +228,10 @@ export class ShieldController {
   async update(req: Request, res: Response) {
     try {
       const { imageUrl } = req.body;
+      const updateData: any = { ...req.body };
       
-      // Validate S3 URL if provided
+      // Validate S3 URL and extract key if provided, capture old S3 key
+      let oldS3Key: string | null = null;
       if (imageUrl) {
         const { validateAndParseS3Url } = await import('../utils/s3ValidationHelper');
         const parsedUrl = validateAndParseS3Url(imageUrl);
@@ -236,11 +241,32 @@ export class ShieldController {
             error: "Invalid image URL - must be a valid HTTPS URL from the configured S3 bucket" 
           });
         }
+        
+        updateData.imageS3Key = parsedUrl.key;
+        
+        // Capture old S3 key before update
+        const existingShield = await shieldService.getById(req.params.id);
+        if (existingShield && existingShield.imageS3Key && existingShield.imageS3Key !== parsedUrl.key) {
+          oldS3Key = existingShield.imageS3Key;
+        }
       }
       
-      const shield = await shieldService.update(req.params.id, req.body);
+      // Update database first
+      const shield = await shieldService.update(req.params.id, updateData);
+      
       if (!shield) {
         return res.status(404).json({ error: "Shield not found" });
+      }
+      
+      // Delete old S3 image only after successful update
+      if (oldS3Key) {
+        try {
+          const s3Service = createS3StorageService();
+          await s3Service.deleteFile(oldS3Key);
+        } catch (deleteError) {
+          console.error('Failed to delete old S3 image:', deleteError);
+          // Database update succeeded, so continue despite S3 cleanup failure
+        }
       }
       res.json(shield);
     } catch (error) {
@@ -272,10 +298,26 @@ export class ShieldController {
    */
   async delete(req: Request, res: Response) {
     try {
+      // Get the shield first to retrieve S3 key
+      const shield = await shieldService.getById(req.params.id);
+      
+      // Delete from database
       const success = await shieldService.delete(req.params.id);
       if (!success) {
         return res.status(404).json({ error: "Shield not found" });
       }
+      
+      // Delete from S3 if key exists
+      if (shield && shield.imageS3Key) {
+        try {
+          const s3Service = createS3StorageService();
+          await s3Service.deleteFile(shield.imageS3Key);
+        } catch (s3Error) {
+          console.error('Failed to delete S3 image:', s3Error);
+          // Continue - database deletion succeeded
+        }
+      }
+      
       res.status(204).send();
     } catch (error) {
       res.status(500).json({ error: "Failed to delete shield" });

@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import multer from 'multer';
 import { galleryService } from '../dependency_injection';
+import { createS3StorageService } from '../services/S3StorageService';
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -323,10 +324,26 @@ export class GalleryController {
    */
   async delete(req: Request, res: Response) {
     try {
+      // Get the item first to retrieve S3 key
+      const item = await galleryService.getById(req.params.id);
+      
+      // Delete from database
       const success = await galleryService.delete(req.params.id);
       if (!success) {
         return res.status(404).json({ error: "Gallery item not found" });
       }
+      
+      // Delete from S3 if key exists
+      if (item && item.imageS3Key) {
+        try {
+          const s3Service = createS3StorageService();
+          await s3Service.deleteFile(item.imageS3Key);
+        } catch (s3Error) {
+          console.error('Failed to delete S3 image:', s3Error);
+          // Continue - database deletion succeeded
+        }
+      }
+      
       res.status(204).send();
     } catch (error) {
       res.status(500).json({ error: "Failed to delete gallery item" });
@@ -415,7 +432,7 @@ export class GalleryController {
         return res.status(400).json({ error: "Image URL is required" });
       }
 
-      // Validate S3 URL using centralized helper
+      // Validate S3 URL and extract key using centralized helper
       const { validateAndParseS3Url } = await import('../utils/s3ValidationHelper');
       const parsedUrl = validateAndParseS3Url(imageUrl);
       
@@ -432,7 +449,9 @@ export class GalleryController {
         year: year || null,
         displayOrder: displayOrder || 0,
         imageUrl,
+        imageS3Key: parsedUrl.key,
         thumbnailUrl: null,
+        thumbnailS3Key: null,
       });
 
       res.status(201).json(item);
@@ -494,7 +513,8 @@ export class GalleryController {
       if (year !== undefined) updateData.year = year || null;
       if (displayOrder !== undefined) updateData.displayOrder = displayOrder;
       
-      // Validate imageUrl if provided
+      // Validate imageUrl if provided and capture old S3 key
+      let oldS3Key: string | null = null;
       if (imageUrl) {
         const { validateAndParseS3Url } = await import('../utils/s3ValidationHelper');
         const parsedUrl = validateAndParseS3Url(imageUrl);
@@ -506,12 +526,31 @@ export class GalleryController {
         }
         
         updateData.imageUrl = imageUrl;
+        updateData.imageS3Key = parsedUrl.key;
+        
+        // Capture old S3 key before update
+        const existingItem = await galleryService.getById(req.params.id);
+        if (existingItem && existingItem.imageS3Key && existingItem.imageS3Key !== parsedUrl.key) {
+          oldS3Key = existingItem.imageS3Key;
+        }
       }
 
+      // Update database first
       const item = await galleryService.update(req.params.id, updateData);
 
       if (!item) {
         return res.status(404).json({ error: "Gallery item not found" });
+      }
+      
+      // Delete old S3 image only after successful update
+      if (oldS3Key) {
+        try {
+          const s3Service = createS3StorageService();
+          await s3Service.deleteFile(oldS3Key);
+        } catch (deleteError) {
+          console.error('Failed to delete old S3 image:', deleteError);
+          // Database update succeeded, so continue despite S3 cleanup failure
+        }
       }
 
       res.json(item);

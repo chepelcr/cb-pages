@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { leadershipService } from '../dependency_injection';
+import { createS3StorageService } from '../services/S3StorageService';
 
 export class LeadershipController {
   getRouter(): Router {
@@ -129,8 +130,9 @@ export class LeadershipController {
   async create(req: Request, res: Response) {
     try {
       const { imageUrl } = req.body;
+      let imageS3Key = null;
       
-      // Validate S3 URL if provided
+      // Validate S3 URL and extract key if provided
       if (imageUrl) {
         const { validateAndParseS3Url } = await import('../utils/s3ValidationHelper');
         const parsedUrl = validateAndParseS3Url(imageUrl);
@@ -140,9 +142,10 @@ export class LeadershipController {
             error: "Invalid image URL - must be a valid HTTPS URL from the configured S3 bucket" 
           });
         }
+        imageS3Key = parsedUrl.key;
       }
       
-      const period = await leadershipService.create(req.body);
+      const period = await leadershipService.create({ ...req.body, imageS3Key });
       res.status(201).json(period);
     } catch (error) {
       console.error('Failed to create leadership period:', error);
@@ -191,8 +194,10 @@ export class LeadershipController {
   async update(req: Request, res: Response) {
     try {
       const { imageUrl } = req.body;
+      const updateData: any = { ...req.body };
       
-      // Validate S3 URL if provided
+      // Validate S3 URL and extract key if provided, capture old S3 key
+      let oldS3Key: string | null = null;
       if (imageUrl) {
         const { validateAndParseS3Url } = await import('../utils/s3ValidationHelper');
         const parsedUrl = validateAndParseS3Url(imageUrl);
@@ -202,11 +207,32 @@ export class LeadershipController {
             error: "Invalid image URL - must be a valid HTTPS URL from the configured S3 bucket" 
           });
         }
+        
+        updateData.imageS3Key = parsedUrl.key;
+        
+        // Capture old S3 key before update
+        const existingPeriod = await leadershipService.getById(req.params.id);
+        if (existingPeriod && existingPeriod.imageS3Key && existingPeriod.imageS3Key !== parsedUrl.key) {
+          oldS3Key = existingPeriod.imageS3Key;
+        }
       }
       
-      const period = await leadershipService.update(req.params.id, req.body);
+      // Update database first
+      const period = await leadershipService.update(req.params.id, updateData);
+      
       if (!period) {
         return res.status(404).json({ error: "Leadership period not found" });
+      }
+      
+      // Delete old S3 image only after successful update
+      if (oldS3Key) {
+        try {
+          const s3Service = createS3StorageService();
+          await s3Service.deleteFile(oldS3Key);
+        } catch (deleteError) {
+          console.error('Failed to delete old S3 image:', deleteError);
+          // Database update succeeded, so continue despite S3 cleanup failure
+        }
       }
       res.json(period);
     } catch (error) {
@@ -238,10 +264,26 @@ export class LeadershipController {
    */
   async delete(req: Request, res: Response) {
     try {
+      // Get the period first to retrieve S3 key
+      const period = await leadershipService.getById(req.params.id);
+      
+      // Delete from database
       const success = await leadershipService.delete(req.params.id);
       if (!success) {
         return res.status(404).json({ error: "Leadership period not found" });
       }
+      
+      // Delete from S3 if key exists
+      if (period && period.imageS3Key) {
+        try {
+          const s3Service = createS3StorageService();
+          await s3Service.deleteFile(period.imageS3Key);
+        } catch (s3Error) {
+          console.error('Failed to delete S3 image:', s3Error);
+          // Continue - database deletion succeeded
+        }
+      }
+      
       res.status(204).send();
     } catch (error) {
       res.status(500).json({ error: "Failed to delete leadership period" });

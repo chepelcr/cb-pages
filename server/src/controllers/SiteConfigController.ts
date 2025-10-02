@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import multer from 'multer';
 import { siteConfigService } from '../dependency_injection';
 import { ImageUploadService } from '../services/ImageUploadService';
+import { createS3StorageService } from '../services/S3StorageService';
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -209,10 +210,19 @@ export class SiteConfigController {
       const data: any = { ...restData };
 
       const { validateAndParseS3Url } = await import('../utils/s3ValidationHelper');
+      const existingConfig = await siteConfigService.getConfig();
+
+      // Track S3 keys to delete after successful update
+      const s3KeysToDelete: string[] = [];
 
       // Validate and handle logo
       if (removeLogo) {
         data.logoUrl = null;
+        data.logoS3Key = null;
+        // Schedule deletion after update succeeds
+        if (existingConfig && existingConfig.logoS3Key) {
+          s3KeysToDelete.push(existingConfig.logoS3Key);
+        }
       } else if (logoUrl) {
         const parsedLogoUrl = validateAndParseS3Url(logoUrl);
         if (!parsedLogoUrl) {
@@ -221,11 +231,22 @@ export class SiteConfigController {
           });
         }
         data.logoUrl = logoUrl;
+        data.logoS3Key = parsedLogoUrl.key;
+        
+        // Schedule old logo deletion if it's different
+        if (existingConfig && existingConfig.logoS3Key && existingConfig.logoS3Key !== parsedLogoUrl.key) {
+          s3KeysToDelete.push(existingConfig.logoS3Key);
+        }
       }
 
       // Validate and handle favicon
       if (removeFavicon) {
         data.faviconUrl = null;
+        data.faviconS3Key = null;
+        // Schedule deletion after update succeeds
+        if (existingConfig && existingConfig.faviconS3Key) {
+          s3KeysToDelete.push(existingConfig.faviconS3Key);
+        }
       } else if (faviconUrl) {
         const parsedFaviconUrl = validateAndParseS3Url(faviconUrl);
         if (!parsedFaviconUrl) {
@@ -234,9 +255,30 @@ export class SiteConfigController {
           });
         }
         data.faviconUrl = faviconUrl;
+        data.faviconS3Key = parsedFaviconUrl.key;
+        
+        // Schedule old favicon deletion if it's different
+        if (existingConfig && existingConfig.faviconS3Key && existingConfig.faviconS3Key !== parsedFaviconUrl.key) {
+          s3KeysToDelete.push(existingConfig.faviconS3Key);
+        }
       }
 
+      // Update database first
       const updated = await siteConfigService.updateConfig(data);
+      
+      // Delete old S3 files only after successful update
+      if (s3KeysToDelete.length > 0) {
+        const s3Service = createS3StorageService();
+        for (const key of s3KeysToDelete) {
+          try {
+            await s3Service.deleteFile(key);
+          } catch (s3Error) {
+            console.error(`Failed to delete old S3 file ${key}:`, s3Error);
+            // Database update succeeded, so continue despite S3 cleanup failure
+          }
+        }
+      }
+      
       res.json(updated);
     } catch (error) {
       console.error('Site config update error:', error);

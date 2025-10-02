@@ -11,7 +11,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { Settings, Users, Shield, Image, Calendar, Home, LogOut } from "lucide-react";
+import { Settings, Users, Shield, Image, Calendar, Home, LogOut, BookImage, Award } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -35,6 +35,11 @@ const menuItems = [
     icon: Shield,
   },
   {
+    title: "Valores del Escudo",
+    url: "/admin/valores-escudo",
+    icon: Award,
+  },
+  {
     title: "Galería",
     url: "/admin/galeria",
     icon: Image,
@@ -44,9 +49,16 @@ const menuItems = [
     url: "/admin/historia",
     icon: Calendar,
   },
+  {
+    title: "Imágenes Históricas",
+    url: "/admin/imagenes-historicas",
+    icon: BookImage,
+  },
 ];
 
 function AdminSidebar() {
+  const [location] = useLocation();
+  
   return (
     <Sidebar>
       <SidebarContent>
@@ -55,7 +67,7 @@ function AdminSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {menuItems.map((item) => {
-                const [isActive] = useRoute(item.url);
+                const isActive = location === item.url;
                 return (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton asChild isActive={isActive}>

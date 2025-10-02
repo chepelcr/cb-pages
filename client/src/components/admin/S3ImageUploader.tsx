@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 
 interface S3ImageUploaderProps {
-  onUploadComplete: (publicUrl: string) => void;
+  onUploadComplete: (publicUrl: string, fileKey?: string) => void;
   currentImageUrl?: string;
   onRemove?: () => void;
   maxSizeMB?: number;
@@ -115,7 +115,7 @@ export function S3ImageUploader({
         throw new Error('Failed to get upload URL');
       }
 
-      const { uploadUrl, publicUrl } = await presignResponse.json();
+      const { uploadUrl, publicUrl, fileKey } = await presignResponse.json();
 
       // Step 2: Upload file directly to S3
       const uploadResponse = await fetch(uploadUrl, {
@@ -131,7 +131,7 @@ export function S3ImageUploader({
       }
 
       // Step 3: Notify parent component of successful upload
-      onUploadComplete(publicUrl);
+      onUploadComplete(publicUrl, fileKey);
 
       toast({
         title: 'Éxito',

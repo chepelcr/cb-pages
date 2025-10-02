@@ -23,6 +23,8 @@ import AdminJefaturas from "@/pages/admin/AdminJefaturas";
 import AdminEscudos from "@/pages/admin/AdminEscudos";
 import AdminGaleria from "@/pages/admin/AdminGaleria";
 import AdminHistoria from "@/pages/admin/AdminHistoria";
+import AdminHistoricalImages from "@/pages/admin/AdminHistoricalImages";
+import AdminShieldValues from "@/pages/admin/AdminShieldValues";
 
 function HomePage() {
   return (
@@ -96,6 +98,8 @@ function AdminRouter() {
         <Route path="/admin/escudos" component={AdminEscudos} />
         <Route path="/admin/galeria" component={AdminGaleria} />
         <Route path="/admin/historia" component={AdminHistoria} />
+        <Route path="/admin/imagenes-historicas" component={AdminHistoricalImages} />
+        <Route path="/admin/valores-escudo" component={AdminShieldValues} />
         <Route path="/admin">
           <Redirect to="/admin/general" />
         </Route>

@@ -1,10 +1,17 @@
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
 import { ArrowDown } from 'lucide-react';
 import heroImage from '@assets/image_1758163215007.png';
+import { useQuery } from '@tanstack/react-query';
+import type { SiteConfig } from '@shared/schema';
 
 export default function Hero() {
+  const { data: config, isLoading } = useQuery<SiteConfig>({
+    queryKey: ['/api/admin/site-config'],
+  });
+
   const navigateToHistory = () => {
     window.location.href = '/historia';
   };
@@ -32,19 +39,25 @@ export default function Hero() {
           Tradición desde 1951
         </Badge>
         
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6" data-testid="text-hero-title">
-          Cuerpo de Banderas
-          <span className="block text-3xl sm:text-4xl lg:text-5xl mt-2 text-primary">
-            Liceo de Costa Rica
-          </span>
-        </h1>
-        
-        <p className="text-xl sm:text-2xl text-white/90 mb-8 leading-relaxed" data-testid="text-hero-description">
-          Honor, disciplina y patriotismo. Formando jóvenes costarricenses con
-          <span className="block mt-2">
-            pasos chilenos adaptados a nuestra cultura nacional.
-          </span>
-        </p>
+        {isLoading ? (
+          <>
+            <Skeleton className="h-16 w-3/4 mx-auto mb-6 bg-white/20" />
+            <Skeleton className="h-24 w-full mx-auto mb-8 bg-white/20" />
+          </>
+        ) : (
+          <>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6" data-testid="text-hero-title">
+              {config?.siteName || 'Cuerpo de Banderas'}
+              <span className="block text-3xl sm:text-4xl lg:text-5xl mt-2 text-primary">
+                {config?.siteSubtitle || 'Liceo de Costa Rica'}
+              </span>
+            </h1>
+            
+            <p className="text-xl sm:text-2xl text-white/90 mb-8 leading-relaxed" data-testid="text-hero-description">
+              {config?.heroDescription || 'Honor, disciplina y patriotismo. Formando jóvenes costarricenses con pasos chilenos adaptados a nuestra cultura nacional.'}
+            </p>
+          </>
+        )}
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
           <Button 

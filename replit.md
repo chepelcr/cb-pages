@@ -6,6 +6,16 @@ A modern institutional website for the Cuerpo de Banderas (Flag Corps) of Liceo 
 
 The website serves as both a public showcase and includes administrative functionality for content management, with a focus on dignity, tradition, and patriotic pride aligned with Costa Rican cultural values.
 
+## Recent Changes
+
+**October 2, 2025**: Completed full admin panel for all website content:
+- Added Proceso de Ingreso (admission requirements) editor in General Settings
+- Created Historical Images admin page with S3 upload and CRUD operations
+- Created Shield Values admin page with full CRUD and Lucide icon selection
+- Updated all public components (History, Shields, Contact) to load from API
+- Fixed AdminSidebar hook order violation and added accessibility improvements
+- Implemented proper S3 key persistence for safe cleanup on delete/replace operations
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
@@ -31,22 +41,34 @@ Preferred communication style: Simple, everyday language.
 
 **Express.js + TypeScript**: RESTful API server with clean architecture pattern separating controllers, services, and repositories for maintainable code organization.
 
-**Database Layer**: Drizzle ORM with PostgreSQL (via Neon serverless) providing type-safe database operations with schema-first approach.
+**Database Layer**: Drizzle ORM with PostgreSQL (via Neon serverless) providing type-safe database operations with schema-first approach. Database includes:
+- Site configuration (homepage sections, contact info, admission requirements)
+- Leadership periods (jefaturas) with S3 images
+- Historical images with S3 storage
+- Shield values with Lucide icon references
+- User management for admin authentication
 
 **Authentication System**: Prepared for AWS Cognito integration with JWT token management, currently using mock authentication for development.
 
 **API Structure**: 
 - Health check endpoints
 - User management routes (profile, registration)
-- Configuration management for institutional settings
-- Structured for future content management endpoints
+- Site configuration management (homepage, contact, admission requirements)
+- Historical images CRUD with S3 integration
+- Shield values CRUD operations
+- Leadership periods (jefaturas) management
+- S3 presigned URL generation for secure uploads
 
 ### Data Storage Solutions
 
 **PostgreSQL Database**: Neon serverless database with Drizzle ORM providing:
 - Users table for admin account management
-- Prepared schema structure for content management
+- Site config table for homepage and institutional settings
+- Leadership periods table with S3 image references
+- Historical images table with S3 storage
+- Shield values table with Lucide icon names
 - Connection pooling for optimal performance
+- Full CRUD operations for all content types
 
 **AWS S3 + CloudFront Object Storage**: Image upload system using presigned URLs with CloudFront CDN distribution:
 - **Bucket**: `banderas-data-jcampos-dev` (us-east-1)

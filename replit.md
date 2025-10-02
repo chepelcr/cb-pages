@@ -8,19 +8,68 @@ The website serves as both a public showcase and includes administrative functio
 
 ## Recent Changes
 
-**October 2, 2025**: Completed full admin panel for all website content:
-- Added Proceso de Ingreso (admission requirements) editor in General Settings
-- Created Historical Images admin page with S3 upload and CRUD operations
-- Created Shield Values admin page with full CRUD and Lucide icon selection
-- Updated all public components (History, Shields, Contact) to load from API
-- Fixed AdminSidebar hook order violation and added accessibility improvements
-- Implemented proper S3 key persistence for safe cleanup on delete/replace operations
+**October 2, 2025**: Completed client separation and independent deployment architecture:
+- **Separated public and admin clients**: Created two independent React applications
+  - `client/` - Public website (GitHub Pages deployment)
+  - `admin-client/` - Admin panel (S3 bucket deployment)
+- **Security improvement**: Admin code no longer bundled with public site, reducing attack surface
+- **Independent deployment**: Each client has its own Vite config, build output, and deployment target
+- **Clean separation**: Removed all admin routes, components, and code from public client
+- **Admin access**: Public footer includes admin link that opens new tab to admin login
+- **Shared resources**: Both clients use same backend API, shared types, and UI components library
 
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
 
 ## System Architecture
+
+### Dual-Client Architecture
+
+The application consists of two completely separate React applications:
+
+**Public Client** (`client/`):
+- Purpose: Public-facing website for visitors
+- Pages: Home, Historia, Jefaturas, Escudos, Galería
+- Deployment: GitHub Pages
+- Build output: `dist/public`
+- Development: `npm run dev` (runs on port 5000 with backend)
+- Access: Available to all visitors
+- Admin access: Footer link opens admin panel in new tab
+
+**Admin Client** (`admin-client/`):
+- Purpose: Content management panel for administrators
+- Pages: Login, General Settings, Jefaturas, Escudos, Galería, Historia, Historical Images, Shield Values
+- Deployment: AWS S3 bucket with CloudFront distribution
+- Build output: `dist/admin`
+- Development: `vite --config admin-client/vite.config.ts` (runs on port 5001)
+- Access: Protected by authentication, separate URL
+- Features: Full CRUD operations, S3 image uploads, content editing
+
+**Shared Resources**:
+- Backend API: Both clients use same Express server and endpoints
+- Types: Shared TypeScript types from `shared/schema.ts`
+- UI Components: Both use shadcn/ui component library
+- Database: Single PostgreSQL database for all data
+- Authentication: Admin client uses AuthContext for session management
+
+**Security Benefits**:
+- Admin code not bundled with public site
+- Reduced attack surface for public website
+- Independent deployment allows separate security policies
+- Admin panel can be hosted on different domain with additional security layers
+
+**Development Workflow**:
+1. Run backend + public client: `npm run dev` (single command for public site)
+2. Run admin client separately: `vite --config admin-client/vite.config.ts` (port 5001)
+3. Both clients connect to same backend API on port 5000
+4. Hot reload works independently for each client
+
+**Deployment Strategy**:
+- Public client: Build with `vite build`, deploy to GitHub Pages
+- Admin client: Build with `vite build --config admin-client/vite.config.ts`, deploy to S3
+- Backend: Deploy Express server to production environment
+- Database: Neon PostgreSQL (same for all environments)
 
 ### Frontend Architecture
 

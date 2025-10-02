@@ -6,7 +6,8 @@ import {
     ShieldController,
     GalleryCategoryController,
     GalleryController,
-    HistoryController
+    HistoryController,
+    UploadController
 } from '../controllers';
 
 export function setupRoutes(app: Express): void {
@@ -17,6 +18,7 @@ export function setupRoutes(app: Express): void {
 
     // Initialize controllers
     const userController = new UserController();
+    const uploadController = new UploadController();
     const siteConfigController = new SiteConfigController();
     const leadershipController = new LeadershipController();
     const shieldController = new ShieldController();
@@ -26,6 +28,7 @@ export function setupRoutes(app: Express): void {
 
     // Setup API routes
     app.use('/api/users', userController.getRouter());
+    app.use('/api/uploads', uploadController.getRouter());
     
     // Admin content management routes
     app.use('/api/admin/site-config', siteConfigController.getRouter());

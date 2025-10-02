@@ -1,4 +1,5 @@
 export { UserController } from './UserController';
+export { UploadController } from './UploadController';
 export { SiteConfigController } from './SiteConfigController';
 export { LeadershipController } from './LeadershipController';
 export { ShieldController } from './ShieldController';

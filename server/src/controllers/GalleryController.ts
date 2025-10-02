@@ -24,7 +24,9 @@ export class GalleryController {
     router.get('/uncategorized', this.getUncategorized.bind(this));
     router.get('/:id', this.getById.bind(this));
     router.post('/', upload.single('image'), this.create.bind(this));
+    router.post('/with-url', this.createWithUrl.bind(this));
     router.put('/:id', upload.single('image'), this.update.bind(this));
+    router.put('/:id/with-url', this.updateWithUrl.bind(this));
     router.delete('/:id', this.delete.bind(this));
     router.post('/reorder', this.reorder.bind(this));
     return router;
@@ -365,6 +367,158 @@ export class GalleryController {
       res.json({ message: "Gallery items reordered successfully" });
     } catch (error) {
       res.status(500).json({ error: "Failed to reorder gallery items" });
+    }
+  }
+
+  /**
+   * @swagger
+   * /api/admin/gallery/with-url:
+   *   post:
+   *     summary: Create gallery item with S3 image URL
+   *     tags: [Admin - Gallery]
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             required:
+   *               - title
+   *               - imageUrl
+   *             properties:
+   *               title:
+   *                 type: string
+   *               description:
+   *                 type: string
+   *               categoryId:
+   *                 type: string
+   *               year:
+   *                 type: string
+   *               displayOrder:
+   *                 type: integer
+   *               imageUrl:
+   *                 type: string
+   *                 description: S3 URL of the uploaded image
+   *     responses:
+   *       201:
+   *         description: Gallery item created
+   *       400:
+   *         description: Image URL is required
+   *       500:
+   *         description: Failed to create gallery item
+   */
+  async createWithUrl(req: Request, res: Response) {
+    try {
+      const { title, description, categoryId, year, displayOrder, imageUrl } = req.body;
+
+      if (!imageUrl) {
+        return res.status(400).json({ error: "Image URL is required" });
+      }
+
+      // Validate that the imageUrl is from our S3 bucket
+      const bucket = process.env.AWS_S3_BUCKET;
+      const region = process.env.AWS_REGION || 'us-east-1';
+      const validS3Pattern = new RegExp(`^https://${bucket}\\.s3\\.${region}\\.amazonaws\\.com/`);
+
+      if (!validS3Pattern.test(imageUrl)) {
+        return res.status(400).json({ 
+          error: "Invalid image URL - must be from the configured S3 bucket" 
+        });
+      }
+
+      const item = await galleryService.create({
+        title,
+        description: description || null,
+        categoryId: categoryId || null,
+        year: year || null,
+        displayOrder: displayOrder || 0,
+        imageUrl,
+        thumbnailUrl: null,
+      });
+
+      res.status(201).json(item);
+    } catch (error) {
+      console.error('Failed to create gallery item with URL:', error);
+      res.status(500).json({ error: "Failed to create gallery item" });
+    }
+  }
+
+  /**
+   * @swagger
+   * /api/admin/gallery/{id}/with-url:
+   *   put:
+   *     summary: Update gallery item with S3 image URL
+   *     tags: [Admin - Gallery]
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         required: true
+   *         schema:
+   *           type: string
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               title:
+   *                 type: string
+   *               description:
+   *                 type: string
+   *               categoryId:
+   *                 type: string
+   *               year:
+   *                 type: string
+   *               displayOrder:
+   *                 type: integer
+   *               imageUrl:
+   *                 type: string
+   *                 description: S3 URL of the uploaded image
+   *     responses:
+   *       200:
+   *         description: Gallery item updated
+   *       404:
+   *         description: Gallery item not found
+   *       500:
+   *         description: Failed to update gallery item
+   */
+  async updateWithUrl(req: Request, res: Response) {
+    try {
+      const { title, description, categoryId, year, displayOrder, imageUrl } = req.body;
+      const updateData: any = {};
+
+      if (title) updateData.title = title;
+      if (description !== undefined) updateData.description = description || null;
+      if (categoryId !== undefined) updateData.categoryId = categoryId || null;
+      if (year !== undefined) updateData.year = year || null;
+      if (displayOrder !== undefined) updateData.displayOrder = displayOrder;
+      
+      // Validate imageUrl if provided
+      if (imageUrl) {
+        const bucket = process.env.AWS_S3_BUCKET;
+        const region = process.env.AWS_REGION || 'us-east-1';
+        const validS3Pattern = new RegExp(`^https://${bucket}\\.s3\\.${region}\\.amazonaws\\.com/`);
+
+        if (!validS3Pattern.test(imageUrl)) {
+          return res.status(400).json({ 
+            error: "Invalid image URL - must be from the configured S3 bucket" 
+          });
+        }
+        
+        updateData.imageUrl = imageUrl;
+      }
+
+      const item = await galleryService.update(req.params.id, updateData);
+
+      if (!item) {
+        return res.status(404).json({ error: "Gallery item not found" });
+      }
+
+      res.json(item);
+    } catch (error) {
+      console.error('Failed to update gallery item with URL:', error);
+      res.status(500).json({ error: "Failed to update gallery item" });
     }
   }
 }

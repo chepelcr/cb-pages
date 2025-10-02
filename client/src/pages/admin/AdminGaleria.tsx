@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ImageUploader } from "@/components/admin/ImageUploader";
+import { S3ImageUploader } from "@/components/admin/S3ImageUploader";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -28,7 +28,7 @@ const itemFormSchema = z.object({
   description: z.string().optional().nullable(),
   categoryId: z.string().optional().nullable(),
   year: z.string().optional().nullable(),
-  imageFile: z.instanceof(File).optional().nullable(),
+  imageUrl: z.string().optional().nullable(),
 });
 
 type CategoryFormData = z.infer<typeof categoryFormSchema>;
@@ -131,24 +131,13 @@ export default function AdminGaleria() {
 
   const createItemMutation = useMutation({
     mutationFn: async (data: ItemFormData) => {
-      const formData = new FormData();
-      formData.append("title", data.title);
-      if (data.description) formData.append("description", data.description);
-      if (data.categoryId) formData.append("categoryId", data.categoryId);
-      if (data.year) formData.append("year", data.year);
-      if (data.imageFile) formData.append("image", data.imageFile);
-
-      const res = await fetch("/api/admin/gallery", {
-        method: "POST",
-        body: formData,
-        credentials: "include",
+      return apiRequest("POST", "/api/admin/gallery/with-url", {
+        title: data.title,
+        description: data.description || null,
+        categoryId: data.categoryId || null,
+        year: data.year || null,
+        imageUrl: data.imageUrl,
       });
-
-      if (!res.ok) {
-        throw new Error(`${res.status}: ${await res.text()}`);
-      }
-
-      return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/gallery"] });
@@ -170,24 +159,13 @@ export default function AdminGaleria() {
 
   const updateItemMutation = useMutation({
     mutationFn: async ({ id, data }: { id: string; data: ItemFormData }) => {
-      const formData = new FormData();
-      formData.append("title", data.title);
-      if (data.description) formData.append("description", data.description);
-      if (data.categoryId) formData.append("categoryId", data.categoryId);
-      if (data.year) formData.append("year", data.year);
-      if (data.imageFile) formData.append("image", data.imageFile);
-
-      const res = await fetch(`/api/admin/gallery/${id}`, {
-        method: "PUT",
-        body: formData,
-        credentials: "include",
+      return apiRequest("PUT", `/api/admin/gallery/${id}/with-url`, {
+        title: data.title,
+        description: data.description || null,
+        categoryId: data.categoryId || null,
+        year: data.year || null,
+        imageUrl: data.imageUrl,
       });
-
-      if (!res.ok) {
-        throw new Error(`${res.status}: ${await res.text()}`);
-      }
-
-      return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/gallery"] });
@@ -425,15 +403,16 @@ export default function AdminGaleria() {
 
                     <FormField
                       control={itemForm.control}
-                      name="imageFile"
+                      name="imageUrl"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Imagen</FormLabel>
                           <FormControl>
-                            <ImageUploader
-                              onImageSelect={(file) => field.onChange(file)}
+                            <S3ImageUploader
+                              onUploadComplete={(url) => field.onChange(url)}
                               currentImageUrl={editingItem?.imageUrl || undefined}
                               onRemove={() => field.onChange(null)}
+                              folder="gallery"
                             />
                           </FormControl>
                           <FormMessage />

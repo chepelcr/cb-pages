@@ -2,6 +2,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,6 +35,8 @@ type FormData = z.infer<typeof formSchema>;
 
 export default function AdminGeneralSettings() {
   const { toast } = useToast();
+  const [removeLogo, setRemoveLogo] = useState(false);
+  const [removeFavicon, setRemoveFavicon] = useState(false);
   
   const { data: config, isLoading } = useQuery<SiteConfig>({
     queryKey: ["/api/admin/site-config"],
@@ -42,13 +45,28 @@ export default function AdminGeneralSettings() {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      siteName: config?.siteName || "",
-      siteSubtitle: config?.siteSubtitle || "",
-      contactEmail: config?.contactEmail || "",
-      contactPhone: config?.contactPhone || "",
-      address: config?.address || "",
+      siteName: "",
+      siteSubtitle: "",
+      contactEmail: "",
+      contactPhone: "",
+      address: "",
     },
   });
+
+  useEffect(() => {
+    if (config) {
+      form.reset({
+        siteName: config.siteName || "",
+        siteSubtitle: config.siteSubtitle || "",
+        contactEmail: config.contactEmail || "",
+        contactPhone: config.contactPhone || "",
+        address: config.address || "",
+      });
+      // Reset removal flags when config loads
+      setRemoveLogo(false);
+      setRemoveFavicon(false);
+    }
+  }, [config, form]);
 
   const updateMutation = useMutation({
     mutationFn: async (data: FormData) => {
@@ -60,6 +78,10 @@ export default function AdminGeneralSettings() {
       if (data.address) formData.append("address", data.address);
       if (data.logoFile) formData.append("logo", data.logoFile);
       if (data.faviconFile) formData.append("favicon", data.faviconFile);
+      
+      // Add removal flags
+      if (removeLogo) formData.append("removeLogo", "true");
+      if (removeFavicon) formData.append("removeFavicon", "true");
 
       const res = await fetch("/api/admin/site-config", {
         method: "PUT",
@@ -240,9 +262,15 @@ export default function AdminGeneralSettings() {
                     <FormLabel>Logo</FormLabel>
                     <FormControl>
                       <ImageUploader
-                        onImageSelect={(file) => field.onChange(file)}
+                        onImageSelect={(file) => {
+                          field.onChange(file);
+                          setRemoveLogo(false);
+                        }}
                         currentImageUrl={config?.logoUrl || undefined}
-                        onRemove={() => field.onChange(null)}
+                        onRemove={() => {
+                          field.onChange(null);
+                          setRemoveLogo(true);
+                        }}
                         maxSizeMB={5}
                       />
                     </FormControl>
@@ -259,9 +287,15 @@ export default function AdminGeneralSettings() {
                     <FormLabel>Favicon</FormLabel>
                     <FormControl>
                       <ImageUploader
-                        onImageSelect={(file) => field.onChange(file)}
+                        onImageSelect={(file) => {
+                          field.onChange(file);
+                          setRemoveFavicon(false);
+                        }}
                         currentImageUrl={config?.faviconUrl || undefined}
-                        onRemove={() => field.onChange(null)}
+                        onRemove={() => {
+                          field.onChange(null);
+                          setRemoveFavicon(true);
+                        }}
                         maxSizeMB={1}
                       />
                     </FormControl>

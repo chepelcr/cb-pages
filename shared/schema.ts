@@ -36,6 +36,7 @@ export const siteConfig = pgTable("site_config", {
   ceremoniesNotes: text("ceremonies_notes").default("Se coordinan con anticipación"),
   meetingsSchedule: text("meetings_schedule").default("Viernes, 3:00 PM - 4:00 PM"),
   meetingsLocation: text("meetings_location").default("Aula de coordinación"),
+  admissionRequirements: text("admission_requirements").array().default(sql`ARRAY['Ser estudiante activo del Liceo de Costa Rica', 'Mantener promedio académico mínimo de 80', 'Disponibilidad para entrenamientos regulares', 'Compromiso con los valores institucionales', 'Participación en ceremonias patrias']::text[]`),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
@@ -145,3 +146,42 @@ export const insertHistoricalMilestoneSchema = createInsertSchema(historicalMile
 });
 export type InsertHistoricalMilestone = z.infer<typeof insertHistoricalMilestoneSchema>;
 export type HistoricalMilestone = typeof historicalMilestones.$inferSelect;
+
+// Historical Images
+export const historicalImages = pgTable("historical_images", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  imageUrl: text("image_url").notNull(),
+  imageS3Key: text("image_s3_key"),
+  displayOrder: integer("display_order").notNull().default(0),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertHistoricalImageSchema = createInsertSchema(historicalImages).omit({ 
+  id: true, 
+  createdAt: true, 
+  updatedAt: true 
+});
+export type InsertHistoricalImage = z.infer<typeof insertHistoricalImageSchema>;
+export type HistoricalImage = typeof historicalImages.$inferSelect;
+
+// Shield Values (Honor, Disciplina, etc.)
+export const shieldValues = pgTable("shield_values", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  iconName: text("icon_name").notNull().default("Award"),
+  displayOrder: integer("display_order").notNull().default(0),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertShieldValueSchema = createInsertSchema(shieldValues).omit({ 
+  id: true, 
+  createdAt: true, 
+  updatedAt: true 
+});
+export type InsertShieldValue = z.infer<typeof insertShieldValueSchema>;
+export type ShieldValue = typeof shieldValues.$inferSelect;

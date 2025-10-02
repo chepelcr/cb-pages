@@ -9,6 +9,8 @@ import {
     HistoryController,
     UploadController
 } from '../controllers';
+import { HistoricalImageController } from '../controllers/HistoricalImageController';
+import { ShieldValueController } from '../controllers/ShieldValueController';
 
 export function setupRoutes(app: Express): void {
     // Health check endpoint
@@ -25,6 +27,8 @@ export function setupRoutes(app: Express): void {
     const galleryCategoryController = new GalleryCategoryController();
     const galleryController = new GalleryController();
     const historyController = new HistoryController();
+    const historicalImageController = new HistoricalImageController();
+    const shieldValueController = new ShieldValueController();
 
     // Setup API routes
     app.use('/api/users', userController.getRouter());
@@ -37,6 +41,8 @@ export function setupRoutes(app: Express): void {
     app.use('/api/admin/gallery-categories', galleryCategoryController.getRouter());
     app.use('/api/admin/gallery', galleryController.getRouter());
     app.use('/api/admin/history', historyController.getRouter());
+    app.use('/api/admin/historical-images', historicalImageController.getRouter());
+    app.use('/api/admin/shield-values', shieldValueController.getRouter());
     
     console.log('API routes setup completed');
 }

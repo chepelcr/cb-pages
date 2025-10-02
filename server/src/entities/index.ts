@@ -5,3 +5,5 @@ export * from './ShieldEntity';
 export * from './GalleryCategoryEntity';
 export * from './GalleryItemEntity';
 export * from './HistoricalMilestoneEntity';
+export * from './HistoricalImageEntity';
+export * from './ShieldValueEntity';

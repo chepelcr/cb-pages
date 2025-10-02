@@ -13,6 +13,7 @@ export default function Hero() {
   });
 
   const foundingYear = config?.foundingYear || 1951;
+  const yearsOfTradition = new Date().getFullYear() - foundingYear;
 
   const navigateToHistory = () => {
     window.location.href = '/historia';
@@ -85,7 +86,7 @@ export default function Hero() {
         {/* Stats Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-12">
           <Card className="bg-white/10 backdrop-blur border-white/20 p-6 text-center" data-testid="card-stat-years">
-            <div className="text-3xl font-bold text-white mb-2">73+</div>
+            <div className="text-3xl font-bold text-white mb-2">{yearsOfTradition}+</div>
             <div className="text-white/80">Años de Tradición</div>
           </Card>
           

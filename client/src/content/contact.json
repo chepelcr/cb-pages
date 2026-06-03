@@ -1,0 +1,69 @@
+{
+  "badge": "Contacto",
+  "title": "Contáctanos",
+  "description": "¿Interesado en formar parte del Cuerpo de Banderas? Contáctanos para más información sobre el proceso de ingreso y entrenamientos.",
+  "email": "cuerpo.banderas@liceocostarica.ed.cr",
+  "phone": "+506 2221-9358",
+  "address": "Liceo de Costa Rica\nAvenida 6, Calle 7-9\nSan José, Costa Rica",
+  "mapsQuery": "Liceo de Costa Rica San José",
+  "methods": [
+    {
+      "id": "location",
+      "type": "location",
+      "label": "Ubicación",
+      "value": "Liceo de Costa Rica, San José",
+      "description": "Avenida 6, Calle 7-9, San José, Costa Rica"
+    },
+    {
+      "id": "phone",
+      "type": "phone",
+      "label": "Teléfono",
+      "value": "+506 2221-9358",
+      "description": "Secretaría del Liceo de Costa Rica"
+    },
+    {
+      "id": "email",
+      "type": "email",
+      "label": "Email",
+      "value": "cuerpo.banderas@liceocostarica.ed.cr",
+      "description": "Coordinación Cuerpo de Banderas"
+    },
+    {
+      "id": "schedule",
+      "type": "schedule",
+      "label": "Horario de Entrenamientos",
+      "value": "Martes y Jueves 2:00 PM",
+      "description": "Patio principal del Liceo"
+    }
+  ],
+  "admission": {
+    "badge": "Requisitos",
+    "title": "Proceso de Ingreso",
+    "requirements": [
+      "Ser estudiante activo del Liceo de Costa Rica",
+      "Mantener promedio académico mínimo de 80",
+      "Disponibilidad para entrenamientos regulares",
+      "Compromiso con los valores institucionales",
+      "Participación en ceremonias patrias"
+    ]
+  },
+  "schedules": {
+    "badge": "Horarios",
+    "title": "Actividades y Entrenamientos",
+    "training": {
+      "title": "Entrenamientos Regulares",
+      "schedule": "Martes y Jueves, 2:00 PM - 4:00 PM",
+      "location": "Patio principal del Liceo"
+    },
+    "ceremonies": {
+      "title": "Ceremonias Especiales",
+      "schedule": "Fechas patrias y eventos institucionales",
+      "notes": "Se coordinan con anticipación"
+    },
+    "meetings": {
+      "title": "Reuniones de Coordinación",
+      "schedule": "Viernes, 3:00 PM - 4:00 PM",
+      "location": "Aula de coordinación"
+    }
+  }
+}

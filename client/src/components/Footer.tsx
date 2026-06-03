@@ -1,56 +1,42 @@
-import { useQuery } from '@tanstack/react-query';
-import type { SiteConfig } from '@shared/schema';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Facebook, Instagram, Youtube, Mail } from 'lucide-react';
+import { Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLocation } from 'wouter';
-import cbLogo from '@assets/cb logo_1758164197769.png';
+import { getFooter, getBranding, getContact, getFoundingYear } from '@/services/site.service';
+import { resolveMedia } from '@/lib/media';
+import { resolveIcon } from '@/lib/icons';
+import { t } from '@/lib/i18n';
+import { ADMIN_ENABLED } from '@/lib/admin-enabled';
 
 export default function Footer() {
   const [location, navigate] = useLocation();
+  const footer = getFooter();
+  const branding = getBranding();
+  const contact = getContact();
 
-  const { data: siteConfig } = useQuery<SiteConfig>({
-    queryKey: ['/api/admin/site-config'],
-  });
-
-  const siteName = siteConfig?.siteName || 'Cuerpo de Banderas';
-  const siteSubtitle = siteConfig?.siteSubtitle || 'Liceo de Costa Rica';
-  const logoUrl = siteConfig?.logoUrl || cbLogo;
-  const contactEmail = siteConfig?.contactEmail || 'cuerpo.banderas@liceocostarica.ed.cr';
-  const contactPhone = siteConfig?.contactPhone || '+506 2221-9358';
-  const address = siteConfig?.address || 'Liceo de Costa Rica\nAvenida 6, Calle 7-9\nSan José, Costa Rica';
-  const footerDescription = siteConfig?.footerDescription || 'Formando jóvenes costarricenses con valores patrióticos, disciplina y honor desde 1951. Una tradición de más de 70 años al servicio de la patria.';
-  const foundingYear = siteConfig?.foundingYear || 1951;
-
-  const handleSocialClick = (platform: string) => {
-    console.log(`Social media clicked: ${platform}`);
-  };
+  const siteName = branding.siteName;
+  const siteSubtitle = branding.siteSubtitle;
+  const logoUrl = resolveMedia(branding.logo);
+  const foundingYear = getFoundingYear();
+  const addressLines = contact.address.split('\n');
 
   const handleContactClick = (type: string) => {
-    console.log(`Footer contact clicked: ${type}`);
     if (type === 'email') {
-      window.open(`mailto:${contactEmail}`);
+      window.open(`mailto:${contact.email}`);
     }
   };
 
   const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+    document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const handleNavigation = (path: string, sectionId?: string) => {
     if (path === '/' && location === '/') {
-      if (sectionId) {
-        scrollToSection(sectionId);
-      }
+      if (sectionId) scrollToSection(sectionId);
     } else if (path === '/' && sectionId) {
       navigate('/');
-      setTimeout(() => {
-        scrollToSection(sectionId);
-      }, 100);
+      setTimeout(() => scrollToSection(sectionId), 100);
     } else {
       navigate(path);
     }
@@ -63,11 +49,11 @@ export default function Footer() {
           {/* Logo and Description */}
           <div className="lg:col-span-2">
             <div className="flex items-center gap-3 mb-4">
-              <img 
-                src={logoUrl} 
+              <img
+                src={logoUrl}
                 alt={`${siteName} Logo`}
                 className="h-10 w-10 object-contain"
-                data-testid="footer-logo" 
+                data-testid="footer-logo"
               />
               <div>
                 <h3 className="text-xl font-bold text-foreground" data-testid="text-footer-title">
@@ -79,33 +65,23 @@ export default function Footer() {
               </div>
             </div>
             <p className="text-muted-foreground mb-4 max-w-md" data-testid="text-footer-description">
-              {footerDescription}
+              {footer.description}
             </p>
-            <Badge variant="outline" className="" data-testid="badge-footer-tradition">
-              Tradición desde {foundingYear}
+            <Badge variant="outline" data-testid="badge-footer-tradition">
+              {branding.traditionLabelPrefix} {foundingYear}
             </Badge>
           </div>
 
           {/* Quick Links */}
           <div>
             <h4 className="font-semibold text-foreground mb-4" data-testid="text-quick-links-title">
-              Enlaces Rápidos
+              {footer.quickLinksTitle}
             </h4>
             <nav className="space-y-2">
-              {[
-                { label: 'Inicio', path: '/', sectionId: 'home' },
-                { label: 'Historia', path: '/historia' },
-                { label: 'Jefaturas', path: '/jefaturas' },
-                { label: 'Escudos', path: '/escudos' },
-                { label: 'Galería', path: '/galeria' },
-                { label: 'Contacto', path: '/', sectionId: 'contact' }
-              ].map((link) => (
+              {footer.quickLinks.map((link) => (
                 <button
-                  key={link.path + (link.sectionId || '')}
-                  onClick={() => {
-                    handleNavigation(link.path, link.sectionId);
-                    console.log(`Footer link clicked: ${link.label}`);
-                  }}
+                  key={link.id}
+                  onClick={() => handleNavigation(link.path, link.sectionId)}
                   className="block text-muted-foreground hover:text-primary transition-colors text-sm"
                   data-testid={`link-footer-${link.sectionId || link.path.replace('/', '')}`}
                 >
@@ -118,38 +94,38 @@ export default function Footer() {
           {/* Contact Info */}
           <div>
             <h4 className="font-semibold text-foreground mb-4" data-testid="text-contact-info-title">
-              Información de Contacto
+              {footer.contactTitle}
             </h4>
             <div className="space-y-3 text-sm">
               <div className="text-muted-foreground" data-testid="text-footer-address">
-                <strong>Dirección:</strong><br />
-                {address.split('\n').map((line, index) => (
+                <strong>{t('contact.addressLabel')}</strong><br />
+                {addressLines.map((line, index) => (
                   <span key={index}>
                     {line}
-                    {index < address.split('\n').length - 1 && <br />}
+                    {index < addressLines.length - 1 && <br />}
                   </span>
                 ))}
               </div>
-              
+
               <div className="text-muted-foreground" data-testid="text-footer-phone">
-                <strong>Teléfono:</strong><br />
-                {contactPhone}
+                <strong>{t('contact.phoneLabel')}</strong><br />
+                {contact.phone}
               </div>
-              
-              <Button 
-                variant="ghost" 
-                size="sm" 
+
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={() => handleContactClick('email')}
                 className="p-0 h-auto justify-start text-muted-foreground hover:text-primary"
                 data-testid="button-footer-email"
               >
                 <Mail className="h-4 w-4 mr-2" />
-                {contactEmail}
+                {contact.email}
               </Button>
-              
+
               <div className="text-muted-foreground" data-testid="text-footer-schedule">
-                <strong>Entrenamientos:</strong><br />
-                Martes y Jueves 2:00 PM
+                <strong>{t('contact.trainingLabel')}</strong><br />
+                {footer.trainingSummary}
               </div>
             </div>
           </div>
@@ -161,33 +137,31 @@ export default function Footer() {
             <p className="text-sm text-muted-foreground" data-testid="text-footer-copyright">
               © {new Date().getFullYear()} {siteName} - {siteSubtitle}
             </p>
-            <span className="text-muted-foreground hidden sm:inline">|</span>
-            <a
-              href={import.meta.env.DEV ? "http://localhost:5001/login" : "https://admin-banderas.example.com/login"}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm text-muted-foreground hover:text-primary transition-colors"
-              data-testid="link-admin-login"
-            >
-              Admin
-            </a>
+            {ADMIN_ENABLED && (
+              <>
+                <span className="text-muted-foreground hidden sm:inline">|</span>
+                <button
+                  onClick={() => navigate('/admin')}
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                  data-testid="link-admin-login"
+                >
+                  {t('footer.admin')}
+                </button>
+              </>
+            )}
           </div>
-          
+
           <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground mr-2">Síguenos:</span>
-            {[
-              { icon: Facebook, name: 'Facebook', color: 'hover:text-blue-600' },
-              { icon: Instagram, name: 'Instagram', color: 'hover:text-pink-600' },
-              { icon: Youtube, name: 'YouTube', color: 'hover:text-red-600' }
-            ].map((social) => {
-              const IconComponent = social.icon;
+            <span className="text-sm text-muted-foreground mr-2">{t('footer.followUs')}</span>
+            {footer.social.map((social) => {
+              const IconComponent = resolveIcon(social.iconName);
               return (
                 <Button
-                  key={social.name}
+                  key={social.id}
                   variant="ghost"
                   size="sm"
-                  onClick={() => handleSocialClick(social.name)}
-                  className={`p-2 text-muted-foreground ${social.color} transition-colors`}
+                  onClick={() => social.url && window.open(social.url, '_blank')}
+                  className="p-2 text-muted-foreground hover:text-primary transition-colors"
                   data-testid={`button-social-${social.name.toLowerCase()}`}
                 >
                   <IconComponent className="h-4 w-4" />

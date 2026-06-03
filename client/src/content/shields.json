@@ -1,0 +1,16 @@
+{
+  "badge": "Escudos e Insignias",
+  "title": "Símbolos de Honor",
+  "description": "Los escudos e insignias que representan la tradición, honor y compromiso del Cuerpo de Banderas del Liceo de Costa Rica.",
+  "items": [
+    {
+      "id": "shield-principal",
+      "title": "Escudo del Cuerpo de Banderas",
+      "description": "El escudo principal representa la identidad, la tradición y el honor del Cuerpo de Banderas del Liceo de Costa Rica.",
+      "image": "logo",
+      "symbolism": "Las banderas representan el patriotismo y el amor a la patria.\nLos colores institucionales reflejan la identidad del Liceo de Costa Rica.\nEl conjunto simboliza la disciplina, el honor y la tradición de más de siete décadas.",
+      "isMain": true,
+      "order": 0
+    }
+  ]
+}

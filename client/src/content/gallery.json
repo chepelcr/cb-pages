@@ -1,0 +1,42 @@
+{
+  "badge": "Galería",
+  "title": "Momentos Memorables",
+  "description": "Explora nuestra colección de fotografías que capturan la esencia del Cuerpo de Banderas a través de los años.",
+  "categories": [
+    { "id": "cat-ceremonias", "name": "Ceremonias", "slug": "ceremonias", "order": 0 },
+    { "id": "cat-desfiles", "name": "Desfiles", "slug": "desfiles", "order": 1 },
+    { "id": "cat-historico", "name": "Histórico", "slug": "historico", "order": 2 }
+  ],
+  "items": [
+    {
+      "id": "gal-ceremony",
+      "title": "Guardia de honor en ceremonia",
+      "description": "El Cuerpo de Banderas durante una ceremonia institucional.",
+      "image": "ceremony-honor-guard",
+      "thumbnail": "",
+      "categoryId": "cat-ceremonias",
+      "year": "2022",
+      "order": 0
+    },
+    {
+      "id": "gal-parade",
+      "title": "Desfile en el patio principal",
+      "description": "Formación durante un desfile en el patio principal del Liceo.",
+      "image": "parade-ground",
+      "thumbnail": "",
+      "categoryId": "cat-desfiles",
+      "year": "2021",
+      "order": 1
+    },
+    {
+      "id": "gal-historic",
+      "title": "Ceremonia histórica",
+      "description": "Fotografía histórica de una ceremonia de los primeros años del cuerpo.",
+      "image": "historic-1950s",
+      "thumbnail": "",
+      "categoryId": "cat-historico",
+      "year": "1955",
+      "order": 2
+    }
+  ]
+}

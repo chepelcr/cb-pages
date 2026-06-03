@@ -1,0 +1,61 @@
+{
+  "common": {
+    "loading": "Cargando...",
+    "viewOnMaps": "Ver en Maps",
+    "call": "Llamar",
+    "sendEmail": "Enviar Email",
+    "moreInfo": "Más Info"
+  },
+  "nav": {
+    "history": "Nuestra Historia",
+    "multimedia": "Multimedia"
+  },
+  "hero": {
+    "scrollDown": "Bajar"
+  },
+  "history": {
+    "emptyMilestonesTitle": "No hay hitos registrados",
+    "emptyMilestonesBody": "Aún no se han agregado hitos históricos importantes"
+  },
+  "leadership": {
+    "statYears": "Años",
+    "statLeaders": "Líderes",
+    "statPeriods": "Períodos",
+    "searchPlaceholder": "Buscar por año o nombre...",
+    "sortPlaceholder": "Ordenar por año",
+    "sortAsc": "Año ascendente",
+    "sortDesc": "Año descendente",
+    "jefaturaLabel": "Jefatura:",
+    "segundaVozLabel": "Segunda voz:",
+    "pageOf": "Página {current} de {total}",
+    "noResultsTitle": "No se encontraron resultados",
+    "noResultsBody": "Intenta con otros términos de búsqueda"
+  },
+  "shields": {
+    "mainShieldBadge": "Escudo Principal",
+    "emptyValuesTitle": "No hay valores registrados",
+    "emptyValuesBody": "Aún no se han agregado valores del escudo"
+  },
+  "gallery": {
+    "all": "Todas",
+    "photoBadge": "Foto",
+    "emptyTitle": "No hay elementos en esta categoría",
+    "emptyBody": "Selecciona otra categoría para ver más contenido"
+  },
+  "contact": {
+    "applyButton": "Solicitar Información",
+    "scheduleButton": "Consultar Horarios",
+    "addressLabel": "Dirección:",
+    "phoneLabel": "Teléfono:",
+    "trainingLabel": "Entrenamientos:"
+  },
+  "footer": {
+    "followUs": "Síguenos:",
+    "admin": "Admin"
+  },
+  "notFound": {
+    "title": "404 — Página no encontrada",
+    "body": "La página que buscas no existe o fue movida.",
+    "home": "Volver al inicio"
+  }
+}

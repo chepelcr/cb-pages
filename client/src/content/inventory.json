@@ -1,0 +1,640 @@
+{
+  "generatedAt": "2026-06-03",
+  "files": [
+    {
+      "path": "client/src/admin/AdminApp.tsx",
+      "type": "component",
+      "bytes": 3019
+    },
+    {
+      "path": "client/src/admin/components/AdminLayout.tsx",
+      "type": "component",
+      "bytes": 942
+    },
+    {
+      "path": "client/src/admin/components/AdminSidebar.tsx",
+      "type": "component",
+      "bytes": 4534
+    },
+    {
+      "path": "client/src/admin/components/AdminTopbar.tsx",
+      "type": "component",
+      "bytes": 3595
+    },
+    {
+      "path": "client/src/admin/components/EntityShell.tsx",
+      "type": "component",
+      "bytes": 2306
+    },
+    {
+      "path": "client/src/admin/components/fields.tsx",
+      "type": "component",
+      "bytes": 6379
+    },
+    {
+      "path": "client/src/admin/components/ListEditor.tsx",
+      "type": "component",
+      "bytes": 3200
+    },
+    {
+      "path": "client/src/admin/lib/media-usage.ts",
+      "type": "module",
+      "bytes": 1943
+    },
+    {
+      "path": "client/src/admin/lib/persist.ts",
+      "type": "module",
+      "bytes": 1929
+    },
+    {
+      "path": "client/src/admin/pages/ContactPage.tsx",
+      "type": "component",
+      "bytes": 4713
+    },
+    {
+      "path": "client/src/admin/pages/ContentExplorerPage.tsx",
+      "type": "component",
+      "bytes": 1732
+    },
+    {
+      "path": "client/src/admin/pages/ContentVersionsPage.tsx",
+      "type": "component",
+      "bytes": 2892
+    },
+    {
+      "path": "client/src/admin/pages/DashboardPage.tsx",
+      "type": "component",
+      "bytes": 3128
+    },
+    {
+      "path": "client/src/admin/pages/DiagnosticsPage.tsx",
+      "type": "component",
+      "bytes": 4264
+    },
+    {
+      "path": "client/src/admin/pages/FooterPage.tsx",
+      "type": "component",
+      "bytes": 3485
+    },
+    {
+      "path": "client/src/admin/pages/GalleryPage.tsx",
+      "type": "component",
+      "bytes": 4058
+    },
+    {
+      "path": "client/src/admin/pages/HeroPage.tsx",
+      "type": "component",
+      "bytes": 3411
+    },
+    {
+      "path": "client/src/admin/pages/HistoricalImagesPage.tsx",
+      "type": "component",
+      "bytes": 1433
+    },
+    {
+      "path": "client/src/admin/pages/HistoryPage.tsx",
+      "type": "component",
+      "bytes": 1618
+    },
+    {
+      "path": "client/src/admin/pages/IdentityPage.tsx",
+      "type": "component",
+      "bytes": 4016
+    },
+    {
+      "path": "client/src/admin/pages/InventoryPage.tsx",
+      "type": "component",
+      "bytes": 2005
+    },
+    {
+      "path": "client/src/admin/pages/LeadershipPage.tsx",
+      "type": "component",
+      "bytes": 2801
+    },
+    {
+      "path": "client/src/admin/pages/MediaPage.tsx",
+      "type": "component",
+      "bytes": 7709
+    },
+    {
+      "path": "client/src/admin/pages/MilestonesPage.tsx",
+      "type": "component",
+      "bytes": 1616
+    },
+    {
+      "path": "client/src/admin/pages/NavigationPage.tsx",
+      "type": "component",
+      "bytes": 3426
+    },
+    {
+      "path": "client/src/admin/pages/SeoPage.tsx",
+      "type": "component",
+      "bytes": 2588
+    },
+    {
+      "path": "client/src/admin/pages/ShieldsPage.tsx",
+      "type": "component",
+      "bytes": 2952
+    },
+    {
+      "path": "client/src/admin/pages/ShieldValuesPage.tsx",
+      "type": "component",
+      "bytes": 1488
+    },
+    {
+      "path": "client/src/admin/pages/TranslationsPage.tsx",
+      "type": "component",
+      "bytes": 1614
+    },
+    {
+      "path": "client/src/admin/store/content-store.ts",
+      "type": "module",
+      "bytes": 3986
+    },
+    {
+      "path": "client/src/admin/store/ui-store.ts",
+      "type": "module",
+      "bytes": 703
+    },
+    {
+      "path": "client/src/App.tsx",
+      "type": "component",
+      "bytes": 2887
+    },
+    {
+      "path": "client/src/components/Contact.tsx",
+      "type": "component",
+      "bytes": 6907
+    },
+    {
+      "path": "client/src/components/Footer.tsx",
+      "type": "component",
+      "bytes": 6744
+    },
+    {
+      "path": "client/src/components/Gallery.tsx",
+      "type": "component",
+      "bytes": 6079
+    },
+    {
+      "path": "client/src/components/Header.tsx",
+      "type": "component",
+      "bytes": 7472
+    },
+    {
+      "path": "client/src/components/Hero.tsx",
+      "type": "component",
+      "bytes": 3732
+    },
+    {
+      "path": "client/src/components/History.tsx",
+      "type": "component",
+      "bytes": 5331
+    },
+    {
+      "path": "client/src/components/Leadership.tsx",
+      "type": "component",
+      "bytes": 8990
+    },
+    {
+      "path": "client/src/components/PageTransition.tsx",
+      "type": "component",
+      "bytes": 494
+    },
+    {
+      "path": "client/src/components/Shields.tsx",
+      "type": "component",
+      "bytes": 4824
+    },
+    {
+      "path": "client/src/components/ThemeProvider.tsx",
+      "type": "component",
+      "bytes": 1678
+    },
+    {
+      "path": "client/src/components/ui/accordion.tsx",
+      "type": "component",
+      "bytes": 2033
+    },
+    {
+      "path": "client/src/components/ui/alert-dialog.tsx",
+      "type": "component",
+      "bytes": 4559
+    },
+    {
+      "path": "client/src/components/ui/alert.tsx",
+      "type": "component",
+      "bytes": 1643
+    },
+    {
+      "path": "client/src/components/ui/aspect-ratio.tsx",
+      "type": "component",
+      "bytes": 145
+    },
+    {
+      "path": "client/src/components/ui/avatar.tsx",
+      "type": "component",
+      "bytes": 1643
+    },
+    {
+      "path": "client/src/components/ui/badge.tsx",
+      "type": "component",
+      "bytes": 1240
+    },
+    {
+      "path": "client/src/components/ui/breadcrumb.tsx",
+      "type": "component",
+      "bytes": 2827
+    },
+    {
+      "path": "client/src/components/ui/button.tsx",
+      "type": "component",
+      "bytes": 2421
+    },
+    {
+      "path": "client/src/components/ui/calendar.tsx",
+      "type": "component",
+      "bytes": 2763
+    },
+    {
+      "path": "client/src/components/ui/card.tsx",
+      "type": "component",
+      "bytes": 1989
+    },
+    {
+      "path": "client/src/components/ui/carousel.tsx",
+      "type": "component",
+      "bytes": 6470
+    },
+    {
+      "path": "client/src/components/ui/chart.tsx",
+      "type": "component",
+      "bytes": 10846
+    },
+    {
+      "path": "client/src/components/ui/checkbox.tsx",
+      "type": "component",
+      "bytes": 1084
+    },
+    {
+      "path": "client/src/components/ui/collapsible.tsx",
+      "type": "component",
+      "bytes": 340
+    },
+    {
+      "path": "client/src/components/ui/command.tsx",
+      "type": "component",
+      "bytes": 5036
+    },
+    {
+      "path": "client/src/components/ui/context-menu.tsx",
+      "type": "component",
+      "bytes": 7626
+    },
+    {
+      "path": "client/src/components/ui/dialog.tsx",
+      "type": "component",
+      "bytes": 3970
+    },
+    {
+      "path": "client/src/components/ui/drawer.tsx",
+      "type": "component",
+      "bytes": 3139
+    },
+    {
+      "path": "client/src/components/ui/dropdown-menu.tsx",
+      "type": "component",
+      "bytes": 7807
+    },
+    {
+      "path": "client/src/components/ui/form.tsx",
+      "type": "component",
+      "bytes": 4298
+    },
+    {
+      "path": "client/src/components/ui/hover-card.tsx",
+      "type": "component",
+      "bytes": 1280
+    },
+    {
+      "path": "client/src/components/ui/input-otp.tsx",
+      "type": "component",
+      "bytes": 2223
+    },
+    {
+      "path": "client/src/components/ui/input.tsx",
+      "type": "component",
+      "bytes": 867
+    },
+    {
+      "path": "client/src/components/ui/label.tsx",
+      "type": "component",
+      "bytes": 734
+    },
+    {
+      "path": "client/src/components/ui/menubar.tsx",
+      "type": "component",
+      "bytes": 8861
+    },
+    {
+      "path": "client/src/components/ui/navigation-menu.tsx",
+      "type": "component",
+      "bytes": 5256
+    },
+    {
+      "path": "client/src/components/ui/pagination.tsx",
+      "type": "component",
+      "bytes": 2868
+    },
+    {
+      "path": "client/src/components/ui/popover.tsx",
+      "type": "component",
+      "bytes": 1309
+    },
+    {
+      "path": "client/src/components/ui/progress.tsx",
+      "type": "component",
+      "bytes": 819
+    },
+    {
+      "path": "client/src/components/ui/radio-group.tsx",
+      "type": "component",
+      "bytes": 1509
+    },
+    {
+      "path": "client/src/components/ui/resizable.tsx",
+      "type": "component",
+      "bytes": 1768
+    },
+    {
+      "path": "client/src/components/ui/scroll-area.tsx",
+      "type": "component",
+      "bytes": 1688
+    },
+    {
+      "path": "client/src/components/ui/select.tsx",
+      "type": "component",
+      "bytes": 5901
+    },
+    {
+      "path": "client/src/components/ui/separator.tsx",
+      "type": "component",
+      "bytes": 785
+    },
+    {
+      "path": "client/src/components/ui/sheet.tsx",
+      "type": "component",
+      "bytes": 4421
+    },
+    {
+      "path": "client/src/components/ui/sidebar.tsx",
+      "type": "component",
+      "bytes": 22573
+    },
+    {
+      "path": "client/src/components/ui/skeleton.tsx",
+      "type": "component",
+      "bytes": 276
+    },
+    {
+      "path": "client/src/components/ui/slider.tsx",
+      "type": "component",
+      "bytes": 1103
+    },
+    {
+      "path": "client/src/components/ui/switch.tsx",
+      "type": "component",
+      "bytes": 1166
+    },
+    {
+      "path": "client/src/components/ui/table.tsx",
+      "type": "component",
+      "bytes": 2882
+    },
+    {
+      "path": "client/src/components/ui/tabs.tsx",
+      "type": "component",
+      "bytes": 1936
+    },
+    {
+      "path": "client/src/components/ui/textarea.tsx",
+      "type": "component",
+      "bytes": 711
+    },
+    {
+      "path": "client/src/components/ui/toast.tsx",
+      "type": "component",
+      "bytes": 4972
+    },
+    {
+      "path": "client/src/components/ui/toaster.tsx",
+      "type": "component",
+      "bytes": 805
+    },
+    {
+      "path": "client/src/components/ui/toggle-group.tsx",
+      "type": "component",
+      "bytes": 1814
+    },
+    {
+      "path": "client/src/components/ui/toggle.tsx",
+      "type": "component",
+      "bytes": 1570
+    },
+    {
+      "path": "client/src/components/ui/tooltip.tsx",
+      "type": "component",
+      "bytes": 1239
+    },
+    {
+      "path": "client/src/content/branding.json",
+      "type": "content",
+      "bytes": 192
+    },
+    {
+      "path": "client/src/content/contact.json",
+      "type": "content",
+      "bytes": 2179
+    },
+    {
+      "path": "client/src/content/footer.json",
+      "type": "content",
+      "bytes": 1062
+    },
+    {
+      "path": "client/src/content/gallery.json",
+      "type": "content",
+      "bytes": 1414
+    },
+    {
+      "path": "client/src/content/hero.json",
+      "type": "content",
+      "bytes": 843
+    },
+    {
+      "path": "client/src/content/historical-images.json",
+      "type": "content",
+      "bytes": 498
+    },
+    {
+      "path": "client/src/content/history.json",
+      "type": "content",
+      "bytes": 564
+    },
+    {
+      "path": "client/src/content/leadership.json",
+      "type": "content",
+      "bytes": 8282
+    },
+    {
+      "path": "client/src/content/media.json",
+      "type": "content",
+      "bytes": 1635
+    },
+    {
+      "path": "client/src/content/milestones.json",
+      "type": "content",
+      "bytes": 1208
+    },
+    {
+      "path": "client/src/content/navigation.json",
+      "type": "content",
+      "bytes": 698
+    },
+    {
+      "path": "client/src/content/seo.json",
+      "type": "content",
+      "bytes": 1275
+    },
+    {
+      "path": "client/src/content/shield-values.json",
+      "type": "content",
+      "bytes": 723
+    },
+    {
+      "path": "client/src/content/shields.json",
+      "type": "content",
+      "bytes": 777
+    },
+    {
+      "path": "client/src/content/themes.json",
+      "type": "content",
+      "bytes": 1477
+    },
+    {
+      "path": "client/src/content/translations/es.json",
+      "type": "content",
+      "bytes": 1792
+    },
+    {
+      "path": "client/src/hooks/use-mobile.tsx",
+      "type": "component",
+      "bytes": 584
+    },
+    {
+      "path": "client/src/hooks/use-toast.ts",
+      "type": "module",
+      "bytes": 4086
+    },
+    {
+      "path": "client/src/index.css",
+      "type": "style",
+      "bytes": 10234
+    },
+    {
+      "path": "client/src/lib/admin-enabled.ts",
+      "type": "module",
+      "bytes": 602
+    },
+    {
+      "path": "client/src/lib/brand-theme.ts",
+      "type": "module",
+      "bytes": 2445
+    },
+    {
+      "path": "client/src/lib/content-manifest.ts",
+      "type": "module",
+      "bytes": 3474
+    },
+    {
+      "path": "client/src/lib/i18n.ts",
+      "type": "module",
+      "bytes": 889
+    },
+    {
+      "path": "client/src/lib/icons.ts",
+      "type": "module",
+      "bytes": 1279
+    },
+    {
+      "path": "client/src/lib/media.ts",
+      "type": "module",
+      "bytes": 1127
+    },
+    {
+      "path": "client/src/lib/utils.ts",
+      "type": "module",
+      "bytes": 172
+    },
+    {
+      "path": "client/src/main.tsx",
+      "type": "component",
+      "bytes": 218
+    },
+    {
+      "path": "client/src/pages/GalleryPage.tsx",
+      "type": "component",
+      "bytes": 401
+    },
+    {
+      "path": "client/src/pages/HistoryPage.tsx",
+      "type": "component",
+      "bytes": 401
+    },
+    {
+      "path": "client/src/pages/LeadershipPage.tsx",
+      "type": "component",
+      "bytes": 413
+    },
+    {
+      "path": "client/src/pages/not-found.tsx",
+      "type": "component",
+      "bytes": 1039
+    },
+    {
+      "path": "client/src/pages/ShieldsPage.tsx",
+      "type": "component",
+      "bytes": 401
+    },
+    {
+      "path": "client/src/repositories/content.repository.ts",
+      "type": "module",
+      "bytes": 5204
+    },
+    {
+      "path": "client/src/services/gallery.service.ts",
+      "type": "module",
+      "bytes": 1268
+    },
+    {
+      "path": "client/src/services/history.service.ts",
+      "type": "module",
+      "bytes": 347
+    },
+    {
+      "path": "client/src/services/leadership.service.ts",
+      "type": "module",
+      "bytes": 1302
+    },
+    {
+      "path": "client/src/services/shields.service.ts",
+      "type": "module",
+      "bytes": 713
+    },
+    {
+      "path": "client/src/services/site.service.ts",
+      "type": "module",
+      "bytes": 1087
+    }
+  ]
+}

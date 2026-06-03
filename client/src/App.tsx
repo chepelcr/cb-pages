@@ -1,7 +1,5 @@
-import { useEffect } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import { Switch, Route, useLocation } from "wouter";
-import { queryClient } from "./lib/queryClient";
-import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
@@ -15,6 +13,14 @@ import Hero from "@/components/Hero";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import PageTransition from "@/components/PageTransition";
+import { ADMIN_ENABLED } from "@/lib/admin-enabled";
+
+// The admin panel is dynamically imported behind the statically-foldable
+// ADMIN_ENABLED constant. In a production build it folds to `false`, so this
+// import() becomes dead code and Rollup tree-shakes the entire admin out.
+const AdminApp = ADMIN_ENABLED
+  ? lazy(() => import("@/admin/AdminApp"))
+  : null;
 
 function HomePage() {
   return (
@@ -32,23 +38,19 @@ function GitHubPagesRouter() {
   const [, navigate] = useLocation();
 
   useEffect(() => {
-    // Handle GitHub Pages SPA routing - check for ?/ in URL
     const search = window.location.search;
-    if (search.startsWith('?/')) {
-      // Extract the real path from GitHub Pages redirect
-      const path = search.slice(2).split('&')[0].replace(/~and~/g, '&');
-      const realPath = '/' + path;
-      
-      // Navigate to the real path and clean up the URL
+    if (search.startsWith("?/")) {
+      const path = search.slice(2).split("&")[0].replace(/~and~/g, "&");
+      const realPath = "/" + path;
       navigate(realPath);
-      window.history.replaceState(null, '', realPath + window.location.hash);
+      window.history.replaceState(null, "", realPath + window.location.hash);
     }
   }, [navigate]);
 
   return null;
 }
 
-function Router() {
+function PublicRouter() {
   return (
     <>
       <GitHubPagesRouter />
@@ -66,14 +68,21 @@ function Router() {
 
 function AppContent() {
   const { theme, toggleTheme } = useTheme();
+  const [location] = useLocation();
+
+  // Dev-only admin panel (own layout, no public chrome).
+  if (ADMIN_ENABLED && AdminApp && location.startsWith("/admin")) {
+    return (
+      <Suspense fallback={null}>
+        <AdminApp />
+      </Suspense>
+    );
+  }
 
   return (
     <>
-      <Header 
-        darkMode={theme === 'dark'} 
-        onToggleDarkMode={toggleTheme}
-      />
-      <Router />
+      <Header darkMode={theme === "dark"} onToggleDarkMode={toggleTheme} />
+      <PublicRouter />
       <Footer />
     </>
   );
@@ -81,14 +90,12 @@ function AppContent() {
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="light">
-        <TooltipProvider>
-          <Toaster />
-          <AppContent />
-        </TooltipProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
+    <ThemeProvider defaultTheme="light">
+      <TooltipProvider>
+        <Toaster />
+        <AppContent />
+      </TooltipProvider>
+    </ThemeProvider>
   );
 }
 

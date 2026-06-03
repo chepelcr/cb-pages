@@ -1,0 +1,36 @@
+{
+  "lang": "es",
+  "siteUrl": "https://banderas.jcampos.dev",
+  "defaultTitle": "Cuerpo de Banderas - Liceo de Costa Rica",
+  "titleTemplate": "%s | Cuerpo de Banderas",
+  "defaultDescription": "Sitio oficial del Cuerpo de Banderas del Liceo de Costa Rica. Tradición y honor desde 1951.",
+  "ogImage": "logo",
+  "twitterCard": "summary_large_image",
+  "routes": [
+    {
+      "path": "/",
+      "title": "Cuerpo de Banderas - Liceo de Costa Rica",
+      "description": "Sitio oficial del Cuerpo de Banderas del Liceo de Costa Rica. Tradición y honor desde 1951."
+    },
+    {
+      "path": "/historia",
+      "title": "Nuestra Historia",
+      "description": "Historia y hitos del Cuerpo de Banderas del Liceo de Costa Rica desde 1951."
+    },
+    {
+      "path": "/jefaturas",
+      "title": "Jefaturas",
+      "description": "Recorrido por las jefaturas que han dirigido el Cuerpo de Banderas del Liceo de Costa Rica."
+    },
+    {
+      "path": "/escudos",
+      "title": "Escudos e Insignias",
+      "description": "Escudos, insignias y valores del Cuerpo de Banderas del Liceo de Costa Rica."
+    },
+    {
+      "path": "/galeria",
+      "title": "Galería",
+      "description": "Galería de fotografías del Cuerpo de Banderas del Liceo de Costa Rica."
+    }
+  ]
+}

@@ -1,0 +1,388 @@
+{
+  "badge": "Liderazgo Histórico",
+  "title": "Líderes del Cuerpo de Banderas",
+  "description": "Un recorrido por la historia de nuestros líderes, desde {foundingYear} hasta la actualidad. Cada generación ha contribuido al legado de honor y tradición.",
+  "featuredTitle": "Tradición de Liderazgo",
+  "featuredDescription": "Desde 1951, el Cuerpo de Banderas ha sido dirigido por estudiantes excepcionales que han demostrado los más altos estándares de disciplina, patriotismo y liderazgo.",
+  "featuredImage": "leader-featured",
+  "periods": [
+    {
+      "id": "jefatura-01",
+      "year": "1959-1960",
+      "jefe": "Frankin Garcia Charpentier",
+      "subjefes": [],
+      "image": "",
+      "order": 0
+    },
+    {
+      "id": "jefatura-02",
+      "year": "1961",
+      "jefe": "Mario Parra",
+      "subjefes": [
+        "Alexis Castillo"
+      ],
+      "image": "",
+      "order": 1
+    },
+    {
+      "id": "jefatura-03",
+      "year": "1967",
+      "jefe": "Francisco J. Pastor Huertas",
+      "subjefes": [
+        "Franklin Perez Aguilar"
+      ],
+      "image": "",
+      "order": 2
+    },
+    {
+      "id": "jefatura-04",
+      "year": "1970-1971",
+      "jefe": "Gerardo Arce Vargas",
+      "subjefes": [],
+      "image": "",
+      "order": 3
+    },
+    {
+      "id": "jefatura-05",
+      "year": "1972",
+      "jefe": "Alberto Gomez Matute",
+      "subjefes": [
+        "Orlando Gonzalez"
+      ],
+      "image": "",
+      "order": 4
+    },
+    {
+      "id": "jefatura-06",
+      "year": "1973-1974",
+      "jefe": "Manuel Carvajal Poveda",
+      "subjefes": [
+        "Gaspar Miranda Ortuño"
+      ],
+      "image": "",
+      "order": 5
+    },
+    {
+      "id": "jefatura-07",
+      "year": "1975-1976",
+      "jefe": "Gaspar Miranda Ortuño",
+      "subjefes": [],
+      "image": "",
+      "order": 6
+    },
+    {
+      "id": "jefatura-08",
+      "year": "1976-1978",
+      "jefe": "Mainor Palomo",
+      "subjefes": [
+        "Oscar Carvajal",
+        "Gerardo Jimenez"
+      ],
+      "image": "",
+      "order": 7
+    },
+    {
+      "id": "jefatura-09",
+      "year": "1979",
+      "jefe": "Oscar Martinez",
+      "subjefes": [
+        "Alejandro Zeledon Ching",
+        "Franz Josef Korte",
+        "Raùl Cuadra",
+        "Cristian Rodriguez"
+      ],
+      "image": "",
+      "order": 8
+    },
+    {
+      "id": "jefatura-10",
+      "year": "1979-1981",
+      "jefe": "Franz Josef Korte",
+      "subjefes": [],
+      "image": "",
+      "order": 9
+    },
+    {
+      "id": "jefatura-11",
+      "year": "1982-1983",
+      "jefe": "Cristian Leon",
+      "subjefes": [
+        "Carlos Fernandez"
+      ],
+      "image": "",
+      "order": 10
+    },
+    {
+      "id": "jefatura-12",
+      "year": "1983",
+      "jefe": "Eric Alvarez",
+      "subjefes": [
+        "Mauricio Hernandez"
+      ],
+      "image": "",
+      "order": 11
+    },
+    {
+      "id": "jefatura-13",
+      "year": "1984-1985",
+      "jefe": "Eric Alvarez",
+      "subjefes": [
+        "Erick Mata"
+      ],
+      "image": "",
+      "order": 12
+    },
+    {
+      "id": "jefatura-14",
+      "year": "1986",
+      "jefe": "Erick Mata",
+      "subjefes": [],
+      "image": "",
+      "order": 13
+    },
+    {
+      "id": "jefatura-15",
+      "year": "1986",
+      "jefe": "Jose J Chacon",
+      "subjefes": [],
+      "image": "",
+      "order": 14
+    },
+    {
+      "id": "jefatura-16",
+      "year": "1986",
+      "jefe": "Gustavo Segreda",
+      "subjefes": [],
+      "image": "",
+      "order": 15
+    },
+    {
+      "id": "jefatura-17",
+      "year": "1986-1987",
+      "jefe": "Erick Ortiz",
+      "subjefes": [],
+      "image": "",
+      "order": 16
+    },
+    {
+      "id": "jefatura-18",
+      "year": "1987",
+      "jefe": "Jimmy Meza",
+      "subjefes": [
+        "Carlos Masis Charlie"
+      ],
+      "image": "",
+      "order": 17
+    },
+    {
+      "id": "jefatura-19",
+      "year": "1987-1989",
+      "jefe": "Carlos Masis Charlie",
+      "subjefes": [],
+      "image": "",
+      "order": 18
+    },
+    {
+      "id": "jefatura-20",
+      "year": "1990",
+      "jefe": "Guillermo Mejia",
+      "subjefes": [
+        "Ronny Lopez",
+        "Javier Cedeño"
+      ],
+      "image": "",
+      "order": 19
+    },
+    {
+      "id": "jefatura-21",
+      "year": "1991",
+      "jefe": "Randall Castillo",
+      "subjefes": [
+        "Manrique Fonseca"
+      ],
+      "image": "",
+      "order": 20
+    },
+    {
+      "id": "jefatura-22",
+      "year": "1992",
+      "jefe": "Manrique Fonseca",
+      "subjefes": [
+        "Oscar Murrillo"
+      ],
+      "image": "",
+      "order": 21
+    },
+    {
+      "id": "jefatura-23",
+      "year": "1993",
+      "jefe": "Diego Sevilla",
+      "subjefes": [
+        "Juan R Bonilla"
+      ],
+      "image": "",
+      "order": 22
+    },
+    {
+      "id": "jefatura-24",
+      "year": "1994",
+      "jefe": "Jovel Canales",
+      "subjefes": [],
+      "image": "",
+      "order": 23
+    },
+    {
+      "id": "jefatura-25",
+      "year": "1995",
+      "jefe": "Diego Sevilla",
+      "subjefes": [
+        "Rafael Camacho"
+      ],
+      "image": "",
+      "order": 24
+    },
+    {
+      "id": "jefatura-26",
+      "year": "1996-1997",
+      "jefe": "Carlos Amador",
+      "subjefes": [
+        "Ricardo Asofeifa",
+        "Jose Pablo Calderon"
+      ],
+      "image": "",
+      "order": 25
+    },
+    {
+      "id": "jefatura-27",
+      "year": "1998",
+      "jefe": "Efrain Arce",
+      "subjefes": [
+        "Warren Aragon"
+      ],
+      "image": "",
+      "order": 26
+    },
+    {
+      "id": "jefatura-28",
+      "year": "1999-2001",
+      "jefe": "Henry Salazar",
+      "subjefes": [
+        "Esteban Cordoba"
+      ],
+      "image": "",
+      "order": 27
+    },
+    {
+      "id": "jefatura-29",
+      "year": "2002-2004",
+      "jefe": "Guillermo Beita",
+      "subjefes": [
+        "Carlos Andres Sanchez"
+      ],
+      "image": "",
+      "order": 28
+    },
+    {
+      "id": "jefatura-30",
+      "year": "2005-2007",
+      "jefe": "Daniel Aguilar",
+      "subjefes": [
+        "Edgar Salazar",
+        "Isaac Peña"
+      ],
+      "image": "",
+      "order": 29
+    },
+    {
+      "id": "jefatura-31",
+      "year": "2008",
+      "jefe": "Edgar Salazar",
+      "subjefes": [
+        "Adrian Alvarez"
+      ],
+      "image": "",
+      "order": 30
+    },
+    {
+      "id": "jefatura-32",
+      "year": "2009",
+      "jefe": "Adrian Alvarez",
+      "subjefes": [
+        "Ronald Mauricio Izaba",
+        "Jorge Rojas"
+      ],
+      "image": "",
+      "order": 31
+    },
+    {
+      "id": "jefatura-33",
+      "year": "2010",
+      "jefe": "Jorge Rojas",
+      "subjefes": [
+        "Billy Mora",
+        "Roger Altamirano"
+      ],
+      "image": "",
+      "order": 32
+    },
+    {
+      "id": "jefatura-34",
+      "year": "2011-2012",
+      "jefe": "Roger Altamirano",
+      "subjefes": [
+        "Jesus Cruz",
+        "Eddie Sunsing"
+      ],
+      "image": "",
+      "order": 33
+    },
+    {
+      "id": "jefatura-35",
+      "year": "2013-2014",
+      "jefe": "Eddie Sunsing",
+      "subjefes": [],
+      "image": "",
+      "order": 34
+    },
+    {
+      "id": "jefatura-36",
+      "year": "2015",
+      "jefe": "Sebastian Sedo",
+      "subjefes": [],
+      "image": "",
+      "order": 35
+    },
+    {
+      "id": "jefatura-37",
+      "year": "2015",
+      "jefe": "Andrey Araya",
+      "subjefes": [],
+      "image": "",
+      "order": 36
+    },
+    {
+      "id": "jefatura-38",
+      "year": "2016-2017",
+      "jefe": "Andres Quiros",
+      "subjefes": [],
+      "image": "",
+      "order": 37
+    },
+    {
+      "id": "jefatura-39",
+      "year": "2018-2019",
+      "jefe": "Diego Zelaya",
+      "subjefes": [],
+      "image": "",
+      "order": 38
+    },
+    {
+      "id": "jefatura-40",
+      "year": "2020-2021-2022",
+      "jefe": "Jouzel Chavarria",
+      "subjefes": [],
+      "image": "leader-portrait",
+      "order": 39
+    }
+  ]
+}

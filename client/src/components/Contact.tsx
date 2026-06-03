@@ -1,62 +1,36 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
-import { MapPin, Phone, Mail, Clock, ExternalLink } from 'lucide-react';
-import { useQuery } from '@tanstack/react-query';
-import type { SiteConfig } from '@shared/schema';
+import { MapPin, Phone, Mail, Clock, ExternalLink, type LucideIcon } from 'lucide-react';
+import { getContact } from '@/services/site.service';
+import { t } from '@/lib/i18n';
+
+const methodIcons: Record<string, LucideIcon> = {
+  location: MapPin,
+  phone: Phone,
+  email: Mail,
+  schedule: Clock,
+};
+
+const methodActions: Record<string, string> = {
+  location: t('common.viewOnMaps'),
+  phone: t('common.call'),
+  email: t('common.sendEmail'),
+  schedule: t('common.moreInfo'),
+};
 
 export default function Contact() {
-  const { data: config, isLoading } = useQuery<SiteConfig>({
-    queryKey: ['/api/admin/site-config'],
-  });
+  const contact = getContact();
 
   const handleContactClick = (type: string, value: string) => {
-    console.log(`Contact clicked: ${type} - ${value}`);
-    
     if (type === 'email') {
       window.open(`mailto:${value}`);
     } else if (type === 'phone') {
       window.open(`tel:${value}`);
     } else if (type === 'location') {
-      window.open('https://maps.google.com/?q=Liceo+de+Costa+Rica+San+José', '_blank');
+      window.open(`https://maps.google.com/?q=${encodeURIComponent(contact.mapsQuery)}`, '_blank');
     }
   };
-
-  const contactInfo = [
-    {
-      icon: MapPin,
-      label: 'Ubicación',
-      value: config?.siteName || 'Liceo de Costa Rica, San José',
-      description: config?.address || 'Avenida 6, Calle 7-9, San José, Costa Rica',
-      type: 'location',
-      actionText: 'Ver en Maps'
-    },
-    {
-      icon: Phone,
-      label: 'Teléfono',
-      value: config?.contactPhone || '+506 2221-9358',
-      description: 'Secretaría del Liceo de Costa Rica',
-      type: 'phone',
-      actionText: 'Llamar'
-    },
-    {
-      icon: Mail,
-      label: 'Email',
-      value: config?.contactEmail || 'cuerpo.banderas@liceocostarica.ed.cr',
-      description: 'Coordinación Cuerpo de Banderas',
-      type: 'email',
-      actionText: 'Enviar Email'
-    },
-    {
-      icon: Clock,
-      label: 'Horario de Entrenamientos',
-      value: config?.trainingSchedule || 'Martes y Jueves 2:00 PM',
-      description: config?.trainingLocation || 'Patio principal del Liceo',
-      type: 'schedule',
-      actionText: 'Más Info'
-    }
-  ];
 
   return (
     <section id="contact" className="py-20 bg-background">
@@ -64,23 +38,22 @@ export default function Contact() {
         {/* Header */}
         <div className="text-center mb-16">
           <Badge variant="outline" className="mb-4" data-testid="badge-section-contact">
-            Contacto
+            {contact.badge}
           </Badge>
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-6" data-testid="text-contact-title">
-            Contáctanos
+            {contact.title}
           </h2>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto" data-testid="text-contact-description">
-            ¿Interesado en formar parte del Cuerpo de Banderas? 
-            Contáctanos para más información sobre el proceso de ingreso y entrenamientos.
+            {contact.description}
           </p>
         </div>
 
         {/* Contact Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-          {contactInfo.map((info, index) => {
-            const IconComponent = info.icon;
+          {contact.methods.map((info) => {
+            const IconComponent = methodIcons[info.type] ?? MapPin;
             return (
-              <Card key={index} className="text-center hover-elevate transition-all duration-300" data-testid={`card-contact-${info.type}`}>
+              <Card key={info.id} className="text-center hover-elevate transition-all duration-300" data-testid={`card-contact-${info.type}`}>
                 <CardHeader className="pb-4">
                   <div className="mx-auto p-3 bg-primary/10 rounded-full w-fit mb-4">
                     <IconComponent className="h-6 w-6 text-primary" />
@@ -96,14 +69,14 @@ export default function Contact() {
                   <p className="text-sm text-muted-foreground" data-testid={`text-contact-description-${info.type}`}>
                     {info.description}
                   </p>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
+                  <Button
+                    variant="outline"
+                    size="sm"
                     onClick={() => handleContactClick(info.type, info.value)}
                     className="hover-elevate w-full"
                     data-testid={`button-contact-${info.type}`}
                   >
-                    {info.actionText}
+                    {methodActions[info.type]}
                     {info.type === 'location' && <ExternalLink className="ml-2 h-3 w-3" />}
                   </Button>
                 </CardContent>
@@ -114,90 +87,68 @@ export default function Contact() {
 
         {/* Requirements Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <Card className="" data-testid="card-requirements">
+          <Card data-testid="card-requirements">
             <CardHeader>
               <CardTitle className="flex items-center gap-2" data-testid="text-requirements-title">
-                <Badge variant="secondary">Requisitos</Badge>
-                Proceso de Ingreso
+                <Badge variant="secondary">{contact.admission.badge}</Badge>
+                {contact.admission.title}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {isLoading ? (
-                <div className="space-y-3">
-                  <Skeleton className="h-6 w-full" />
-                  <Skeleton className="h-6 w-full" />
-                  <Skeleton className="h-6 w-full" />
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {(config?.admissionRequirements || [
-                    'Ser estudiante activo del Liceo de Costa Rica',
-                    'Mantener promedio académico mínimo de 80',
-                    'Disponibilidad para entrenamientos regulares',
-                    'Compromiso con los valores institucionales',
-                    'Participación en ceremonias patrias'
-                  ]).map((requirement, index) => (
-                    <div key={index} className="flex items-start gap-3">
-                      <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
-                      <p className="text-sm text-muted-foreground" data-testid={`text-requirement-${index}`}>{requirement}</p>
-                    </div>
-                  ))}
-                </div>
-              )}
-              
-              <Button 
-                className="w-full mt-4 hover-elevate" 
-                onClick={() => handleContactClick('email', config?.contactEmail || 'cuerpo.banderas@liceocostarica.ed.cr')}
+              <div className="space-y-3">
+                {contact.admission.requirements.map((requirement, index) => (
+                  <div key={index} className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                    <p className="text-sm text-muted-foreground" data-testid={`text-requirement-${index}`}>{requirement}</p>
+                  </div>
+                ))}
+              </div>
+
+              <Button
+                className="w-full mt-4 hover-elevate"
+                onClick={() => handleContactClick('email', contact.email)}
                 data-testid="button-apply"
               >
-                Solicitar Información
+                {t('contact.applyButton')}
               </Button>
             </CardContent>
           </Card>
 
-          <Card className="" data-testid="card-schedule">
+          <Card data-testid="card-schedule">
             <CardHeader>
               <CardTitle className="flex items-center gap-2" data-testid="text-schedule-title">
-                <Badge variant="secondary">Horarios</Badge>
-                Actividades y Entrenamientos
+                <Badge variant="secondary">{contact.schedules.badge}</Badge>
+                {contact.schedules.title}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {isLoading ? (
-                <div className="space-y-4">
-                  <Skeleton className="h-20 w-full" />
-                  <Skeleton className="h-20 w-full" />
-                  <Skeleton className="h-20 w-full" />
+              <div className="space-y-4">
+                <div className="border-l-4 border-primary pl-4">
+                  <h4 className="font-semibold text-foreground">{contact.schedules.training.title}</h4>
+                  <p className="text-sm text-muted-foreground">{contact.schedules.training.schedule}</p>
+                  <p className="text-xs text-muted-foreground">{contact.schedules.training.location}</p>
                 </div>
-              ) : (
-                <div className="space-y-4">
-                  <div className="border-l-4 border-primary pl-4">
-                    <h4 className="font-semibold text-foreground">Entrenamientos Regulares</h4>
-                    <p className="text-sm text-muted-foreground">{config?.trainingSchedule || 'Martes y Jueves, 2:00 PM - 4:00 PM'}</p>
-                    <p className="text-xs text-muted-foreground">{config?.trainingLocation || 'Patio principal del Liceo'}</p>
-                  </div>
-                  
-                  <div className="border-l-4 border-secondary pl-4">
-                    <h4 className="font-semibold text-foreground">Ceremonias Especiales</h4>
-                    <p className="text-sm text-muted-foreground">{config?.ceremoniesSchedule || 'Fechas patrias y eventos institucionales'}</p>
-                    <p className="text-xs text-muted-foreground">{config?.ceremoniesNotes || 'Se coordinan con anticipación'}</p>
-                  </div>
-                  
-                  <div className="border-l-4 border-accent pl-4">
-                    <h4 className="font-semibold text-foreground">Reuniones de Coordinación</h4>
-                    <p className="text-sm text-muted-foreground">{config?.meetingsSchedule || 'Viernes, 3:00 PM - 4:00 PM'}</p>
-                    <p className="text-xs text-muted-foreground">{config?.meetingsLocation || 'Aula de coordinación'}</p>
-                  </div>
+
+                <div className="border-l-4 border-secondary pl-4">
+                  <h4 className="font-semibold text-foreground">{contact.schedules.ceremonies.title}</h4>
+                  <p className="text-sm text-muted-foreground">{contact.schedules.ceremonies.schedule}</p>
+                  <p className="text-xs text-muted-foreground">{contact.schedules.ceremonies.notes}</p>
                 </div>
-              )}
-              
-              <Button 
-                variant="outline" 
+
+                <div className="border-l-4 border-accent pl-4">
+                  <h4 className="font-semibold text-foreground">{contact.schedules.meetings.title}</h4>
+                  <p className="text-sm text-muted-foreground">{contact.schedules.meetings.schedule}</p>
+                  <p className="text-xs text-muted-foreground">{contact.schedules.meetings.location}</p>
+                </div>
+              </div>
+
+              <Button
+                variant="outline"
                 className="w-full mt-4 hover-elevate"
-                onClick={() => handleContactClick('phone', config?.contactPhone || '+506 2221-9358')}
+                onClick={() => handleContactClick('phone', contact.phone)}
                 data-testid="button-schedule-info"
               >
-                Consultar Horarios
+                {t('contact.scheduleButton')}
               </Button>
             </CardContent>
           </Card>

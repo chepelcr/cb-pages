@@ -1,0 +1,18 @@
+{
+  "items": [
+    {
+      "id": "histimg-1950s",
+      "title": "Ceremonia de los años 50",
+      "description": "Una de las primeras ceremonias documentadas del Cuerpo de Banderas del Liceo de Costa Rica.",
+      "image": "historic-1950s",
+      "order": 0
+    },
+    {
+      "id": "histimg-parade",
+      "title": "Desfile en el patio principal",
+      "description": "El cuerpo durante un desfile en el patio principal del Liceo.",
+      "image": "parade-ground",
+      "order": 1
+    }
+  ]
+}

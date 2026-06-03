@@ -1,37 +1,17 @@
-import { useQuery } from '@tanstack/react-query';
-import type { HistoricalMilestone, HistoricalImage, SiteConfig } from '@shared/schema';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Calendar, Users, Flag, Award, Image as ImageIcon } from 'lucide-react';
-
-const iconMap = {
-  'Flag': Flag,
-  'Users': Users,
-  'Award': Award,
-  'Calendar': Calendar
-};
+import { Flag } from 'lucide-react';
+import { getHistoryCopy, getMilestones, getHistoricalImages } from '@/services/history.service';
+import { getYearsOfTradition, interpolateYears } from '@/services/site.service';
+import { resolveMedia, resolveMediaAlt } from '@/lib/media';
+import { resolveIcon } from '@/lib/icons';
+import { t } from '@/lib/i18n';
 
 export default function History() {
-  const { data: milestones, isLoading: milestonesLoading } = useQuery<HistoricalMilestone[]>({
-    queryKey: ['/api/admin/history'],
-  });
-
-  const { data: historicalImages, isLoading: imagesLoading } = useQuery<HistoricalImage[]>({
-    queryKey: ['/api/admin/historical-images'],
-  });
-
-  const { data: siteConfig } = useQuery<SiteConfig>({
-    queryKey: ['/api/admin/site-config'],
-  });
-
-  const sortedMilestones = milestones?.sort((a, b) => a.displayOrder - b.displayOrder) || [];
-  const sortedImages = historicalImages?.sort((a, b) => a.displayOrder - b.displayOrder) || [];
-  
-  const foundingYear = siteConfig?.foundingYear || 1951;
-  const currentYear = new Date().getFullYear();
-  const yearsOfTradition = currentYear - foundingYear;
-  const missionStatement = siteConfig?.missionStatement || 'Formar estudiantes con valores patrióticos, disciplina militar y amor por Costa Rica, manteniendo viva la tradición de honor que nos ha caracterizado por más de siete décadas.';
+  const copy = getHistoryCopy();
+  const milestones = getMilestones();
+  const images = getHistoricalImages();
+  const yearsOfTradition = getYearsOfTradition();
 
   return (
     <section id="history" className="py-20 bg-muted/50">
@@ -39,31 +19,24 @@ export default function History() {
         {/* Header */}
         <div className="text-center mb-16">
           <Badge variant="outline" className="mb-4" data-testid="badge-section-history">
-            Nuestra Historia
+            {copy.badge}
           </Badge>
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-6" data-testid="text-history-title">
-            {yearsOfTradition}+ Años de Tradición y Honor
+            {yearsOfTradition}+ {copy.titleSuffix}
           </h2>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto" data-testid="text-history-description">
-            Desde {foundingYear}, el Cuerpo de Banderas del Liceo de Costa Rica ha mantenido viva la tradición
-            de formar jóvenes con valores patrióticos, disciplina y amor por la patria.
+            {interpolateYears(copy.description)}
           </p>
         </div>
 
         {/* Historical Images */}
-        {imagesLoading ? (
+        {images.length > 0 && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
-            {[...Array(2)].map((_, index) => (
-              <Skeleton key={index} className="h-80 w-full" />
-            ))}
-          </div>
-        ) : sortedImages.length > 0 ? (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
-            {sortedImages.map((image, index) => (
+            {images.map((image, index) => (
               <Card key={image.id} className="overflow-hidden" data-testid={`card-historical-image-${index}`}>
-                <img 
-                  src={image.imageUrl} 
-                  alt={image.title} 
+                <img
+                  src={resolveMedia(image.image)}
+                  alt={resolveMediaAlt(image.image, image.title)}
                   className="w-full h-64 object-cover"
                   data-testid={`img-historical-${index}`}
                 />
@@ -78,30 +51,24 @@ export default function History() {
               </Card>
             ))}
           </div>
-        ) : null}
+        )}
 
         {/* Timeline */}
         <div className="space-y-8">
           <h3 className="text-2xl font-bold text-center text-foreground mb-12" data-testid="text-timeline-title">
-            Hitos Importantes
+            {copy.milestonesTitle}
           </h3>
-          
-          {milestonesLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {[...Array(4)].map((_, index) => (
-                <Skeleton key={index} className="h-64 w-full" />
-              ))}
-            </div>
-          ) : sortedMilestones.length === 0 ? (
+
+          {milestones.length === 0 ? (
             <Card className="p-8 text-center" data-testid="card-no-milestones">
               <Flag className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-foreground mb-2">No hay hitos registrados</h3>
-              <p className="text-muted-foreground">Aún no se han agregado hitos históricos importantes</p>
+              <h3 className="text-lg font-semibold text-foreground mb-2">{t('history.emptyMilestonesTitle')}</h3>
+              <p className="text-muted-foreground">{t('history.emptyMilestonesBody')}</p>
             </Card>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {sortedMilestones.map((milestone, index) => {
-                const IconComponent = iconMap[milestone.iconName as keyof typeof iconMap] || Flag;
+              {milestones.map((milestone, index) => {
+                const IconComponent = resolveIcon(milestone.iconName, Flag);
                 return (
                   <Card key={milestone.id} className="h-full hover-elevate transition-all duration-300 flex flex-col" data-testid={`card-milestone-${milestone.year}`}>
                     <CardHeader className="pb-4 flex-shrink-0">
@@ -134,10 +101,10 @@ export default function History() {
           <CardContent className="p-8 text-center">
             <Flag className="h-12 w-12 text-primary mx-auto mb-4" />
             <h3 className="text-2xl font-bold text-foreground mb-4" data-testid="text-mission-title">
-              Nuestra Misión
+              {copy.missionTitle}
             </h3>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto" data-testid="text-mission-statement">
-              {missionStatement}
+              {copy.missionStatement}
             </p>
           </CardContent>
         </Card>

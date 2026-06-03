@@ -1,0 +1,19 @@
+{
+  "description": "Formando jóvenes costarricenses con valores patrióticos, disciplina y honor desde 1951. Una tradición de más de 70 años al servicio de la patria.",
+  "quickLinksTitle": "Enlaces Rápidos",
+  "quickLinks": [
+    { "id": "fl-inicio", "label": "Inicio", "path": "/", "sectionId": "home" },
+    { "id": "fl-historia", "label": "Historia", "path": "/historia" },
+    { "id": "fl-jefaturas", "label": "Jefaturas", "path": "/jefaturas" },
+    { "id": "fl-escudos", "label": "Escudos", "path": "/escudos" },
+    { "id": "fl-galeria", "label": "Galería", "path": "/galeria" },
+    { "id": "fl-contacto", "label": "Contacto", "path": "/", "sectionId": "contact" }
+  ],
+  "contactTitle": "Información de Contacto",
+  "trainingSummary": "Martes y Jueves 2:00 PM",
+  "social": [
+    { "id": "social-facebook", "name": "Facebook", "iconName": "Facebook", "url": "" },
+    { "id": "social-instagram", "name": "Instagram", "iconName": "Instagram", "url": "" },
+    { "id": "social-youtube", "name": "YouTube", "iconName": "Youtube", "url": "" }
+  ]
+}

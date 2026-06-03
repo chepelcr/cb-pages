@@ -1,0 +1,25 @@
+{
+  "items": [
+    {
+      "id": "value-honor",
+      "title": "Honor",
+      "description": "El honor guía cada paso y cada ceremonia, representando con dignidad al Liceo de Costa Rica.",
+      "iconName": "Award",
+      "order": 0
+    },
+    {
+      "id": "value-disciplina",
+      "title": "Disciplina",
+      "description": "La disciplina es la base de la formación, el entrenamiento y la precisión en cada presentación.",
+      "iconName": "ShieldIcon",
+      "order": 1
+    },
+    {
+      "id": "value-patriotismo",
+      "title": "Patriotismo",
+      "description": "El amor por Costa Rica y sus símbolos patrios inspira la labor del Cuerpo de Banderas.",
+      "iconName": "Flag",
+      "order": 2
+    }
+  ]
+}

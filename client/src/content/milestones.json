@@ -1,0 +1,36 @@
+{
+  "items": [
+    {
+      "id": "milestone-1951",
+      "year": "1951",
+      "title": "Fundación del Cuerpo de Banderas",
+      "description": "Nace el Cuerpo de Banderas del Liceo de Costa Rica, iniciando una tradición de honor, disciplina y patriotismo.",
+      "iconName": "Flag",
+      "order": 0
+    },
+    {
+      "id": "milestone-1959",
+      "year": "1959",
+      "title": "Primeras jefaturas documentadas",
+      "description": "Se documentan las primeras jefaturas formales que dirigieron el cuerpo y consolidaron sus protocolos de marcha.",
+      "iconName": "Users",
+      "order": 1
+    },
+    {
+      "id": "milestone-1979",
+      "year": "1979",
+      "title": "Expansión de la estructura de mando",
+      "description": "El cuerpo crece y adopta una estructura con jefe y varias subjefaturas para coordinar los ensayos y desfiles.",
+      "iconName": "Award",
+      "order": 2
+    },
+    {
+      "id": "milestone-2022",
+      "year": "2022",
+      "title": "Más de 70 años de tradición",
+      "description": "El Cuerpo de Banderas celebra más de siete décadas representando al Liceo de Costa Rica en las fechas patrias.",
+      "iconName": "Calendar",
+      "order": 3
+    }
+  ]
+}

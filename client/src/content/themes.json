@@ -1,0 +1,49 @@
+{
+  "activeTheme": "institucional",
+  "themes": [
+    {
+      "id": "institucional",
+      "name": "Institucional (rojo costarricense)",
+      "radius": "0.8rem",
+      "fontSans": "'Poppins', sans-serif",
+      "light": {
+        "background": "0 0% 94%",
+        "foreground": "0 0% 10%",
+        "card": "0 0% 99%",
+        "cardForeground": "0 0% 0%",
+        "primary": "9 75% 61%",
+        "primaryForeground": "0 0% 100%",
+        "secondary": "0 0% 77%",
+        "secondaryForeground": "0 0% 10%",
+        "muted": "0 0% 89%",
+        "mutedForeground": "0 0% 13%",
+        "accent": "0 0% 100%",
+        "accentForeground": "0 0% 10.2%",
+        "destructive": "0 85% 60%",
+        "destructiveForeground": "0 0% 100%",
+        "border": "0 0% 91%",
+        "input": "0 0% 71%",
+        "ring": "0 0% 41.96%"
+      },
+      "dark": {
+        "background": "20 14% 4%",
+        "foreground": "45 25% 91%",
+        "card": "20 14% 8%",
+        "cardForeground": "45 25% 85%",
+        "primary": "9 75% 61%",
+        "primaryForeground": "0 0% 100%",
+        "secondary": "30 15% 52%",
+        "secondaryForeground": "0 0% 100%",
+        "muted": "20 14% 15%",
+        "mutedForeground": "45 15% 46%",
+        "accent": "25 45% 20%",
+        "accentForeground": "45 25% 85%",
+        "destructive": "356 90% 54%",
+        "destructiveForeground": "0 0% 100%",
+        "border": "20 14% 15%",
+        "input": "20 14% 18%",
+        "ring": "9 75% 61%"
+      }
+    }
+  ]
+}

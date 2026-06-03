@@ -1,0 +1,24 @@
+{
+  "groups": [
+    {
+      "id": "historia",
+      "label": "Nuestra Historia",
+      "items": [
+        { "id": "nav-historia", "label": "Historia", "path": "/historia" },
+        { "id": "nav-jefaturas", "label": "Jefaturas", "path": "/jefaturas" }
+      ]
+    },
+    {
+      "id": "multimedia",
+      "label": "Multimedia",
+      "items": [
+        { "id": "nav-escudos", "label": "Escudos", "path": "/escudos" },
+        { "id": "nav-galeria", "label": "Galería", "path": "/galeria" }
+      ]
+    }
+  ],
+  "direct": [
+    { "id": "nav-inicio", "label": "Inicio", "path": "/", "sectionId": "home" },
+    { "id": "nav-contacto", "label": "Contacto", "path": "/", "sectionId": "contact" }
+  ]
+}

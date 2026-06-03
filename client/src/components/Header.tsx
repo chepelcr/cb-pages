@@ -1,17 +1,16 @@
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import type { SiteConfig } from '@shared/schema';
 import { Button } from '@/components/ui/button';
-import { Menu, X, Shield, Sun, Moon, ChevronDown } from 'lucide-react';
+import { Menu, X, Sun, Moon, ChevronDown } from 'lucide-react';
 import { Card } from '@/components/ui/card';
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useLocation } from 'wouter';
-import cbLogo from '@assets/cb logo_1758164197769.png';
+import { getBranding, getNavigation } from '@/services/site.service';
+import { resolveMedia } from '@/lib/media';
 
 interface HeaderProps {
   darkMode: boolean;
@@ -22,13 +21,11 @@ export default function Header({ darkMode, onToggleDarkMode }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [location, navigate] = useLocation();
 
-  const { data: siteConfig } = useQuery<SiteConfig>({
-    queryKey: ['/api/admin/site-config'],
-  });
-
-  const siteName = siteConfig?.siteName || 'Cuerpo de Banderas';
-  const siteSubtitle = siteConfig?.siteSubtitle || 'Liceo de Costa Rica';
-  const logoUrl = siteConfig?.logoUrl || cbLogo;
+  const branding = getBranding();
+  const navigation = getNavigation();
+  const siteName = branding.siteName;
+  const siteSubtitle = branding.siteSubtitle;
+  const logoUrl = resolveMedia(branding.logo);
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -54,20 +51,8 @@ export default function Header({ darkMode, onToggleDarkMode }: HeaderProps) {
     setMobileMenuOpen(false);
   };
 
-  const historyItems = [
-    { label: 'Historia', action: () => handleNavigation('/historia') },
-    { label: 'Jefaturas', action: () => handleNavigation('/jefaturas') }
-  ];
-
-  const multimediaItems = [
-    { label: 'Escudos', action: () => handleNavigation('/escudos') },
-    { label: 'Galería', action: () => handleNavigation('/galeria') }
-  ];
-
-  const directMenuItems = [
-    { label: 'Inicio', action: () => handleNavigation('/', 'home') },
-    { label: 'Contacto', action: () => handleNavigation('/', 'contact') }
-  ];
+  const inicio = navigation.direct.find((d) => d.sectionId === 'home');
+  const contacto = navigation.direct.find((d) => d.sectionId === 'contact');
 
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
@@ -76,11 +61,11 @@ export default function Header({ darkMode, onToggleDarkMode }: HeaderProps) {
           {/* Logo and Title */}
           <div className="flex items-center gap-2 md:gap-3 min-w-0 flex-1">
             <div className="flex-shrink-0">
-              <img 
-                src={logoUrl} 
+              <img
+                src={logoUrl}
                 alt={`${siteName} Logo`}
                 className="h-8 w-8 md:h-10 md:w-10 object-contain landscape:h-7 landscape:w-7"
-                data-testid="logo-cb" 
+                data-testid="logo-cb"
               />
             </div>
             <div className="min-w-0 flex-1">
@@ -95,65 +80,49 @@ export default function Header({ darkMode, onToggleDarkMode }: HeaderProps) {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-4 lg:space-x-8 flex-shrink-0">
-            <Button
-              variant="ghost"
-              className="hover-elevate"
-              onClick={directMenuItems[0].action}
-              data-testid="link-inicio"
-            >
-              {directMenuItems[0].label}
-            </Button>
+            {inicio && (
+              <Button
+                variant="ghost"
+                className="hover-elevate"
+                onClick={() => handleNavigation(inicio.path, inicio.sectionId)}
+                data-testid="link-inicio"
+              >
+                {inicio.label}
+              </Button>
+            )}
 
-            {/* Historia Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="hover-elevate" data-testid="dropdown-historia">
-                  Nuestra Historia
-                  <ChevronDown className="ml-1 h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="bg-popover border-popover-border shadow-lg">
-                {historyItems.map((item) => (
-                  <DropdownMenuItem
-                    key={item.label}
-                    onClick={item.action}
-                    data-testid={`dropdown-item-${item.label.toLowerCase()}`}
-                  >
-                    {item.label}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {navigation.groups.map((group) => (
+              <DropdownMenu key={group.id}>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="hover-elevate" data-testid={`dropdown-${group.id}`}>
+                    {group.label}
+                    <ChevronDown className="ml-1 h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="bg-popover border-popover-border shadow-lg">
+                  {group.items.map((item) => (
+                    <DropdownMenuItem
+                      key={item.id}
+                      onClick={() => handleNavigation(item.path, item.sectionId)}
+                      data-testid={`dropdown-item-${item.label.toLowerCase()}`}
+                    >
+                      {item.label}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ))}
 
-            {/* Multimedia Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="hover-elevate" data-testid="dropdown-multimedia">
-                  Multimedia
-                  <ChevronDown className="ml-1 h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="bg-popover border-popover-border shadow-lg">
-                {multimediaItems.map((item) => (
-                  <DropdownMenuItem
-                    key={item.label}
-                    onClick={item.action}
-                    data-testid={`dropdown-item-${item.label.toLowerCase()}`}
-                  >
-                    {item.label}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            <Button
-              variant="ghost"
-              className="hover-elevate"
-              onClick={directMenuItems[1].action}
-              data-testid="link-contacto"
-            >
-              {directMenuItems[1].label}
-            </Button>
+            {contacto && (
+              <Button
+                variant="ghost"
+                className="hover-elevate"
+                onClick={() => handleNavigation(contacto.path, contacto.sectionId)}
+                data-testid="link-contacto"
+              >
+                {contacto.label}
+              </Button>
+            )}
           </nav>
 
           {/* Right side buttons */}
@@ -185,57 +154,46 @@ export default function Header({ darkMode, onToggleDarkMode }: HeaderProps) {
         {mobileMenuOpen && (
           <Card className="md:hidden absolute top-16 left-4 right-4 p-4 bg-card" data-testid="mobile-menu">
             <nav className="flex flex-col space-y-2">
-              <Button
-                variant="ghost"
-                className="justify-start hover-elevate"
-                onClick={directMenuItems[0].action}
-                data-testid="mobile-link-inicio"
-              >
-                {directMenuItems[0].label}
-              </Button>
-              
-              <div className="space-y-1">
-                <div className="text-sm font-semibold text-muted-foreground px-3 py-2">
-                  Nuestra Historia
+              {inicio && (
+                <Button
+                  variant="ghost"
+                  className="justify-start hover-elevate"
+                  onClick={() => handleNavigation(inicio.path, inicio.sectionId)}
+                  data-testid="mobile-link-inicio"
+                >
+                  {inicio.label}
+                </Button>
+              )}
+
+              {navigation.groups.map((group) => (
+                <div key={group.id} className="space-y-1">
+                  <div className="text-sm font-semibold text-muted-foreground px-3 py-2">
+                    {group.label}
+                  </div>
+                  {group.items.map((item) => (
+                    <Button
+                      key={item.id}
+                      variant="ghost"
+                      className="justify-start pl-6 hover-elevate"
+                      onClick={() => handleNavigation(item.path, item.sectionId)}
+                      data-testid={`mobile-link-${item.label.toLowerCase()}`}
+                    >
+                      {item.label}
+                    </Button>
+                  ))}
                 </div>
-                {historyItems.map((item) => (
-                  <Button
-                    key={item.label}
-                    variant="ghost"
-                    className="justify-start pl-6 hover-elevate"
-                    onClick={item.action}
-                    data-testid={`mobile-link-${item.label.toLowerCase()}`}
-                  >
-                    {item.label}
-                  </Button>
-                ))}
-              </div>
-              
-              <div className="space-y-1">
-                <div className="text-sm font-semibold text-muted-foreground px-3 py-2">
-                  Multimedia
-                </div>
-                {multimediaItems.map((item) => (
-                  <Button
-                    key={item.label}
-                    variant="ghost"
-                    className="justify-start pl-6 hover-elevate"
-                    onClick={item.action}
-                    data-testid={`mobile-link-${item.label.toLowerCase()}`}
-                  >
-                    {item.label}
-                  </Button>
-                ))}
-              </div>
-              
-              <Button
-                variant="ghost"
-                className="justify-start hover-elevate"
-                onClick={directMenuItems[1].action}
-                data-testid="mobile-link-contacto"
-              >
-                {directMenuItems[1].label}
-              </Button>
+              ))}
+
+              {contacto && (
+                <Button
+                  variant="ghost"
+                  className="justify-start hover-elevate"
+                  onClick={() => handleNavigation(contacto.path, contacto.sectionId)}
+                  data-testid="mobile-link-contacto"
+                >
+                  {contacto.label}
+                </Button>
+              )}
             </nav>
           </Card>
         )}

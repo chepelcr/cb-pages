@@ -1,0 +1,60 @@
+{
+  "items": [
+    {
+      "id": "logo",
+      "src": "/media/logo.png",
+      "name": "Logo Cuerpo de Banderas",
+      "alt": "Escudo del Cuerpo de Banderas del Liceo de Costa Rica",
+      "type": "image/png"
+    },
+    {
+      "id": "favicon",
+      "src": "/media/favicon.png",
+      "name": "Favicon",
+      "alt": "Favicon del sitio",
+      "type": "image/png"
+    },
+    {
+      "id": "hero-ceremony",
+      "src": "/media/hero-ceremony.png",
+      "name": "Ceremonia (portada)",
+      "alt": "Ceremonia del Cuerpo de Banderas",
+      "type": "image/png"
+    },
+    {
+      "id": "leader-featured",
+      "src": "/media/leader-featured.png",
+      "name": "Líder destacado",
+      "alt": "Líder destacado del Cuerpo de Banderas",
+      "type": "image/png"
+    },
+    {
+      "id": "ceremony-honor-guard",
+      "src": "/media/ceremony-honor-guard.png",
+      "name": "Guardia de honor en ceremonia",
+      "alt": "Guardia de honor durante una ceremonia",
+      "type": "image/png"
+    },
+    {
+      "id": "leader-portrait",
+      "src": "/media/leader-portrait.png",
+      "name": "Retrato de líder",
+      "alt": "Retrato de un líder del Cuerpo de Banderas",
+      "type": "image/png"
+    },
+    {
+      "id": "parade-ground",
+      "src": "/media/parade-ground.png",
+      "name": "Patio de desfile",
+      "alt": "Patio principal durante un desfile",
+      "type": "image/png"
+    },
+    {
+      "id": "historic-1950s",
+      "src": "/media/historic-1950s.png",
+      "name": "Ceremonia histórica años 50",
+      "alt": "Fotografía histórica de una ceremonia de los años 1950",
+      "type": "image/png"
+    }
+  ]
+}

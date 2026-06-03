@@ -1,0 +1,16 @@
+{
+  "backgroundImage": "hero-ceremony",
+  "backgroundAlt": "Ceremonia del Cuerpo de Banderas",
+  "title": "Cuerpo de Banderas",
+  "subtitle": "Liceo de Costa Rica",
+  "description": "Honor, disciplina y patriotismo. Formando jóvenes costarricenses con pasos chilenos adaptados a nuestra cultura nacional.",
+  "ctas": [
+    { "id": "cta-history", "label": "Conoce Nuestra Historia", "path": "/historia", "variant": "primary" },
+    { "id": "cta-shields", "label": "Ver Escudos", "path": "/escudos", "variant": "outline" }
+  ],
+  "stats": [
+    { "id": "stat-years", "label": "Años de Tradición", "value": "", "computed": "yearsOfTradition" },
+    { "id": "stat-leaders", "label": "Líderes Formados", "value": "120+", "computed": "" },
+    { "id": "stat-ceremonies", "label": "Ceremonias Realizadas", "value": "500+", "computed": "" }
+  ]
+}

@@ -44,6 +44,18 @@ pnpm check          # typecheck (tsc)
 pnpm gen:inventory  # regenerar client/src/content/inventory.json
 ```
 
+### Scripts de conveniencia (servidor de desarrollo en segundo plano)
+
+No hay backend: el "servidor" es el dev server de Vite (sirve el sitio, el panel
+admin en `/admin` y el middleware local-CMS). Para manejarlo en segundo plano:
+
+```bash
+./dev-start.sh    # inicia el dev server (espera a que esté listo); logs -> .dev.log
+./dev-logs.sh     # sigue los logs en vivo (./dev-logs.sh --tail 50 para las últimas líneas)
+./dev-restart.sh  # reinicia el dev server
+./dev-stop.sh     # lo detiene
+```
+
 ## Editar el contenido (panel admin)
 
 1. `pnpm dev` y abre <http://localhost:5000/admin>.
